@@ -1,0 +1,6 @@
+name = wechat hotel
+description = A module for manage wechat platform hotel.
+core = 7.x
+
+files[] = wechat_hotel.module
+files[] = wechat_hotel.install

@@ -1,0 +1,51 @@
+.view-merchant-name-title {
+  text-align: center;
+}
+
+.view-shopping-merchant-list td {
+  vertical-align: top;
+}
+
+.node-mobile-shopping-product-input .field-collection-container {
+  border: none;
+}
+
+h2.view-merchant-name-title {
+  height: 4em;
+}
+/*
+.node-mobile-shopping-product-input .field-collection-view {
+  border: none;
+}
+.node-mobile-shopping-product-input .field-collection-view-links {
+  display: none;
+}
+*/
+
+.node-mobile-shopping-product-input .field-items {
+  /*border: 1px solid #666;*/
+}
+
+
+div.fieldset-wrapper img {
+  margin: 10px 10px auto;
+}
+
+.node-mobile-shopping-product-input .field-label {
+  font-weight: bold;
+  width: 25%;
+}
+
+.page-next-line {
+  border-top: 1px solid #666;
+}
+
+.field-name-field-product-category .field-label {
+  font-family: serif!important;
+  font-size: 1.0em!important;
+  font-weight: bold!important;
+}
+
+.field-name-field-product-sku-list .field-collection-view {
+  margin: 0 auto;
+}

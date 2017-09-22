@@ -1,0 +1,137 @@
+#py-mobile-home-page .ui-header {
+  border-style: none;
+}
+
+#py-mobile-home-page .ui-content {
+  padding: 7px;
+}
+
+.button-split > .ui-block-a,
+.button-split > .ui-block-b,
+.button-split > .ui-block-c {
+  border-right: 1px solid #666;
+}
+
+.search-background {
+  margin-top: 1em;
+  background: #f9c80a;
+}
+
+.uigra .ui-block-a,
+.uigra .ui-block-b {
+  margin: 3px auto;
+}
+
+#uibla .ui-body {
+  margin: 2px 1px 0 1px;
+  padding: 5px;
+}
+#uiblb .ui-body {
+  margin: 2px 1px 0 1px;
+  padding: 5px;
+}
+
+#uibla a {
+  text-decoration: blink;
+}
+#uiblb a {
+  text-decoration: blink;
+}
+
+.swiper-container {
+  width: 100%;
+}
+
+#icon-button a {
+  padding: 0;
+  background-color: #D2D2D2;
+}
+
+#cart-reminder {
+  font-size: 1.1em;
+  position:absolute;
+  display:none;
+  z-index:10;
+  background-color:red;
+  color:white;
+  padding:5px;
+  border-radius: 5px;
+}
+
+/*
+ * search navbar
+ */
+#search-navbar.ui-navbar {
+    margin-bottom: 15px;
+}
+
+#search-navbar.ui-navbar .ui-grid-duo .ui-btn {
+    border-top-width: 1px;
+}
+
+#search-navbar.ui-navbar li .ui-btn {
+    border-right-width: 1px;
+}
+
+#search-navbar .ui-btn-icon-right:after,
+#search-navbar .ui-btn-icon-right:after {
+    background-color: #EC2626;
+    margin-top: -7px;
+    width: 17px;
+    height: 16px;
+}
+
+/*
+ * panel search
+ */
+
+#py-mobile-home-page .ui-panel-animate.ui-panel-page-content-position-left {
+    -webkit-transform: translate3d(13em,0,0);
+    -moz-transform: translate3d(13em,0,0);
+    transform: translate3d(13em,0,0);
+}
+
+#service-area-list.ui-panel {
+    width: 13em;
+}
+
+#service-area-list .ui-listview > .ui-li-divider {
+    text-align: center;
+}
+
+#service-area-list .ui-li-static.ui-collapsible > .ui-collapsible-heading {
+  margin: 0;
+}
+#service-area-list .ui-li-static.ui-collapsible {
+  padding: 0;
+}
+#service-area-list .ui-li-static.ui-collapsible > .ui-collapsible-heading > .ui-btn {
+  border-top-width: 0;
+}
+#service-area-list .ui-li-static.ui-collapsible > .ui-collapsible-heading.ui-collapsible-heading-collapsed > .ui-btn,
+#service-area-list .ui-li-static.ui-collapsible > .ui-collapsible-content {
+  border-bottom-width: 0;
+}
+
+/*
+ * search listview
+ */
+#search-panel-lv.ui-listview a {
+    font-weight: 400;
+}
+
+#search-panel-lv.ui-listview > .ui-collapsible > .ui-collapsible-content > ul.ui-listview a {
+    font-size: 14px;
+}
+
+/*footer company */
+#py-mobile-home-page .company {
+  margin: 0.5em 0 0.5em 0;
+  text-align: center;
+}
+
+#py-mobile-home-page .shadow-text{
+  font-size: 0.9em;
+  color: #BB7431;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+}

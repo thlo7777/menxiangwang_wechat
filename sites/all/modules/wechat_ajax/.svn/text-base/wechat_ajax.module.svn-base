@@ -1,0 +1,3463 @@
+<?php
+
+
+
+/**
+ * hook_help()
+ */
+function wechat_ajax_help($path, $arg){
+ switch ($path) {
+    case "admin/help#wechat_ajax":
+      return '<p>' . t("Displays links to nodes created on this date") . '</p>';
+      break;
+  }
+
+}
+
+/**
+ * Implments hook_permission
+ */
+function wechat_ajax_permission() {
+  return array(
+    'wechat_ajax_module' => array(
+      'title' => t('Administer wechat_ajax module'),
+      'description' => t('Perform administration tasks for my module.'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu().
+ */
+function wechat_ajax_menu(){
+  $items = array();
+  
+  //ping yao wen hua menu
+  $items['wechat-ajax/pywh'] = array(
+    'title' => t('wechat pingyaowenhua'),
+    'description' => t('wechat pingyaowenhua menu'),
+    'page callback' => 'wechat_ajax_pywh',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+  $items['wechat-ajax/pywh/data'] = array(
+    'title' => t('wechat pywh json'),
+    'description' => t('wechat pywh json data'),
+    'page callback' => 'wechat_ajax_pywh_data',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+
+  //ping yao yu yin hua ce
+  $items['wechat-ajax/yyhc'] = array(
+    'title' => t('wechat yu yin hu ce'),
+    'description' => t('wechat yuyinhuace menu'),
+    'page callback' => 'wechat_ajax_yyhc',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+  $items['wechat-ajax/yyhc/data'] = array(
+    'title' => t('wechat yyhc json'),
+    'description' => t('wechat yyhc json data'),
+    'page callback' => 'wechat_ajax_yyhc_data',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['wechat-ajax/yyhc/1'] = array(                                         /* yu yin hua ce sub menu 1*/
+    'title' => t('wechat yu yin hu ce submenu 1'),
+    'description' => t('wechat yuyinhuace submenu'),
+    'page callback' => 'wechat_ajax_yyhc_sub1',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['wechat-ajax/yyhc/1/audio'] = array(
+    'title' => t('wechat yu yin hu ce submenu 1'),
+    'description' => t('wechat yuyinhuace submenu'),
+    'page callback' => 'wechat_ajax_yyhc_sub1_audio',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['wechat-ajax/yyhc/2'] = array(                                         /* yu yin hua ce sub menu 2*/
+    'title' => t('wechat yu yin hu ce submenu 2'),
+    'description' => t('wechat yuyinhuace submenu'),
+    'page callback' => 'wechat_ajax_yyhc_sub2',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['wechat-ajax/yyhc/2/audio'] = array(
+    'title' => t('wechat yu yin hu ce submenu 2'),
+    'description' => t('wechat yuyinhuace submenu'),
+    'page callback' => 'wechat_ajax_yyhc_sub2_audio',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['wechat-ajax/yyhc/3'] = array(                                         /* yu yin hua ce sub menu 3*/
+    'title' => t('wechat yu yin hu ce submenu 3'),
+    'description' => t('wechat yuyinhuace submenu'),
+    'page callback' => 'wechat_ajax_yyhc_sub3',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['wechat-ajax/yyhc/3/audio'] = array(
+    'title' => t('wechat yu yin hu ce submenu 3'),
+    'description' => t('wechat yuyinhuace submenu'),
+    'page callback' => 'wechat_ajax_yyhc_sub3_audio',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['wechat-ajax/yyhc/4'] = array(                                         /* yu yin hua ce sub menu 4*/
+    'title' => t('wechat yu yin hu ce submenu 4'),
+    'description' => t('wechat yuyinhuace submenu'),
+    'page callback' => 'wechat_ajax_yyhc_sub4',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['wechat-ajax/yyhc/5'] = array(                                         /* yu yin hua ce sub menu 5*/
+    'title' => t('wechat yu yin hu ce submenu 5'),
+    'description' => t('wechat yuyinhuace submenu'),
+    'page callback' => 'wechat_ajax_yyhc_sub5',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['wechat-ajax/yyhc/6'] = array(                                         /* yu yin hua ce sub menu 6*/
+    'title' => t('wechat yu yin hu ce submenu 6'),
+    'description' => t('wechat yuyinhuace submenu'),
+    'page callback' => 'wechat_ajax_yyhc_sub6',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['wechat-ajax/yyhc/7'] = array(                                         /* yu yin hua ce sub menu 7*/
+    'title' => t('wechat yu yin hu ce submenu 7'),
+    'description' => t('wechat yuyinhuace submenu'),
+    'page callback' => 'wechat_ajax_yyhc_sub7',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['wechat-ajax/yyhc/8'] = array(                                         /* yu yin hua ce sub menu 8*/
+    'title' => t('wechat yu yin hu ce submenu 8'),
+    'description' => t('wechat yuyinhuace submenu'),
+    'page callback' => 'wechat_ajax_yyhc_sub8',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['wechat-ajax/yyhc/9'] = array(                                         /* yu yin hua ce sub menu 9*/
+    'title' => t('wechat yu yin hu ce submenu 9'),
+    'description' => t('wechat yuyinhuace submenu'),
+    'page callback' => 'wechat_ajax_yyhc_sub9',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['wechat-ajax/yyhc/10'] = array(                                         /* yu yin hua ce sub menu 10*/
+    'title' => t('wechat yu yin hu ce submenu 10'),
+    'description' => t('wechat yuyinhuace submenu'),
+    'page callback' => 'wechat_ajax_yyhc_sub10',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['wechat-ajax/yyhc/11'] = array(                                         /* yu yin hua ce sub menu 11*/
+    'title' => t('wechat yu yin hu ce submenu 11'),
+    'description' => t('wechat yuyinhuace submenu'),
+    'page callback' => 'wechat_ajax_yyhc_sub11',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['wechat-ajax/yyhc/12'] = array(                                         /* yu yin hua ce sub menu 12*/
+    'title' => t('wechat yu yin hu ce submenu 12'),
+    'description' => t('wechat yuyinhuace submenu'),
+    'page callback' => 'wechat_ajax_yyhc_sub12',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['wechat-ajax/yyhc/13'] = array(                                         /* yu yin hua ce sub menu 13*/
+    'title' => t('wechat yu yin hu ce submenu 13'),
+    'description' => t('wechat yuyinhuace submenu'),
+    'page callback' => 'wechat_ajax_yyhc_sub13',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['wechat-ajax/yyhc/14'] = array(                                         /* yu yin hua ce sub menu 14*/
+    'title' => t('wechat yu yin hu ce submenu 14'),
+    'description' => t('wechat yuyinhuace submenu'),
+    'page callback' => 'wechat_ajax_yyhc_sub14',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['wechat-ajax/yyhc/15'] = array(                                         /* yu yin hua ce sub menu 15*/
+    'title' => t('wechat yu yin hu ce submenu 15'),
+    'description' => t('wechat yuyinhuace submenu'),
+    'page callback' => 'wechat_ajax_yyhc_sub15',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['wechat-ajax/yyhc/16'] = array(                                         /* yu yin hua ce sub menu 16*/
+    'title' => t('wechat yu yin hu ce submenu 16'),
+    'description' => t('wechat yuyinhuace submenu'),
+    'page callback' => 'wechat_ajax_yyhc_sub16',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['wechat-ajax/yyhc/17'] = array(                                         /* yu yin hua ce sub menu 17*/
+    'title' => t('wechat yu yin hu ce submenu 17'),
+    'description' => t('wechat yuyinhuace submenu'),
+    'page callback' => 'wechat_ajax_yyhc_sub17',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['wechat-ajax/yyhc/18'] = array(                                         /* yu yin hua ce sub menu 18*/
+    'title' => t('wechat yu yin hu ce submenu 18'),
+    'description' => t('wechat yuyinhuace submenu'),
+    'page callback' => 'wechat_ajax_yyhc_sub18',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['wechat-ajax/yyhc/19'] = array(                                         /* yu yin hua ce sub menu 19*/
+    'title' => t('wechat yu yin hu ce submenu 19'),
+    'description' => t('wechat yuyinhuace submenu'),
+    'page callback' => 'wechat_ajax_yyhc_sub19',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['wechat-ajax/yyhc/20'] = array(                                         /* yu yin hua ce sub menu 19*/
+    'title' => t('wechat yu yin hu ce submenu 20'),
+    'description' => t('wechat yuyinhuace submenu'),
+    'page callback' => 'wechat_ajax_yyhc_sub20',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+
+  //di tu dao lan
+  $items['wechat-ajax/dtdl'] = array(
+    'title' => t('wechat di tu dao lan menu'),
+    'description' => t('wechat ditudaolan'),
+    'page callback' => 'wechat_ajax_dtdl',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+
+  //zi xun fu wu
+  $items['wechat-ajax/aboutus'] = array(
+    'title' => t('wechat aboutus menu'),
+    'description' => t('wechat aboutus menu'),
+    'page callback' => 'wechat_ajax_aboutus',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+  $items['wechat-ajax/aboutus/data'] = array(
+    'title' => t('wechat aboutus json'),
+    'description' => t('wechat about us json data'),
+    'page callback' => 'wechat_ajax_aboutus_data',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+  $items['wechat-ajax/msgl'] = array(
+    'title' => t('wechat mei shi gong lve'),
+    'description' => t('mei shi gong lve'),
+    'page callback' => 'wechat_ajax_msgl',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['wechat-ajax/xxzs'] = array(
+    'title' => t('wechat xiu xian zhu su'),
+    'description' => t('xiu xian zhu su'),
+    'page callback' => 'wechat_ajax_xxzs',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['wechat-ajax/lyxl'] = array(
+    'title' => t('wechat lv you xian lu'),
+    'description' => t('lv you xian lu'),
+    'page callback' => 'wechat_ajax_lyxl',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['wechat-ajax/tgy'] = array(
+    'title' => t('wechat tao gong yi'),
+    'description' => t('tao gong yi'),
+    'page callback' => 'wechat_ajax_tgy',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+  $items['wechat-ajax/zxsc'] = array(
+    'title' => t('wechat zai xian shang cheng json'),
+    'description' => t('wechat zai xian shang cheng'),
+    'page callback' => 'wechat_ajax_zxsc',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+  return $items;
+}
+
+function wechat_ajax_msgl() {
+  $nid = 25;  //yyhc node id
+  $raw_node = node_load($nid);
+  $node = entity_metadata_wrapper('node', $raw_node);
+  $title = $node->field_msgl_title->value();
+  $img_field = $node->field_msgl_img1->value();
+  $img1_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_msgl_img2->value();
+  $img2_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_msgl_img3->value();
+  $img3_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_msgl_img4->value();
+  $img4_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_msgl_img5->value();
+  $img5_url = file_create_url($img_field['uri']);
+
+//      <div class="wrapper">
+//      </div>
+
+  define('msgl_page', '
+  <!DOCTYPE html>  
+  <html>  
+  <head>  
+      <title>'.$title.'</title>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />  
+      <meta name="viewport" content="width=device-width, user-scalable=0,initial-scale=1.0,maximum-scale=1.0, minimum-scale=1.0" />  
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/msgl.css">
+  </head>  
+  <body>
+    <div class="maincontent">
+      <ul>
+      <li><div class="item"><img src="' . $img1_url . '" alt="手工月饼"/></div></li>
+      <li><div class="item"><img src="' . $img2_url . '" alt="欢乐酒吧"/></div></li>
+      <li><div class="item"><img src="' . $img3_url . '" alt="小酥肉"/></div></li>
+      <li><div class="item"><img src="' . $img4_url . '" alt="蜜汁长山药"/></div></li>
+      <li><div class="item"><img src="' . $img5_url . '" alt="平遥牛肉"/></div></li>
+      </ul>
+
+    </div>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/jquery-1.11.1.min.js"></script>
+
+  </body>
+  </html>');
+  print msgl_page;
+
+}
+
+/**
+ *  old function for py lyxl lists
+
+function wechat_ajax_lyxl() {
+  $nid = 28;  //yyhc node id
+  $raw_node = node_load($nid);
+  $node = entity_metadata_wrapper('node', $raw_node);
+  $title = $node->field_lyxl_title->value();
+  $img_field = $node->field_lyxl_img1->value();
+  $img1_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_lyxl_img2->value();
+  $img2_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_lyxl_img3->value();
+  $img3_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_lyxl_img4->value();
+  $img4_url = file_create_url($img_field['uri']);
+
+  define('lyxl_page', '
+  <!DOCTYPE html>  
+  <html>  
+  <head>  
+      <title>'.$title.'</title>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />  
+      <meta name="viewport" content="width=device-width, user-scalable=0,initial-scale=1.0,maximum-scale=1.0, minimum-scale=1.0" />  
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/lyxl.css">
+  </head>  
+  <body>
+    <div class="maincontent">
+      <ul>
+      <li><div class="item"><img src="' . $img1_url . '" alt="线路1"/></div></li>
+      <li><div class="item"><img src="' . $img2_url . '" alt="线路2"/></div></li>
+      <li><div class="item"><img src="' . $img3_url . '" alt="线路3"/></div></li>
+      <li><div class="item"><img src="' . $img4_url . '" alt="线路4"/></div></li>
+      </ul>
+
+    </div>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/jquery-1.11.1.min.js"></script>
+
+  </body>
+  </html>');
+  print lyxl_page;
+
+}
+*/
+
+/**
+ * new function for py lyxl
+ */
+function wechat_ajax_lyxl($node_type='hello', $nodeid='') {
+
+  switch ($node_type) {
+    case t('hello'):
+      wechat_ajax_lyxl_html();
+      break;
+    case t('products'):
+      wechat_ajax_lyxl_products();
+      break;
+    case t('item'):
+      wechat_ajax_lyxl_item($nodeid);
+      //echo "output node id ".$nodeid;
+      break;
+    default: echo "nothing"; break;
+  }
+
+}
+
+function wechat_ajax_lyxl_item($nodeid) {
+  $raw_node = node_load($nodeid);
+  $node = entity_metadata_wrapper('node', $raw_node);
+  $node_info = $node->getPropertyInfo();
+
+  $type_l = $node_info['field_type']['label']; 
+  $type_field = $node->field_type->value();
+  $type_v = $type_field->name;
+
+  $title = $node->title->value();
+
+  $sche_l = $node_info['field_travel_scheduling']['label']; 
+  $sche_v = $node->field_travel_scheduling->value();
+
+  $bus_l = $node_info['field_travel_bus']['label'];
+  $bus_v = $node->field_travel_bus->value();
+
+  $hotel_l = $node_info['field_accommodation']['label'];
+  $hotel_v = $node->field_accommodation->value();
+
+  $meal_l = $node_info['field_meal']['label'];
+  $meal_v = $node->field_meal->value();
+
+  $ticket_l = $node_info['field_ticket']['label'];
+  $ticket_v = $node->field_ticket->value();
+
+  $guide_l = $node_info['field_guide']['label'];
+  $guide_v = $node->field_guide->value();
+
+  $insurance_l = $node_info['field_insurance']['label'];
+  $insurance_v = $node->field_insurance->value();
+
+  $notes_l = $node_info['field_tour_notes']['label'];
+  $notes_field = $node->field_tour_notes->value();
+  $notes_v = $notes_field['value'];
+
+  $json_data = array($type_l => $type_v,
+                     '产品名称' => $title,
+                     $sche_l => $sche_v,
+                     $bus_l => $bus_v,
+                     $hotel_l => $hotel_v,
+                     $meal_l => $meal_v,
+                     $ticket_l => $ticket_v,
+                     $guide_l => $guide_v,
+                     $insurance_l => $insurance_v,
+                     $notes_l => $notes_v);
+  drupal_json_output($json_data);
+}
+
+function wechat_ajax_lyxl_products() {
+
+  $query = new EntityFieldQuery();
+  $entities = $query->entityCondition('entity_type', 'node')
+  ->entityCondition('bundle', 'py_lyxl_products')
+  ->execute();
+
+  if (count($entities) == 0) {
+    $a = array('error'=>'没有内容');
+    drupal_json_output($a);
+    return;
+  }
+
+  $nid = array_keys($entities['node']);
+  $raw_node = node_load($nid[0]);
+  $node = entity_metadata_wrapper('node', $raw_node);
+  $json_data = array();
+  foreach ($node->field_lyxl_product_lists as $item) {
+    $raw_collection = $item->value();
+    $collection = entity_metadata_wrapper('field_collection_item', $raw_collection);
+    $type_field = $collection->field_product_type->value();
+    $type = $type_field->name;
+    $nodeid = $collection->field_detail_node_id->value(); 
+    $name = $collection->field_product_name->value();
+    $img_field = $collection->field_product_img->value();
+    $img_url = file_create_url($img_field['uri']);
+    $price = $collection->field_product_price->value();
+    $json_data[] = array('img'=>$img_url, 'name'=>$name, 'price'=>$price, 'type'=>$type, 'node'=>$nodeid);
+  }
+
+  drupal_json_output($json_data);
+  //dpm($entities);
+  return;
+}
+
+function wechat_ajax_lyxl_html() {
+
+  $circle_img = "http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/imgs/mpgl_logo_1.png";
+
+  define('lyxl_page', '
+  <!DOCTYPE html>  
+  <html>  
+  <head>  
+      <title>旅游线路</title>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />  
+      <meta name="viewport" content="width=device-width, user-scalable=0,initial-scale=1.0,maximum-scale=1.0, minimum-scale=1.0" />  
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/lyxl.css">
+  </head>  
+  <body>
+    <div class="maincontent">
+      <div class="head"> <img class="mp-logo" src='.$circle_img.' alt="马普国旅"/> </div>
+      <div id="ajax-load-page"></div>
+      <div class="footer">
+        <ul class="contact">
+          <li>联系电话：</li>
+          <li>孙女士：15234359587 | 0354-5690200 </li>
+          <li>米女士：15234359586 | 0354-5690300 </li>
+          <li>监督电话：0354-5666667 <li>
+        </ul>
+      </div>
+    </div>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/wechat_ajax_lyxl.js"></script>
+
+  </body>
+  </html>');
+  print lyxl_page;
+
+}
+
+
+
+function wechat_ajax_xxzs($uid = 0, $img = 0) {
+  $hotel_item = '';
+  if($uid == 0){
+    wechat_ajax_hotel_list();
+    return;
+  }
+  /* Value 11 is hotel info page*/
+  if($img == 'hotel-info-page'){
+    wechat_ajax_hotel_info($uid, $img);
+    return;
+  }
+  /* Value 22 is hotel address map page*/
+  if(($img == 'hotel-door-images')  ||
+     ($img == 'hotel-stree-images') ||
+     ($img == 'hotel-lobby-images') ||
+     ($img == 'hotel-room-images')  ||
+     ($img == 'hotel-other-images'))
+  {
+    wechat_ajax_hotel_item_images_page($uid, $img);
+    return;
+  }
+  /* Value 33 is hotel detail page*/
+  if($img == 'room-images'){
+    wechat_ajax_room_item_images_page($uid, $img);
+    return;
+  }
+  /* Value 44 is hotel images page*/
+  if($img == 'hotel-images-page'){
+    wechat_ajax_hotel_images_page($uid, $img);
+    return;
+  }
+  /* Value 55 is room images page*/
+  if($img == 'hotel-detail-info'){
+    wechat_ajax_hotel_detail_info_page($uid, $img);
+    return;
+  }
+  if($img == 'hotel-room-info'){
+    wechat_ajax_hotel_room_info_page($uid, $img);
+    return;
+  }
+  if($img == 'hotel-amap-address'){
+    wechat_ajax_hotel_amap_address_page($uid, $img);
+    return;
+  }
+
+  define('no_page', '
+  <!DOCTYPE html>  
+  <html>  
+  <head>  
+    <title>页面错误</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />  
+    <meta name="viewport" content="width=device-width, user-scalable=0,initial-scale=1.0,maximum-scale=1.0, minimum-scale=1.0" />  
+    <style type="text/css">
+    p {color:bule;font-size:2em}
+    </style>
+  </head>  
+  <body>
+    <div class="maincontent"> 
+    <p>相关页面未找到，请返回</p>
+    </div>
+  </body>
+  </html>');
+  print no_page;
+}
+
+function wechat_ajax_hotel_list(){
+
+  $hotel_ranking_query = db_select('wechat_hotel_ranking', 't')
+    ->fields('t', array('uid','hotel_name', 'ranking'))
+    ->condition('ranking', array(1, 90), 'BETWEEN');
+
+  // Don't forget to tell the query object how to find the header information.
+  $result = $hotel_ranking_query->orderBy('ranking', 'ASC')->execute();
+
+  $html_content = '';
+  foreach ($result as $item) {
+    $query = new EntityFieldQuery();
+    $query->entityCondition('entity_type', 'node')
+    ->entityCondition('bundle', 'node_hotel_list_item')
+    ->propertyCondition('status', NODE_PUBLISHED)
+    ->propertyCondition('title', $item->hotel_name)
+    ->range(0, 10);
+
+    $result = $query->execute();
+    $nodes = node_load_multiple(array_keys($result['node']));
+    if(count($nodes)) {
+      foreach($nodes as $node){
+        $html_content .= '<a href="/wechat-ajax/xxzs/' . $item->uid . '/hotel-info-page">';
+        $html_content .= '<div class="imgs-list">';
+        $html_content .= '<div  class="img-1-area">';
+        $rnode = entity_metadata_wrapper('node', $node);
+        $img_field = $rnode->field_img1->value();
+        $img1_url = file_create_url($img_field['uri']);
+        $html_content .= '<img src="' . $img1_url . '" alt="酒店"/>';
+        $html_content .= '</div>'; //for img-1-area
+        $html_content .= '<div class="img-2-area">';
+
+        $img_field = $rnode->field_img2->value();
+        $img_2_num = count($img_field);
+        if($img_2_num > 0){
+          $i = 0;
+          foreach($img_field as $row){
+            if($i % 3 == 0){
+              $html_content .= '<div class="row">';
+            }
+            $i++;
+            $img2_url = file_create_url($row['uri']);
+            $html_content .= '<img src="' . $img2_url . '" alt="酒店"/>';
+            if($i % 3 == 0){
+              $html_content .= '</div>'; //for row
+            }
+          }
+          if($i % 3 != 0){
+            $html_content .= '</div>'; //for row
+          }
+        }
+        //kpr($img_field);
+        //kpr(3%3);
+        
+        $html_content .= '</div>'; //for img-2-area
+        $html_content .= '<div class="item-title">';
+        $html_content .= '<p>' . $node->title . '</p>';
+        $html_content .= '</div>'; //for item-title 
+        $html_content .= '</div>'; //for imgs-list 
+        $html_content .= '</a>'; //for anchor link 
+      }
+    }
+  }
+
+  define('xxzs_page', '
+  <!DOCTYPE html>  
+  <html>  
+  <head>  
+      <title>酒店列表</title>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />  
+      <meta name="viewport" content="width=device-width, user-scalable=0,initial-scale=1.0,maximum-scale=1.0, minimum-scale=1.0" />  
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/xxzs.css">
+  </head>  
+  <body>
+    <div class="maincontent"> ' . $html_content . '
+    </div>
+  </body>
+  </html>');
+  print xxzs_page;
+}
+
+function wechat_ajax_hotel_info($uid, $img){
+  if($img != 'hotel-info-page'){
+    print '没有找到酒店信息页面';
+    return;
+  }
+  $html_content = '';
+  /* Get hotel info node type*/
+  $node_hotel_info = null;
+  $query = new EntityFieldQuery();
+  $query->entityCondition('entity_type', 'node')
+  ->entityCondition('bundle', 'node_hotel_information')
+  ->propertyCondition('status', NODE_PUBLISHED)
+  ->propertyCondition('uid', $uid)
+  ->range(0, 10);
+
+  $result = $query->execute();
+  if(array_key_exists('node', $result)){
+    $nodes = node_load_multiple(array_keys($result['node']));
+    if(count($nodes)) {
+      foreach($nodes as $node){
+        $rnode = entity_metadata_wrapper('node', $node);
+        $node_hotel_info['nid'] = $node->nid;
+        $node_hotel_info['title'] = $rnode->title->value();
+        $node_hotel_info['hotel_address'] = $rnode->field_hotel_address->value();
+        $node_hotel_info['telephone'] = $rnode->field_service_phone->value();
+        $date = $rnode->field_startup_date->value();
+        $node_hotel_info['startup_date'] = date('Y年n月', $date);
+        $date = $rnode->field_decoration_date->value();
+        $node_hotel_info['decoration_date'] = date('Y年n月', $date);
+        $node_hotel_info['introduction'] = $rnode->field_introduction->value();
+        $node_hotel_info['regulation'] = $rnode->field_regulation->value();
+        $node_hotel_info['free_wifi'] = $rnode->field_free_wifi->value();
+        $node_hotel_info['time_alter'] = $rnode->field_time_alter->value();
+        $node_hotel_info['baggage_room'] = $rnode->field_baggage_room->value();
+        $node_hotel_info['hot_water'] = $rnode->field_hot_water->value();
+        $node_hotel_info['laundry'] = $rnode->field_laundry->value();
+        $node_hotel_info['car_park'] = $rnode->field_car_park->value();
+      }
+    }
+  }
+
+  /* Get hotel view images node type*/
+  $node_hotel_imgs = null;
+  $query = new EntityFieldQuery();
+  $query->entityCondition('entity_type', 'node')
+  ->entityCondition('bundle', 'node_hotel_view_images')
+  ->propertyCondition('status', NODE_PUBLISHED)
+  ->propertyCondition('uid', $uid)
+  ->range(0, 10);
+
+  $imgs_number = 0;
+  $result = $query->execute();
+  if(array_key_exists('node', $result)){
+    $nodes = node_load_multiple(array_keys($result['node']));
+    if(count($nodes)) {
+      foreach($nodes as $node){
+        $rnode = entity_metadata_wrapper('node', $node);
+        $node_hotel_imgs['title'] = $rnode->title->value(); //hotel title
+        $imgs_array = $rnode->field_door_imgs->value();     //hotel door images
+        foreach($imgs_array as $id => $row){
+          $img_url = file_create_url($row['uri']);
+          $node_hotel_imgs['door_imgs'][$id] = $img_url;
+          $imgs_number++;
+        }
+        $imgs_array = $rnode->field_stree_imgs->value();     //hotel stree images
+        foreach($imgs_array as $id => $row){
+          $img_url = file_create_url($row['uri']);
+          $node_hotel_imgs['stree_imgs'][$id] = $img_url;
+          $imgs_number++;
+        }
+        $imgs_array = $rnode->field_lobby_imgs->value();     //hotel lobby images
+        foreach($imgs_array as $id => $row){
+          $img_url = file_create_url($row['uri']);
+          $node_hotel_imgs['lobby_imgs'][$id] = $img_url;
+          $imgs_number++;
+        }
+        $imgs_array = $rnode->field_room_images->value();     //hotel room images
+        foreach($imgs_array as $id => $row){
+          $img_url = file_create_url($row['uri']);
+          $node_hotel_imgs['room_images'][$id] = $img_url;
+          $imgs_number++;
+        }
+        $imgs_array = $rnode->field_others->value();          //hotel other images
+        foreach($imgs_array as $id => $row){
+          $img_url = file_create_url($row['uri']);
+          $node_hotel_imgs['other_images'][$id] = $img_url;
+          $imgs_number++;
+        }
+      }
+    }
+  }
+
+  /* Get hotel room info node type*/
+  $node_room_info = array();
+  $query = new EntityFieldQuery();
+  $query->entityCondition('entity_type', 'node')
+  ->entityCondition('bundle', 'node_hotel_room_info')
+  ->propertyCondition('status', NODE_PUBLISHED)
+  ->propertyCondition('uid', $uid)
+  ->fieldOrderBy('field_room_price', 'value', 'ASC')
+  ->range(0, 100);
+
+  $result = $query->execute();
+  if(array_key_exists('node', $result)){
+    $nodes = node_load_multiple(array_keys($result['node']));
+    if(count($nodes)) {
+      $i = 0;
+      foreach($nodes as $key => $node){
+        $rnode = entity_metadata_wrapper('node', $node);
+        $node_room_info[$i]['nid'] = $node->nid;                                //node id
+        $node_room_info[$i]['title'] = $rnode->title->value();                  //room title
+        $node_room_info[$i]['room_price'] = '¥' . $rnode->field_room_price->value() . '起';  //room price
+        $node_room_info[$i]['room_brft'] = $rnode->field_breakfast->value();    //room breakfast
+        $node_room_info[$i]['room_area'] = $rnode->field_room_area->value();    //room area
+        $node_room_info[$i]['room_bed'] = $rnode->field_bed->value();           //room bed
+        $node_room_info[$i]['room_number'] = $rnode->field_number->value();     //room people
+        $node_room_info[$i]['room_window'] = $rnode->field_window->value();     //room window
+        $node_room_info[$i]['room_internet'] = $rnode->field_internet->value(); //room net
+        $node_room_info[$i]['room_smoking'] = $rnode->field_no_smoking->value();//room smoking
+        $node_room_info[$i]['room_extra_bed'] = $rnode->field_extra_bed->value();//room extra_bed
+        $imgs_array = $rnode->field_room_imgs->value();    //room images
+        foreach($imgs_array as $id => $row){
+          $img_url = file_create_url($row['uri']);
+          $node_room_info[$i]['room_imgs'][$id] = $img_url;
+        }
+        $i++;
+      }
+    }
+  }
+  //kpr($node_room_info);
+
+  $address_map_icon = "http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/imgs/hotel_address_map.png";
+  $hotel_detail_icon = "http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/imgs/hotel_detail.png";
+  $room_book_icon1 = "http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/imgs/room_book_icon1.png";
+  //$html_content .= '<a href="/wechat-ajax/xxzs/' . $item->uid . '/1234">';
+  $html_content .= '<a href="/wechat-ajax/xxzs/' . $uid . '/hotel-images-page">';
+  $html_content .= '<div class="header">';
+  $html_content .= '<img id="header-image" src="' . $node_hotel_imgs['door_imgs'][0] . '" alt="酒店"/>';
+  $html_content .= '<p id="header-text">共' . $imgs_number . '张</p>';
+  $html_content .= '</div>';
+  $html_content .= '</a>';
+
+  $html_content .= '<div class="address">';
+  $html_content .= '<table>';
+  $html_content .= '<tr>';
+  $html_content .= '<td class="a-text">';
+  $html_content .= $node_hotel_info['hotel_address'];
+  $html_content .= '</td>';
+  $html_content .= '<td class="a-icon"' . ' url1="' . $uid . '" url2="hotel-amap-address"' . '>';
+  $html_content .= '<img src="' . $address_map_icon . '" alt="看地图">';
+  $html_content .= '</td>';
+  $html_content .= '</tr>';
+  $html_content .= '</table>';
+  $html_content .= '</div>';
+
+  $html_content .= '<div class="hotel-detail">';
+  $html_content .= '<table>';
+  $html_content .= '<tr>';
+  $html_content .= '<td class="d-text">';
+  $html_content .= $node_hotel_info['startup_date'] . '开业';
+  $html_content .= '</td>';
+  $html_content .= '<th rowspan="2" class="d-icon"'. ' url1="' . $uid . '" url2="hotel-detail-info"' . '>';
+  //$html_content .= '<a href="javascript:void(0)">';
+  $html_content .= '<img src="' . $hotel_detail_icon . '" alt="酒店详情">';
+  //$html_content .= '</a>';
+  $html_content .= '</th>';
+  $html_content .= '</tr>';
+  $html_content .= '<tr>';
+  $html_content .= '<td class="d-text">';
+  $html_content .= $node_hotel_info['decoration_date'] . '装修';
+  $html_content .= '</td>';
+  $html_content .= '</tr>';
+  //$html_content .= '<tr>';
+  //$html_content .= '<td class="d-text">';
+  //$html_content .= $node_hotel_info['decoration_date'] . '装修';
+  //$html_content .= '</td>';
+  //$html_content .= '</tr>';
+  $html_content .= '</table>';
+  $html_content .= '</div>';
+
+  $html_content .= '<div class="div-room">';
+  $html_content .= '<p>酒店房型</p>';
+  $html_content .= '</div>';
+
+  $html_content .= '<div class="room-list">';
+  foreach($node_room_info as $row){
+    $html_content .= '<div class="room-table">';
+    $html_content .= '<table>';
+    $html_content .= '<tr>';
+    $html_content .= '<td class="r-title"' . ' url1="' . $row['nid'] . '" url2="hotel-room-info"' . '>';
+    $html_content .= $row['title'];
+    $html_content .= '</td>';
+    $html_content .= '<th rowspan="2" class="r-price">';
+    $html_content .= $row['room_price'];
+    $html_content .= '</th>';
+    $html_content .= '<th rowspan="2" class="r-icon">';
+    $html_content .= '<div id="book-dialog" url1="' . $node_hotel_info['telephone'] . '">';
+    $html_content .= '<img src="' . $room_book_icon1 . '" alt="房间预定">';
+    $html_content .= '</div>';
+    $html_content .= '</th>';
+    $html_content .= '</tr>';
+    $html_content .= '<tr>';
+    $html_content .= '<td class="r-info"' . ' url1="' . $row['nid'] . '" url2="hotel-room-info"' . '>';
+    $html_content .= $row['room_brft'] . '&nbsp;' .
+                     $row['room_window'] . '&nbsp;' .
+                     $row['room_bed'] . '&nbsp;' .
+                     $row['room_area'];
+    $html_content .= '</td>';
+    $html_content .= '</tr>';
+    $html_content .= '</table>';
+    $html_content .= '</div>';  //room-table
+
+    $html_content .= '<div class="room-image"' . ' url1="' . $row['nid'] . '" url2="room-images">';
+    $html_content .= '<ul class="ul-image">';
+    $i = 0;
+    if(array_key_exists('room_imgs', $row)){
+      if(count($row['room_imgs'])){
+        foreach($row['room_imgs'] as $image){
+          $html_content .= '<li class="li-image">';
+          $html_content .= '<img src="' . $image . '" alt="房间图片">';
+          $html_content .= '</li>';
+          /*Only show 6 images to screen*/
+          $i++;
+          if($i > 2){
+            break;
+          }
+        }
+      }
+    }
+    $html_content .= '</ul>';
+    $html_content .= '</div>';
+  }
+  $html_content .= '</div>';  //room-list
+
+  $html_content .= '<div id="dialog" title="房间预订">'. '目前仅支持电话预定。酒店电话：' . $node_hotel_info['telephone'] . '</div>';
+
+  define('xxzs_hotel_info_page', '
+  <!DOCTYPE html>  
+  <html>  
+  <head>  
+      <title>' . $node_hotel_info['title'] . '</title>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />  
+      <meta name="viewport" content="width=device-width, user-scalable=0,initial-scale=1.0,maximum-scale=1.0, minimum-scale=1.0" />  
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/jquery-ui.min.css">
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/xxzs_hotel_info.css">
+  </head>  
+  <body>
+    <div class="maincontent">' . $html_content . '
+    </div>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/jquery-ui.min.js"></script>
+
+    <script type="text/javascript">
+      $(".room-image").click(function(){
+        var uid = $(this).attr("url1");
+        var img = $(this).attr("url2");
+        var params = {"uid": uid, "img": img};
+        var str = jQuery.param(params);
+        //console.log(str);
+        window.location.href = 
+         "http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/htmltpl/hotel_image_view.tpl.html?" + str;
+      });
+
+      $(".a-icon").click(function(){
+        var uid = $(this).attr("url1");
+        var img = $(this).attr("url2");
+        var params = {"uid": uid, "img": img};
+        var str = jQuery.param(params);
+        window.location.href = 
+         "http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/htmltpl/hotel_map_addr.tpl.html?" + str;
+      });
+      $(".d-icon").click(function(){
+        var uid = $(this).attr("url1");
+        var img = $(this).attr("url2");
+        var params = {"uid": uid, "img": img};
+        var str = jQuery.param(params);
+        window.location.href = 
+         "http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/htmltpl/hotel_detail_info.tpl.html?" + str;
+      });
+      $(".r-info").click(function(){
+        var uid = $(this).attr("url1");
+        var img = $(this).attr("url2");
+        var params = {"uid": uid, "img": img};
+        var str = jQuery.param(params);
+        window.location.href = 
+         "http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/htmltpl/hotel_room_info.tpl.html?" + str;
+      });
+
+      $( "#dialog" ).dialog({
+        dialogClass: "no-close",
+        autoOpen: false,
+        width: 300,
+        buttons: [
+          {
+            text: "拨号",
+            click: function() {
+              window.location = "tel:" + $(this).data("phone");
+              $( this ).dialog( "close" );
+            }
+          },
+          {
+            text: "取消",
+            click: function() {
+              $( this ).dialog( "close" );
+            }
+          }
+        ]
+      });
+
+      // Link to open the dialog
+      $(".r-icon #book-dialog").click(function( event ) {
+        var uid = $(this).attr("url1");
+        $("#dialog")
+          .data("phone", uid)
+          .dialog( "open" );
+        event.preventDefault();
+      });
+
+    </script>
+  </body>
+  </html>');
+  print xxzs_hotel_info_page;
+  //<script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/wechat_ajax_dtdl.js"></script>
+/*
+*/
+}
+
+function wechat_ajax_room_item_images_page($nid, $img){
+  if($img != 'room-images')
+  {
+    print '没有找到房间图片页面';
+    return;
+  }
+  $node = node_load($nid);
+  $json_data = null;
+  $rnode = entity_metadata_wrapper('node', $node);
+  $imgs_array = $rnode->field_room_imgs->value();     // room images
+  $imgs_number = 0;
+  foreach($imgs_array as $id => $row){
+    $img_url = file_create_url($row['uri']);
+    $json_data['img' . $id] = $img_url;
+    $imgs_number++;
+  }
+  $json_data['number'] = $imgs_number;
+  $json_data['title'] = $rnode->title->value(); // room title
+  $json_data['itemtitle'] = $rnode->title->value(); //hotel title
+  drupal_json_output($json_data);
+  return;
+}
+
+function wechat_ajax_hotel_item_images_page($uid, $img){
+  if(($img != 'hotel-door-images')  && 
+     ($img != 'hotel-stree-images') &&
+     ($img != 'hotel-lobby-images') &&
+     ($img != 'hotel-room-images')  &&
+     ($img != 'hotel-other-images'))
+  {
+    print '没有找到酒店图片页面';
+    return;
+  }
+
+  $query = new EntityFieldQuery();
+  $query->entityCondition('entity_type', 'node')
+  ->entityCondition('bundle', 'node_hotel_view_images')
+  ->propertyCondition('status', NODE_PUBLISHED)
+  ->propertyCondition('uid', $uid)
+  ->range(0, 10);
+
+  $imgs_number = 0;
+  $result = $query->execute();
+  if(array_key_exists('node', $result)){
+    $nodes = node_load_multiple(array_keys($result['node']));
+    if(count($nodes)) {
+      foreach($nodes as $node){
+
+        if($img == 'hotel-door-images'){
+          $json_data = null;
+          $rnode = entity_metadata_wrapper('node', $node);
+          $imgs_array = $rnode->field_door_imgs->value();     //hotel door images
+          foreach($imgs_array as $id => $row){
+            $img_url = file_create_url($row['uri']);
+            $json_data['img' . $id] = $img_url;
+            $imgs_number++;
+          }
+          $json_data['number'] = $imgs_number;
+          $json_data['title'] = $rnode->title->value(); //hotel title
+          $field_instance = field_info_instance('node', 'field_door_imgs', 'node_hotel_view_images');
+          $json_data['itemtitle'] = $field_instance['label']; //hotel title
+          drupal_json_output($json_data);
+          return;
+        }
+
+        if($img == 'hotel-stree-images'){
+          $json_data = null;
+          $rnode = entity_metadata_wrapper('node', $node);
+          $imgs_array = $rnode->field_stree_imgs->value();     //hotel stree images
+          foreach($imgs_array as $id => $row){
+            $img_url = file_create_url($row['uri']);
+            $json_data['img' . $id] = $img_url;
+            $imgs_number++;
+          }
+          $json_data['number'] = $imgs_number;
+          $json_data['title'] = $rnode->title->value(); //hotel title
+          $field_instance = field_info_instance('node', 'field_stree_imgs', 'node_hotel_view_images');
+          $json_data['itemtitle'] = $field_instance['label']; //hotel title
+          drupal_json_output($json_data);
+          return;
+        }
+
+        if($img == 'hotel-lobby-images'){
+          $json_data = null;
+          $rnode = entity_metadata_wrapper('node', $node);
+          $imgs_array = $rnode->field_lobby_imgs->value();     //hotel lobby images
+          foreach($imgs_array as $id => $row){
+            $img_url = file_create_url($row['uri']);
+            $json_data['img' . $id] = $img_url;
+            $imgs_number++;
+          }
+          $json_data['number'] = $imgs_number;
+          $json_data['title'] = $rnode->title->value(); //hotel title
+          $field_instance = field_info_instance('node', 'field_lobby_imgs', 'node_hotel_view_images');
+          $json_data['itemtitle'] = $field_instance['label']; //hotel title
+          drupal_json_output($json_data);
+          return;
+        }
+
+        if($img == 'hotel-room-images'){
+          $json_data = null;
+          $rnode = entity_metadata_wrapper('node', $node);
+          $imgs_array = $rnode->field_room_images->value();     //hotel room images
+          foreach($imgs_array as $id => $row){
+            $img_url = file_create_url($row['uri']);
+            $json_data['img' . $id] = $img_url;
+            $imgs_number++;
+          }
+          $json_data['number'] = $imgs_number;
+          $json_data['title'] = $rnode->title->value(); //hotel title
+          $field_instance = field_info_instance('node', 'field_room_images', 'node_hotel_view_images');
+          $json_data['itemtitle'] = $field_instance['label']; //hotel title
+          drupal_json_output($json_data);
+          return;
+        }
+
+        if($img == 'hotel-other-images'){
+          $json_data = null;
+          $rnode = entity_metadata_wrapper('node', $node);
+          $imgs_array = $rnode->field_others->value();          //hotel other images
+          foreach($imgs_array as $id => $row){
+            $img_url = file_create_url($row['uri']);
+            $json_data['img' . $id] = $img_url;
+            $imgs_number++;
+          }
+          $json_data['number'] = $imgs_number;
+          $json_data['title'] = $rnode->title->value(); //hotel title
+          $field_instance = field_info_instance('node', 'field_others', 'node_hotel_view_images');
+          $json_data['itemtitle'] = $field_instance['label']; //hotel title
+          drupal_json_output($json_data);
+          return;
+        }
+      }
+    }
+  }
+}
+
+function wechat_ajax_hotel_room_info_page($nid, $img) {
+  if($img != 'hotel-room-info'){
+    print '没有找到房间详细页面';
+    return;
+  }
+
+  $node = node_load($nid);
+  $json_data = null;
+  $rnode = entity_metadata_wrapper('node', $node);
+  $imgs_array = $rnode->field_room_imgs->value();     // room images
+  $imgs_number = 0;
+  foreach($imgs_array as $id => $row){
+    $img_url = file_create_url($row['uri']);
+    $json_data['img' . $id] = $img_url;
+    $imgs_number++;
+    break;
+  }
+  $json_data['number'] = $imgs_number;
+  $json_data['room_price'] = '¥' . $rnode->field_room_price->value() . '起';  //room price
+  $json_data['room_brft'] = $rnode->field_breakfast->value();    //room breakfast
+  $json_data['room_area'] = $rnode->field_room_area->value();    //room area
+  $json_data['room_bed'] = $rnode->field_bed->value();           //room bed
+  $json_data['room_number'] = $rnode->field_number->value();     //room people
+  $json_data['room_window'] = $rnode->field_window->value();     //room window
+  $json_data['room_internet'] = $rnode->field_internet->value(); //room net
+  $json_data['room_smoking'] = $rnode->field_no_smoking->value();//room smoking
+  $json_data['room_extra_bed'] = $rnode->field_extra_bed->value();//room extra_bed
+  $json_data['title'] = $rnode->title->value(); // room title
+  drupal_json_output($json_data);
+  return;
+}
+
+
+function wechat_ajax_hotel_detail_info_page($uid, $img){
+  if($img != 'hotel-detail-info'){
+    print '没有找到酒店详细页面';
+    return;
+  }
+
+  $query = new EntityFieldQuery();
+  $query->entityCondition('entity_type', 'node')
+  ->entityCondition('bundle', 'node_hotel_information')
+  ->propertyCondition('status', NODE_PUBLISHED)
+  ->propertyCondition('uid', $uid)
+  ->range(0, 10);
+
+  $imgs_number = 0;
+  $result = $query->execute();
+  if(array_key_exists('node', $result)){
+    $nodes = node_load_multiple(array_keys($result['node']));
+    if(count($nodes)) {
+      foreach($nodes as $node){
+        $rnode = entity_metadata_wrapper('node', $node);
+        $json_data['title'] = $rnode->title->value(); //hotel title
+        $json_data['phone'] = $rnode->field_service_phone->value(); //hotel phone number
+        $json_data['intro'] = $rnode->field_introduction->value();
+        $json_data['free_wifi'] = $rnode->field_free_wifi->value();
+        $json_data['alarm'] = $rnode->field_time_alter->value();
+        $json_data['baggage'] = $rnode->field_baggage_room->value();
+        $json_data['hot_water'] = $rnode->field_hot_water->value();
+        $json_data['laundry'] = $rnode->field_laundry->value();
+        $json_data['car_park'] = $rnode->field_car_park->value();
+
+        drupal_json_output($json_data);
+        return;
+      }
+    }
+  }
+}
+
+function wechat_ajax_hotel_amap_address_page($uid, $img){
+  if($img != 'hotel-amap-address'){
+    print '没有找到酒店地址经纬度';
+    return;
+  }
+
+  if (db_table_exists('wechat_hotel_ranking')){
+    // Don't forget to tell the query object how to find the header information.
+    $result = db_select('wechat_hotel_ranking', 't')
+    ->fields('t', array('hotel_name', 'hotel_longitude', 'hotel_latitude'))
+    ->condition('uid', $uid)
+    ->execute();
+
+    foreach ($result as $item) {
+      $json_data['hotel_name'] = $item->hotel_name;
+      $json_data['hotel_longitude'] = $item->hotel_longitude;
+      $json_data['hotel_latitude'] = $item->hotel_latitude;
+    }
+    drupal_json_output($json_data);
+  }
+  return;
+}
+
+function wechat_ajax_hotel_images_page($uid, $img){
+  if($img != 'hotel-images-page'){
+    print '没有找到酒店图片页面';
+    return;
+  }
+  $html_content = '';
+  /* Get hotel view images node type*/
+  $node_hotel_imgs = null;
+
+  $query = new EntityFieldQuery();
+  $query->entityCondition('entity_type', 'node')
+  ->entityCondition('bundle', 'node_hotel_view_images')
+  ->propertyCondition('status', NODE_PUBLISHED)
+  ->propertyCondition('uid', $uid)
+  ->range(0, 10);
+
+  $imgs_number = 0;
+  $result = $query->execute();
+  if(array_key_exists('node', $result)){
+    $nodes = node_load_multiple(array_keys($result['node']));
+    if(count($nodes)) {
+      foreach($nodes as $node){
+        $rnode = entity_metadata_wrapper('node', $node);
+        $node_hotel_imgs['title'] = $rnode->title->value(); //hotel title
+        $imgs_array = $rnode->field_door_imgs->value();     //hotel door images
+        foreach($imgs_array as $id => $row){
+          $img_url = file_create_url($row['uri']);
+          $node_hotel_imgs['door_imgs'][$id] = $img_url;
+          $imgs_number++;
+        }
+        $imgs_array = $rnode->field_stree_imgs->value();     //hotel stree images
+        foreach($imgs_array as $id => $row){
+          $img_url = file_create_url($row['uri']);
+          $node_hotel_imgs['stree_imgs'][$id] = $img_url;
+          $imgs_number++;
+        }
+        $imgs_array = $rnode->field_lobby_imgs->value();     //hotel lobby images
+        foreach($imgs_array as $id => $row){
+          $img_url = file_create_url($row['uri']);
+          $node_hotel_imgs['lobby_imgs'][$id] = $img_url;
+          $imgs_number++;
+        }
+        $imgs_array = $rnode->field_room_images->value();     //hotel room images
+        foreach($imgs_array as $id => $row){
+          $img_url = file_create_url($row['uri']);
+          $node_hotel_imgs['room_images'][$id] = $img_url;
+          $imgs_number++;
+        }
+        $imgs_array = $rnode->field_others->value();          //hotel other images
+        foreach($imgs_array as $id => $row){
+          $img_url = file_create_url($row['uri']);
+          $node_hotel_imgs['other_images'][$id] = $img_url;
+          $imgs_number++;
+        }
+      }
+    }
+  }
+
+  $field_instance = field_info_instance('node', 'field_door_imgs', 'node_hotel_view_images');
+  $node_hotel_imgs['door_imgs_title'] = $field_instance['label']; //hotel title
+  $field_instance = field_info_instance('node', 'field_stree_imgs', 'node_hotel_view_images');
+  $node_hotel_imgs['stree_imgs_title'] = $field_instance['label']; //hotel title
+  $field_instance = field_info_instance('node', 'field_lobby_imgs', 'node_hotel_view_images');
+  $node_hotel_imgs['lobby_imgs_title'] = $field_instance['label']; //hotel title
+  $field_instance = field_info_instance('node', 'field_room_images', 'node_hotel_view_images');
+  $node_hotel_imgs['room_images_title'] = $field_instance['label']; //hotel title
+  $field_instance = field_info_instance('node', 'field_others', 'node_hotel_view_images');
+  $node_hotel_imgs['others_title'] = $field_instance['label']; //hotel title
+
+  $html_content .= '<div class="hotel-image-title">';
+  $html_content .= $node_hotel_imgs['door_imgs_title'];
+  $html_content .= '</div>';
+  $html_content .= '<div class="hotel-image-list"' . ' url1="'. $uid .'" url2="hotel-door-images">';
+  if(array_key_exists('door_imgs', $node_hotel_imgs)){
+    foreach($node_hotel_imgs['door_imgs'] as $image){
+      $html_content .= '<img src="' . $image . '" alt="酒店图片">';
+    }
+  }
+  $html_content .= '</div>';
+  
+  $html_content .= '<div class="hotel-image-title">';
+  $html_content .= $node_hotel_imgs['stree_imgs_title'];
+  $html_content .= '</div>';
+  $html_content .= '<div class="hotel-image-list"' . ' url1="'. $uid .'" url2="hotel-stree-images">';
+  if(array_key_exists('stree_imgs', $node_hotel_imgs)){
+    foreach($node_hotel_imgs['stree_imgs'] as $image){
+      $html_content .= '<img src="' . $image . '" alt="酒店图片">';
+    }
+  }
+  $html_content .= '</div>';
+
+  $html_content .= '<div class="hotel-image-title">';
+  $html_content .= $node_hotel_imgs['lobby_imgs_title'];
+  $html_content .= '</div>';
+  $html_content .= '<div class="hotel-image-list"' . ' url1="'. $uid .'" url2="hotel-lobby-images">';
+  if(array_key_exists('lobby_imgs', $node_hotel_imgs)){
+    foreach($node_hotel_imgs['lobby_imgs'] as $image){
+      $html_content .= '<img src="' . $image . '" alt="酒店图片">';
+    }
+  }
+  $html_content .= '</div>';
+
+  $html_content .= '<div class="hotel-image-title">';
+  $html_content .= $node_hotel_imgs['room_images_title'];
+  $html_content .= '</div>';
+  $html_content .= '<div class="hotel-image-list"' . ' url1="'. $uid .'" url2="hotel-room-images">';
+  $html_content .= '<ul>';
+  if(array_key_exists('room_images', $node_hotel_imgs)){
+    foreach($node_hotel_imgs['room_images'] as $image){
+      $html_content .= '<img src="' . $image . '" alt="酒店图片">';
+    }
+  }
+  $html_content .= '</ul>';
+  $html_content .= '</div>';
+
+  $html_content .= '<div class="hotel-image-title">';
+  $html_content .= $node_hotel_imgs['others_title'];
+  $html_content .= '</div>';
+  $html_content .= '<div class="hotel-image-list"' . ' url1="'. $uid .'" url2="hotel-other-images">';
+  if(array_key_exists('other_images', $node_hotel_imgs)){
+    foreach($node_hotel_imgs['other_images'] as $image){
+      $html_content .= '<img src="' . $image . '" alt="酒店图片">';
+    }
+  }
+  $html_content .= '</div>';
+  define('xxzs_hotel_images_page', '
+  <!DOCTYPE html>  
+  <html>  
+  <head>  
+      <title>' . $node_hotel_imgs['title'] . '</title>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />  
+      <meta name="viewport" content="width=device-width, user-scalable=0,initial-scale=1.0,maximum-scale=1.0, minimum-scale=1.0" />  
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/xxzs_hotel_info.css">
+  </head>  
+  <body>
+    <div class="maincontent">' . $html_content . '
+    </div>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/jquery-1.11.1.min.js"></script>
+
+    <script type="text/javascript">
+      $(".hotel-image-list").click(function(){
+        var uid = $(this).attr("url1");
+        var img = $(this).attr("url2");
+        var params = {"uid": uid, "img": img};
+        var str = jQuery.param(params);
+        //console.log(str);
+        window.location.href = 
+          "http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/htmltpl/hotel_image_view.tpl.html?" + str;
+      });
+    </script>
+
+  </body>
+  </html>');
+  print xxzs_hotel_images_page;
+}
+
+function wechat_ajax_tgy() {
+  $nid = 26;  //yyhc node id
+  $raw_node = node_load($nid);
+  $node = entity_metadata_wrapper('node', $raw_node);
+  $title = $node->field_tgy_title->value();
+  $img_field = $node->field_tgy_img1->value();
+  $img1_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_tgy_img2->value();
+  $img2_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_tgy_img3->value();
+  $img3_url = file_create_url($img_field['uri']);
+
+
+  define('tgy_page', '
+  <!DOCTYPE html>  
+  <html>  
+  <head>  
+      <title>'.$title.'</title>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />  
+      <meta name="viewport" content="width=device-width, user-scalable=0,initial-scale=1.0,maximum-scale=1.0, minimum-scale=1.0" />  
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/tgy.css">
+  </head>  
+  <body>
+    <div class="maincontent">
+      <ul>
+      <li><div class="item"><img src="' . $img1_url . '" alt="紫砂壶"/></div></li>
+      <li><div class="item"><img src="' . $img2_url . '" alt="脸谱"/></div></li>
+      <li><div class="item"><img src="' . $img3_url . '" alt="手工布鞋"/></div></li>
+
+      </ul>
+
+    </div>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/jquery-1.11.1.min.js"></script>
+
+  </body>
+  </html>');
+  print tgy_page;
+}
+
+function wechat_ajax_zxsc() {
+  $nid = 24;  //yyhc node id
+  $raw_node = node_load($nid);
+  $node = entity_metadata_wrapper('node', $raw_node);
+  $text1 = $node->field_dev_title->value();
+  $img_field = $node->field_dev_img1->value();
+  $img1_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_dev_img2->value();
+  $img2_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_dev_img3->value();
+  $img3_url = file_create_url($img_field['uri']);
+
+//      <div class="wrapper">
+//      </div>
+
+  define('zxsc_page', '
+  <!DOCTYPE html>  
+  <html>  
+  <head>  
+      <title>在线商城</title>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />  
+      <meta name="viewport" content="width=device-width, user-scalable=0,initial-scale=1.0,maximum-scale=1.0, minimum-scale=1.0" />  
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/zxsc.css">
+  </head>  
+  <body>
+    <div class="maincontent">
+      <div class="head">
+        <div class="line1"></div>
+        <p class="title">'.$text1.'</p>
+        <div class="line2"></div>
+      </div>
+      <div class="wrapper">
+        <div class="item"><img src="' . $img1_url . '" alt="小米"/></div>
+        <div class="item"><img src="' . $img2_url . '" alt="杂粮"/></div>
+        <div class="item"><img src="' . $img3_url . '" alt="礼盒"/></div>
+      </div>
+
+    </div>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/jquery-1.11.1.min.js"></script>
+
+  </body>
+  </html>');
+  print zxsc_page;
+}
+
+function wechat_ajax_dtdl() {
+  define('dtdl_page', '
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+      <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+      <style type="text/css">
+        body, html,#allmap {width: 100%;height: 100%;overflow: hidden;margin:0;}
+      </style>
+      <script type="text/javascript" src="http://api.map.baidu.com/api?type=quick&ak=20MohZkove1pAIblnwNQug9D&v=1.0"></script>
+      <title>平遥古城</title>
+    </head>
+    <body>
+      <div id="allmap"></div>
+    </body>
+    </html>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/wechat_ajax_dtdl.js"></script>
+  ');
+  print dtdl_page;
+}
+
+function wechat_ajax_yyhc_sub1(){
+
+  $nid = 21;  //yyhc node id
+  $raw_node = node_load($nid);
+  $node = entity_metadata_wrapper('node', $raw_node);
+  $title = $node->field_yyhc_sub1_title->value();
+  $text1 = $node->field_yyhc_sub1_text1->value();
+  $img_field = $node->field_yyhc_sub1_img1->value();
+  $img1_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img2->value();
+  $img2_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img3->value();
+  $img3_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img4->value();
+  $img4_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img5->value();
+  $img5_url = file_create_url($img_field['uri']);
+  $audio_field = $node->field_yyhc_sub1_audio1->value();
+  $audio1_url = file_create_url($audio_field['uri']);  
+
+
+  $circle_img = "http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/imgs/yyhc_anchor2.png";
+
+  define('yyhc_page_sub1', '
+  <!DOCTYPE html>  
+  <html>  
+  <head>  
+      <title>'. $title. '</title>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />  
+      <meta name="viewport" content="width=device-width, user-scalable=0,initial-scale=1.0,maximum-scale=1.0, minimum-scale=1.0" />  
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/audioplayer.css">      
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/yyhc_sub4.css">
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/idangerous.swiper.css">
+  </head>  
+  <body>
+    <div class="maincontent">
+
+      <div class="anchor-head">
+        <div id="anchor">
+          <p class="anchor-title top-left">' .$title .'</p>
+        </div>
+      </div>
+
+      <div class="anchor-line">
+        <span id="a-circle"><img src = '.$circle_img.' alt="anchor circle"></span>
+        <div id="a-line"></div>
+      </div>
+
+      <div class="device">
+        <div class="swiper-container">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide">
+              <div class="text-border"> <p>'.$text1.'</p> </div>
+            </div>
+            <div class="swiper-slide"> <img src='.$img1_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img2_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img3_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img4_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img5_url.'> </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pagination"></div>
+
+      <div class="audio_wrapper">
+        <audio src="'.$audio1_url.'" preload="auto" controls></audio>
+      </div>
+
+
+    </div> 
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/idangerous.swiper.min.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/audioplayer.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/wechat_ajax_yyhc_sub4.js"></script>
+    
+  </body>
+  </html>');
+
+  print yyhc_page_sub1;
+} 
+
+function wechat_ajax_yyhc_sub1_audio() {
+  $nid = 21;  //yyhc node id
+  $raw_node = node_load($nid);
+  $node = entity_metadata_wrapper('node', $raw_node);
+  $audio_field = $node->field_yyhc_sub1_audio1->value();
+  $audio1_url = file_create_url($audio_field['uri']);
+  $audio_field = $node->field_yyhc_sub1_audio2->value();
+  $audio2_url = file_create_url($audio_field['uri']);
+  $audio_field = $node->field_yyhc_sub1_audio3->value();
+  $audio3_url = file_create_url($audio_field['uri']);
+  $audio_field = $node->field_yyhc_sub1_audio4->value();
+  $audio4_url = file_create_url($audio_field['uri']);
+  $audio_field = $node->field_yyhc_sub1_audio5->value();
+  $audio5_url = file_create_url($audio_field['uri']);
+  $a = array('audio1'=>$audio1_url, 'audio2'=>$audio2_url, 'audio3'=>$audio3_url, 'audio4'=>$audio4_url, 'audio5'=>$audio5_url);
+  drupal_json_output($a);
+}
+
+function wechat_ajax_yyhc_sub2_audio() {
+  $nid = 20;  //yyhc node id
+  $raw_node = node_load($nid);
+  $node = entity_metadata_wrapper('node', $raw_node);
+  $audio_field = $node->field_yyhc_sub1_audio1->value();
+  $audio1_url = file_create_url($audio_field['uri']);
+  $audio_field = $node->field_yyhc_sub1_audio2->value();
+  $audio2_url = file_create_url($audio_field['uri']);
+  $audio_field = $node->field_yyhc_sub1_audio3->value();
+  $audio3_url = file_create_url($audio_field['uri']);
+  $a = array('audio1'=>$audio1_url, 'audio2'=>$audio2_url, 'audio3'=>$audio3_url);
+  drupal_json_output($a);
+}
+
+function wechat_ajax_yyhc_sub2(){
+
+  $nid = 20;  //yyhc node id
+  $raw_node = node_load($nid);
+  $node = entity_metadata_wrapper('node', $raw_node);
+  $title = $node->field_yyhc_sub1_title->value();
+  $text1 = $node->field_yyhc_sub1_text1->value();
+  $img_field = $node->field_yyhc_sub1_img1->value();
+  $img1_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img2->value();
+  $img2_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img3->value();
+  $img3_url = file_create_url($img_field['uri']);
+  $audio_field = $node->field_yyhc_sub1_audio1->value();
+  $audio1_url = file_create_url($audio_field['uri']);  
+
+
+/*
+  $img_field = $node->field_head_img->value();
+  $img_url = file_create_url($img_field['uri']);
+  $img_number = $node->field_img_number->value();
+  $a = array('head_img'=>$img_url, 'head_title'=>$text, );
+
+  for ($i = 1; $i <= $img_number; $i++) {
+
+    $img_value = $node->{'field_img_'.$i}->value();; 
+    $url = file_create_url($img_value['uri']);
+    $a['img'.$i] = $url;
+  }
+
+  $a['img_num'] = $img_number;
+  drupal_json_output($a);
+*/
+
+  $circle_img = "http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/imgs/yyhc_anchor2.png";
+  define('yyhc_page_sub2', '
+  <!DOCTYPE html>  
+  <html>  
+  <head>  
+      <title>'. $title. '</title>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />  
+      <meta name="viewport" content="width=device-width, user-scalable=0,initial-scale=1.0,maximum-scale=1.0, minimum-scale=1.0" />  
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/audioplayer.css">
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/yyhc_sub4.css">
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/idangerous.swiper.css">
+  </head>  
+  <body>
+    <div class="maincontent">
+
+      <div class="anchor-head">
+        <div id="anchor">
+          <p class="anchor-title top-left">' .$title .'</p>
+        </div>
+      </div>
+
+      <div class="anchor-line">
+        <span id="a-circle"><img src = '.$circle_img.' alt="anchor circle"></span>
+        <div id="a-line"></div>
+      </div>
+
+      <div class="device">
+        <div class="swiper-container">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide">
+              <div class="text-border"> <p>'.$text1.'</p> </div>
+            </div>
+            <div class="swiper-slide"> <img src='.$img1_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img2_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img3_url.'> </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pagination"></div>
+
+      <div class="audio_wrapper">
+        <audio src="'.$audio1_url.'" preload="auto" controls></audio>
+      </div>
+
+    </div> 
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/idangerous.swiper.min.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/audioplayer.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/wechat_ajax_yyhc_sub4.js"></script>
+
+  </body>
+  </html>');
+  print yyhc_page_sub2;
+}
+
+function wechat_ajax_yyhc_sub3(){
+
+  $nid = 22;  //yyhc node id
+  $raw_node = node_load($nid);
+  $node = entity_metadata_wrapper('node', $raw_node);
+  $title = $node->field_yyhc_sub1_title->value();
+  $text1 = $node->field_yyhc_sub1_text1->value();
+  $img_field = $node->field_yyhc_sub1_img1->value();
+  $img1_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img2->value();
+  $img2_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img3->value();
+  $img3_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img4->value();
+  $img4_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img5->value();
+  $img5_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img6->value();
+  $img6_url = file_create_url($img_field['uri']);
+  $audio_field = $node->field_yyhc_sub1_audio1->value();
+  $audio1_url = file_create_url($audio_field['uri']);  
+
+
+  $circle_img = "http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/imgs/yyhc_anchor2.png";
+
+  define('yyhc_page_sub3', '
+  <!DOCTYPE html>  
+  <html>  
+  <head>  
+      <title>'. $title. '</title>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />  
+      <meta name="viewport" content="width=device-width, user-scalable=0,initial-scale=1.0,maximum-scale=1.0, minimum-scale=1.0" />  
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/audioplayer.css">      
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/yyhc_sub4.css">
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/idangerous.swiper.css">
+  </head>  
+  <body>
+    <div class="maincontent">
+
+      <div class="anchor-head">
+        <div id="anchor">
+          <p class="anchor-title top-left">' .$title .'</p>
+        </div>
+      </div>
+
+      <div class="anchor-line">
+        <span id="a-circle"><img src = '.$circle_img.' alt="anchor circle"></span>
+        <div id="a-line"></div>
+      </div>
+
+      <div class="device">
+        <div class="swiper-container">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide">
+              <div class="text-border"> <p>'.$text1.'</p> </div>
+            </div>
+            <div class="swiper-slide"> <img src='.$img1_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img2_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img3_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img4_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img5_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img6_url.'> </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pagination"></div>
+
+      <div class="audio_wrapper">
+        <audio src="'.$audio1_url.'" preload="auto" controls></audio>
+      </div>
+
+    </div> 
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/idangerous.swiper.min.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/audioplayer.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/wechat_ajax_yyhc_sub4.js"></script>
+
+  </body>
+  </html>');
+
+  print yyhc_page_sub3;
+} 
+
+function wechat_ajax_yyhc_sub3_audio() {
+  $nid = 22;  //yyhc node id
+  $raw_node = node_load($nid);
+  $node = entity_metadata_wrapper('node', $raw_node);
+  $audio_field = $node->field_yyhc_sub1_audio1->value();
+  $audio1_url = file_create_url($audio_field['uri']);
+  $audio_field = $node->field_yyhc_sub1_audio2->value();
+  $audio2_url = file_create_url($audio_field['uri']);
+  $audio_field = $node->field_yyhc_sub1_audio3->value();
+  $audio3_url = file_create_url($audio_field['uri']);
+  $audio_field = $node->field_yyhc_sub1_audio4->value();
+  $audio4_url = file_create_url($audio_field['uri']);
+  $audio_field = $node->field_yyhc_sub1_audio5->value();
+  $audio5_url = file_create_url($audio_field['uri']);
+  $audio_field = $node->field_yyhc_sub1_audio6->value();
+  $audio6_url = file_create_url($audio_field['uri']);
+  $a = array('audio1'=>$audio1_url, 
+             'audio2'=>$audio2_url,
+             'audio3'=>$audio3_url,
+             'audio4'=>$audio4_url,
+             'audio5'=>$audio5_url,
+             'audio6'=>$audio6_url);
+  drupal_json_output($a);
+}
+
+
+function wechat_ajax_yyhc_sub4(){
+
+  $nid = 29;  //yyhc node id
+  $raw_node = node_load($nid);
+  $node = entity_metadata_wrapper('node', $raw_node);
+  $title = $node->field_yyhc_sub1_title->value();
+  $text1 = $node->field_yyhc_sub1_text1->value();
+  $img_field = $node->field_yyhc_sub1_img1->value();
+  $img1_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img2->value();
+  $img2_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img3->value();
+  $img3_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img4->value();
+  $img4_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img5->value();
+  $img5_url = file_create_url($img_field['uri']);
+  $audio_field = $node->field_yyhc_sub1_audio1->value();
+  $audio1_url = file_create_url($audio_field['uri']);  
+
+
+  $circle_img = "http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/imgs/yyhc_anchor2.png";
+
+  define('yyhc_page_sub4', '
+  <!DOCTYPE html>  
+  <html>  
+  <head>  
+      <title>'. $title. '</title>
+      <meta charset="utf-8" />
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />  
+      <meta name="viewport" content="width=device-width, user-scalable=0,initial-scale=1.0,maximum-scale=1.0, minimum-scale=1.0" />  
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/audioplayer.css">      
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/yyhc_sub4.css">
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/idangerous.swiper.css">
+  </head>  
+  <body>
+    <div class="maincontent">
+
+
+      <div class="anchor-head">
+        <div id="anchor">
+          <p class="anchor-title top-left">' .$title .'</p>
+        </div>
+      </div>
+
+      <div class="anchor-line">
+        <span id="a-circle"><img src = '.$circle_img.' alt="anchor circle"></span>
+        <div id="a-line"></div>
+      </div>
+
+      <div class="device">
+        <div class="swiper-container">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide">
+              <div class="text-border"> <p>'.$text1.'</p> </div>
+            </div>
+            <div class="swiper-slide"> <img src='.$img1_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img2_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img3_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img4_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img5_url.'> </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pagination"></div>
+
+      <div class="audio_wrapper">
+        <audio src="'.$audio1_url.'" preload="auto" controls></audio>
+      </div>
+
+    </div> 
+
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/idangerous.swiper.min.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/audioplayer.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/wechat_ajax_yyhc_sub4.js"></script>
+
+  </body>
+  </html>');
+  print yyhc_page_sub4;
+}
+
+function wechat_ajax_yyhc_sub5() {
+  $nid = 30;  //yyhc node id
+  $raw_node = node_load($nid);
+  $node = entity_metadata_wrapper('node', $raw_node);
+  $title = $node->field_yyhc_sub1_title->value();
+  $text1 = $node->field_yyhc_sub1_text1->value();
+  $img_field = $node->field_yyhc_sub1_img1->value();
+  $img1_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img2->value();
+  $img2_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img3->value();
+  $img3_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img4->value();
+  $img4_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img5->value();
+  $img5_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img6->value();
+  $img6_url = file_create_url($img_field['uri']);
+  $audio_field = $node->field_yyhc_sub1_audio1->value();
+  $audio1_url = file_create_url($audio_field['uri']);  
+
+
+  $circle_img = "http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/imgs/yyhc_anchor2.png";
+
+  define('yyhc_page_sub5', '
+  <!DOCTYPE html>  
+  <html>  
+  <head>  
+      <title>'. $title. '</title>
+      <meta charset="utf-8" />
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />  
+      <meta name="viewport" content="width=device-width, user-scalable=0,initial-scale=1.0,maximum-scale=1.0, minimum-scale=1.0" />  
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/audioplayer.css">      
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/yyhc_sub4.css">
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/idangerous.swiper.css">
+  </head>  
+  <body>
+    <div class="maincontent">
+
+
+      <div class="anchor-head">
+        <div id="anchor">
+          <p class="anchor-title top-left">' .$title .'</p>
+        </div>
+      </div>
+
+      <div class="anchor-line">
+        <span id="a-circle"><img src = '.$circle_img.' alt="anchor circle"></span>
+        <div id="a-line"></div>
+      </div>
+
+      <div class="device">
+        <div class="swiper-container">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide">
+              <div class="text-border"> <p>'.$text1.'</p> </div>
+            </div>
+            <div class="swiper-slide"> <img src='.$img1_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img2_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img3_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img4_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img5_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img6_url.'> </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pagination"></div>
+
+      <div class="audio_wrapper">
+        <audio src="'.$audio1_url.'" preload="auto" controls></audio>
+      </div>
+
+    </div> 
+
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/idangerous.swiper.min.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/audioplayer.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/wechat_ajax_yyhc_sub4.js"></script>
+
+  </body>
+  </html>');
+  print yyhc_page_sub5;
+}
+
+
+function wechat_ajax_yyhc_sub6() {
+  $nid = 31;  //yyhc node id
+  $raw_node = node_load($nid);
+  $node = entity_metadata_wrapper('node', $raw_node);
+  $title = $node->field_yyhc_sub1_title->value();
+  $text1 = $node->field_yyhc_sub1_text1->value();
+  $img_field = $node->field_yyhc_sub1_img1->value();
+  $img1_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img2->value();
+  $img2_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img3->value();
+  $img3_url = file_create_url($img_field['uri']);
+  $audio_field = $node->field_yyhc_sub1_audio1->value();
+  $audio1_url = file_create_url($audio_field['uri']);  
+
+
+  $circle_img = "http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/imgs/yyhc_anchor2.png";
+
+  define('yyhc_page_sub6', '
+  <!DOCTYPE html>  
+  <html>  
+  <head>  
+      <title>'. $title. '</title>
+      <meta charset="utf-8" />
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />  
+      <meta name="viewport" content="width=device-width, user-scalable=0,initial-scale=1.0,maximum-scale=1.0, minimum-scale=1.0" />  
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/audioplayer.css">      
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/yyhc_sub4.css">
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/idangerous.swiper.css">
+  </head>  
+  <body>
+    <div class="maincontent">
+
+
+      <div class="anchor-head">
+        <div id="anchor">
+          <p class="anchor-title top-left">' .$title .'</p>
+        </div>
+      </div>
+
+      <div class="anchor-line">
+        <span id="a-circle"><img src = '.$circle_img.' alt="anchor circle"></span>
+        <div id="a-line"></div>
+      </div>
+
+      <div class="device">
+        <div class="swiper-container">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide">
+              <div class="text-border"> <p>'.$text1.'</p> </div>
+            </div>
+            <div class="swiper-slide"> <img src='.$img1_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img2_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img3_url.'> </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pagination"></div>
+
+      <div class="audio_wrapper">
+        <audio src="'.$audio1_url.'" preload="auto" controls></audio>
+      </div>
+
+    </div> 
+
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/idangerous.swiper.min.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/audioplayer.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/wechat_ajax_yyhc_sub4.js"></script>
+
+  </body>
+  </html>');
+  print yyhc_page_sub6;
+}
+
+
+function wechat_ajax_yyhc_sub7() {
+  $nid = 32;  //yyhc node id
+  $raw_node = node_load($nid);
+  $node = entity_metadata_wrapper('node', $raw_node);
+  $title = $node->field_yyhc_sub1_title->value();
+  $text1 = $node->field_yyhc_sub1_text1->value();
+  $img_field = $node->field_yyhc_sub1_img1->value();
+  $img1_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img2->value();
+  $img2_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img3->value();
+  $img3_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img4->value();
+  $img4_url = file_create_url($img_field['uri']);
+  $audio_field = $node->field_yyhc_sub1_audio1->value();
+  $audio1_url = file_create_url($audio_field['uri']);  
+
+
+  $circle_img = "http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/imgs/yyhc_anchor2.png";
+
+  define('yyhc_page_sub7', '
+  <!DOCTYPE html>  
+  <html>  
+  <head>  
+      <title>'. $title. '</title>
+      <meta charset="utf-8" />
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />  
+      <meta name="viewport" content="width=device-width, user-scalable=0,initial-scale=1.0,maximum-scale=1.0, minimum-scale=1.0" />  
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/audioplayer.css">      
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/yyhc_sub4.css">
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/idangerous.swiper.css">
+  </head>  
+  <body>
+    <div class="maincontent">
+
+
+      <div class="anchor-head">
+        <div id="anchor">
+          <p class="anchor-title top-left">' .$title .'</p>
+        </div>
+      </div>
+
+      <div class="anchor-line">
+        <span id="a-circle"><img src = '.$circle_img.' alt="anchor circle"></span>
+        <div id="a-line"></div>
+      </div>
+
+      <div class="device">
+        <div class="swiper-container">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide">
+              <div class="text-border"> <p>'.$text1.'</p> </div>
+            </div>
+            <div class="swiper-slide"> <img src='.$img1_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img2_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img3_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img4_url.'> </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pagination"></div>
+
+      <div class="audio_wrapper">
+        <audio src="'.$audio1_url.'" preload="auto" controls></audio>
+      </div>
+
+    </div> 
+
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/idangerous.swiper.min.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/audioplayer.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/wechat_ajax_yyhc_sub4.js"></script>
+
+  </body>
+  </html>');
+  print yyhc_page_sub7;
+}
+
+function wechat_ajax_yyhc_sub8() {
+  $nid = 33;  //yyhc node id
+  $raw_node = node_load($nid);
+  $node = entity_metadata_wrapper('node', $raw_node);
+  $title = $node->field_yyhc_sub1_title->value();
+  $text1 = $node->field_yyhc_sub1_text1->value();
+  $img_field = $node->field_yyhc_sub1_img1->value();
+  $img1_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img2->value();
+  $img2_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img3->value();
+  $img3_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img4->value();
+  $img4_url = file_create_url($img_field['uri']);
+  $audio_field = $node->field_yyhc_sub1_audio1->value();
+  $audio1_url = file_create_url($audio_field['uri']);  
+
+
+  $circle_img = "http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/imgs/yyhc_anchor2.png";
+
+  define('yyhc_page_sub8', '
+  <!DOCTYPE html>  
+  <html>  
+  <head>  
+      <title>'. $title. '</title>
+      <meta charset="utf-8" />
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />  
+      <meta name="viewport" content="width=device-width, user-scalable=0,initial-scale=1.0,maximum-scale=1.0, minimum-scale=1.0" />  
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/audioplayer.css">      
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/yyhc_sub4.css">
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/idangerous.swiper.css">
+  </head>  
+  <body>
+    <div class="maincontent">
+
+
+      <div class="anchor-head">
+        <div id="anchor">
+          <p class="anchor-title top-left">' .$title .'</p>
+        </div>
+      </div>
+
+      <div class="anchor-line">
+        <span id="a-circle"><img src = '.$circle_img.' alt="anchor circle"></span>
+        <div id="a-line"></div>
+      </div>
+
+      <div class="device">
+        <div class="swiper-container">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide">
+              <div class="text-border"> <p>'.$text1.'</p> </div>
+            </div>
+            <div class="swiper-slide"> <img src='.$img1_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img2_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img3_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img4_url.'> </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pagination"></div>
+
+      <div class="audio_wrapper">
+        <audio src="'.$audio1_url.'" preload="auto" controls></audio>
+      </div>
+
+    </div> 
+
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/idangerous.swiper.min.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/audioplayer.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/wechat_ajax_yyhc_sub4.js"></script>
+
+  </body>
+  </html>');
+  print yyhc_page_sub8;
+}
+
+function wechat_ajax_yyhc_sub9() {
+  $nid = 36;  //yyhc node id
+  $raw_node = node_load($nid);
+  $node = entity_metadata_wrapper('node', $raw_node);
+  $title = $node->field_yyhc_sub1_title->value();
+  $text1 = $node->field_yyhc_sub1_text1->value();
+  $img_field = $node->field_yyhc_sub1_img1->value();
+  $img1_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img2->value();
+  $img2_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img3->value();
+  $img3_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img4->value();
+  $img4_url = file_create_url($img_field['uri']);
+  $audio_field = $node->field_yyhc_sub1_audio1->value();
+  $audio1_url = file_create_url($audio_field['uri']);  
+
+
+  $circle_img = "http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/imgs/yyhc_anchor2.png";
+
+  define('yyhc_page_sub9', '
+  <!DOCTYPE html>  
+  <html>  
+  <head>  
+      <title>'. $title. '</title>
+      <meta charset="utf-8" />
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />  
+      <meta name="viewport" content="width=device-width, user-scalable=0,initial-scale=1.0,maximum-scale=1.0, minimum-scale=1.0" />  
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/audioplayer.css">      
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/yyhc_sub4.css">
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/idangerous.swiper.css">
+  </head>  
+  <body>
+    <div class="maincontent">
+
+
+      <div class="anchor-head">
+        <div id="anchor">
+          <p class="anchor-title top-left">' .$title .'</p>
+        </div>
+      </div>
+
+      <div class="anchor-line">
+        <span id="a-circle"><img src = '.$circle_img.' alt="anchor circle"></span>
+        <div id="a-line"></div>
+      </div>
+
+      <div class="device">
+        <div class="swiper-container">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide">
+              <div class="text-border"> <p>'.$text1.'</p> </div>
+            </div>
+            <div class="swiper-slide"> <img src='.$img1_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img2_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img3_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img4_url.'> </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pagination"></div>
+
+      <div class="audio_wrapper">
+        <audio src="'.$audio1_url.'" preload="auto" controls></audio>
+      </div>
+
+    </div> 
+
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/idangerous.swiper.min.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/audioplayer.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/wechat_ajax_yyhc_sub4.js"></script>
+
+  </body>
+  </html>');
+  print yyhc_page_sub9;
+}
+
+function wechat_ajax_yyhc_sub10() {
+  $nid = 37;  //yyhc node id
+  $raw_node = node_load($nid);
+  $node = entity_metadata_wrapper('node', $raw_node);
+  $title = $node->field_yyhc_sub1_title->value();
+  $text1 = $node->field_yyhc_sub1_text1->value();
+  $img_field = $node->field_yyhc_sub1_img1->value();
+  $img1_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img2->value();
+  $img2_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img3->value();
+  $img3_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img4->value();
+  $img4_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img5->value();
+  $img5_url = file_create_url($img_field['uri']);
+  $audio_field = $node->field_yyhc_sub1_audio1->value();
+  $audio1_url = file_create_url($audio_field['uri']);  
+
+
+  $circle_img = "http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/imgs/yyhc_anchor2.png";
+
+  define('yyhc_page_sub10', '
+  <!DOCTYPE html>  
+  <html>  
+  <head>  
+      <title>'. $title. '</title>
+      <meta charset="utf-8" />
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />  
+      <meta name="viewport" content="width=device-width, user-scalable=0,initial-scale=1.0,maximum-scale=1.0, minimum-scale=1.0" />  
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/audioplayer.css">      
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/yyhc_sub4.css">
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/idangerous.swiper.css">
+  </head>  
+  <body>
+    <div class="maincontent">
+
+
+      <div class="anchor-head">
+        <div id="anchor">
+          <p class="anchor-title top-left">' .$title .'</p>
+        </div>
+      </div>
+
+      <div class="anchor-line">
+        <span id="a-circle"><img src = '.$circle_img.' alt="anchor circle"></span>
+        <div id="a-line"></div>
+      </div>
+
+      <div class="device">
+        <div class="swiper-container">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide">
+              <div class="text-border"> <p>'.$text1.'</p> </div>
+            </div>
+            <div class="swiper-slide"> <img src='.$img1_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img2_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img3_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img4_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img5_url.'> </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pagination"></div>
+
+      <div class="audio_wrapper">
+        <audio src="'.$audio1_url.'" preload="auto" controls></audio>
+      </div>
+
+    </div> 
+
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/idangerous.swiper.min.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/audioplayer.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/wechat_ajax_yyhc_sub4.js"></script>
+
+  </body>
+  </html>');
+  print yyhc_page_sub10;
+}
+
+function wechat_ajax_yyhc_sub11() {
+  $nid = 38;  //yyhc node id
+  $raw_node = node_load($nid);
+  $node = entity_metadata_wrapper('node', $raw_node);
+  $title = $node->field_yyhc_sub1_title->value();
+  $text1 = $node->field_yyhc_sub1_text1->value();
+  $img_field = $node->field_yyhc_sub1_img1->value();
+  $img1_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img2->value();
+  $img2_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img3->value();
+  $img3_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img4->value();
+  $img4_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img5->value();
+  $img5_url = file_create_url($img_field['uri']);
+  $audio_field = $node->field_yyhc_sub1_audio1->value();
+  $audio1_url = file_create_url($audio_field['uri']);  
+
+
+  $circle_img = "http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/imgs/yyhc_anchor2.png";
+
+  define('yyhc_page_sub11', '
+  <!DOCTYPE html>  
+  <html>  
+  <head>  
+      <title>'. $title. '</title>
+      <meta charset="utf-8" />
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />  
+      <meta name="viewport" content="width=device-width, user-scalable=0,initial-scale=1.0,maximum-scale=1.0, minimum-scale=1.0" />  
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/audioplayer.css">      
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/yyhc_sub4.css">
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/idangerous.swiper.css">
+  </head>  
+  <body>
+    <div class="maincontent">
+
+
+      <div class="anchor-head">
+        <div id="anchor">
+          <p class="anchor-title top-left">' .$title .'</p>
+        </div>
+      </div>
+
+      <div class="anchor-line">
+        <span id="a-circle"><img src = '.$circle_img.' alt="anchor circle"></span>
+        <div id="a-line"></div>
+      </div>
+
+      <div class="device">
+        <div class="swiper-container">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide">
+              <div class="text-border"> <p>'.$text1.'</p> </div>
+            </div>
+            <div class="swiper-slide"> <img src='.$img1_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img2_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img3_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img4_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img5_url.'> </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pagination"></div>
+
+      <div class="audio_wrapper">
+        <audio src="'.$audio1_url.'" preload="auto" controls></audio>
+      </div>
+
+    </div> 
+
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/idangerous.swiper.min.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/audioplayer.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/wechat_ajax_yyhc_sub4.js"></script>
+
+  </body>
+  </html>');
+  print yyhc_page_sub11;
+}
+
+function wechat_ajax_yyhc_sub12() {
+  $nid = 39;  //yyhc node id
+  $raw_node = node_load($nid);
+  $node = entity_metadata_wrapper('node', $raw_node);
+  $title = $node->field_yyhc_sub1_title->value();
+  $text1 = $node->field_yyhc_sub1_text1->value();
+  $img_field = $node->field_yyhc_sub1_img1->value();
+  $img1_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img2->value();
+  $img2_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img3->value();
+  $img3_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img4->value();
+  $img4_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img5->value();
+  $img5_url = file_create_url($img_field['uri']);
+  $audio_field = $node->field_yyhc_sub1_audio1->value();
+  $audio1_url = file_create_url($audio_field['uri']);  
+
+
+  $circle_img = "http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/imgs/yyhc_anchor2.png";
+
+  define('yyhc_page_sub12', '
+  <!DOCTYPE html>  
+  <html>  
+  <head>  
+      <title>'. $title. '</title>
+      <meta charset="utf-8" />
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />  
+      <meta name="viewport" content="width=device-width, user-scalable=0,initial-scale=1.0,maximum-scale=1.0, minimum-scale=1.0" />  
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/audioplayer.css">      
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/yyhc_sub4.css">
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/idangerous.swiper.css">
+  </head>  
+  <body>
+    <div class="maincontent">
+
+
+      <div class="anchor-head">
+        <div id="anchor">
+          <p class="anchor-title top-left">' .$title .'</p>
+        </div>
+      </div>
+
+      <div class="anchor-line">
+        <span id="a-circle"><img src = '.$circle_img.' alt="anchor circle"></span>
+        <div id="a-line"></div>
+      </div>
+
+      <div class="device">
+        <div class="swiper-container">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide">
+              <div class="text-border"> <p>'.$text1.'</p> </div>
+            </div>
+            <div class="swiper-slide"> <img src='.$img1_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img2_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img3_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img4_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img5_url.'> </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pagination"></div>
+
+      <div class="audio_wrapper">
+        <audio src="'.$audio1_url.'" preload="auto" controls></audio>
+      </div>
+
+    </div> 
+
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/idangerous.swiper.min.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/audioplayer.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/wechat_ajax_yyhc_sub4.js"></script>
+
+  </body>
+  </html>');
+  print yyhc_page_sub12;
+}
+
+function wechat_ajax_yyhc_sub13() {
+  $nid = 40;  //yyhc node id
+  $raw_node = node_load($nid);
+  $node = entity_metadata_wrapper('node', $raw_node);
+  $title = $node->field_yyhc_sub1_title->value();
+  $text1 = $node->field_yyhc_sub1_text1->value();
+  $img_field = $node->field_yyhc_sub1_img1->value();
+  $img1_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img2->value();
+  $img2_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img3->value();
+  $img3_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img4->value();
+  $img4_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img5->value();
+  $img5_url = file_create_url($img_field['uri']);
+  $audio_field = $node->field_yyhc_sub1_audio1->value();
+  $audio1_url = file_create_url($audio_field['uri']);  
+
+
+  $circle_img = "http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/imgs/yyhc_anchor2.png";
+
+  define('yyhc_page_sub13', '
+  <!DOCTYPE html>  
+  <html>  
+  <head>  
+      <title>'. $title. '</title>
+      <meta charset="utf-8" />
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />  
+      <meta name="viewport" content="width=device-width, user-scalable=0,initial-scale=1.0,maximum-scale=1.0, minimum-scale=1.0" />  
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/audioplayer.css">      
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/yyhc_sub4.css">
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/idangerous.swiper.css">
+  </head>  
+  <body>
+    <div class="maincontent">
+
+
+      <div class="anchor-head">
+        <div id="anchor">
+          <p class="anchor-title top-left">' .$title .'</p>
+        </div>
+      </div>
+
+      <div class="anchor-line">
+        <span id="a-circle"><img src = '.$circle_img.' alt="anchor circle"></span>
+        <div id="a-line"></div>
+      </div>
+
+      <div class="device">
+        <div class="swiper-container">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide">
+              <div class="text-border"> <p>'.$text1.'</p> </div>
+            </div>
+            <div class="swiper-slide"> <img src='.$img1_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img2_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img3_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img4_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img5_url.'> </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pagination"></div>
+
+      <div class="audio_wrapper">
+        <audio src="'.$audio1_url.'" preload="auto" controls></audio>
+      </div>
+
+    </div> 
+
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/idangerous.swiper.min.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/audioplayer.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/wechat_ajax_yyhc_sub4.js"></script>
+
+  </body>
+  </html>');
+  print yyhc_page_sub13;
+}
+
+function wechat_ajax_yyhc_sub14() {
+  $nid = 41;  //yyhc node id
+  $raw_node = node_load($nid);
+  $node = entity_metadata_wrapper('node', $raw_node);
+  $title = $node->field_yyhc_sub1_title->value();
+  $text1 = $node->field_yyhc_sub1_text1->value();
+  $img_field = $node->field_yyhc_sub1_img1->value();
+  $img1_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img2->value();
+  $img2_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img3->value();
+  $img3_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img4->value();
+  $img4_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img5->value();
+  $img5_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img6->value();
+  $img6_url = file_create_url($img_field['uri']);
+  $audio_field = $node->field_yyhc_sub1_audio1->value();
+  $audio1_url = file_create_url($audio_field['uri']);  
+
+
+  $circle_img = "http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/imgs/yyhc_anchor2.png";
+
+  define('yyhc_page_sub14', '
+  <!DOCTYPE html>  
+  <html>  
+  <head>  
+      <title>'. $title. '</title>
+      <meta charset="utf-8" />
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />  
+      <meta name="viewport" content="width=device-width, user-scalable=0,initial-scale=1.0,maximum-scale=1.0, minimum-scale=1.0" />  
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/audioplayer.css">      
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/yyhc_sub4.css">
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/idangerous.swiper.css">
+  </head>  
+  <body>
+    <div class="maincontent">
+
+
+      <div class="anchor-head">
+        <div id="anchor">
+          <p class="anchor-title top-left">' .$title .'</p>
+        </div>
+      </div>
+
+      <div class="anchor-line">
+        <span id="a-circle"><img src = '.$circle_img.' alt="anchor circle"></span>
+        <div id="a-line"></div>
+      </div>
+
+      <div class="device">
+        <div class="swiper-container">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide">
+              <div class="text-border"> <p>'.$text1.'</p> </div>
+            </div>
+            <div class="swiper-slide"> <img src='.$img1_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img2_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img3_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img4_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img5_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img6_url.'> </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pagination"></div>
+
+      <div class="audio_wrapper">
+        <audio src="'.$audio1_url.'" preload="auto" controls></audio>
+      </div>
+
+    </div> 
+
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/idangerous.swiper.min.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/audioplayer.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/wechat_ajax_yyhc_sub4.js"></script>
+
+  </body>
+  </html>');
+  print yyhc_page_sub14;
+}
+
+function wechat_ajax_yyhc_sub15() {
+  $nid = 42;  //yyhc node id
+  $raw_node = node_load($nid);
+  $node = entity_metadata_wrapper('node', $raw_node);
+  $title = $node->field_yyhc_sub1_title->value();
+  $text1 = $node->field_yyhc_sub1_text1->value();
+  $img_field = $node->field_yyhc_sub1_img1->value();
+  $img1_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img2->value();
+  $img2_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img3->value();
+  $img3_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img4->value();
+  $img4_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img5->value();
+  $img5_url = file_create_url($img_field['uri']);
+  $audio_field = $node->field_yyhc_sub1_audio1->value();
+  $audio1_url = file_create_url($audio_field['uri']);  
+
+
+  $circle_img = "http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/imgs/yyhc_anchor2.png";
+
+  define('yyhc_page_sub15', '
+  <!DOCTYPE html>  
+  <html>  
+  <head>  
+      <title>'. $title. '</title>
+      <meta charset="utf-8" />
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />  
+      <meta name="viewport" content="width=device-width, user-scalable=0,initial-scale=1.0,maximum-scale=1.0, minimum-scale=1.0" />  
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/audioplayer.css">      
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/yyhc_sub4.css">
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/idangerous.swiper.css">
+  </head>  
+  <body>
+    <div class="maincontent">
+
+
+      <div class="anchor-head">
+        <div id="anchor">
+          <p class="anchor-title top-left">' .$title .'</p>
+        </div>
+      </div>
+
+      <div class="anchor-line">
+        <span id="a-circle"><img src = '.$circle_img.' alt="anchor circle"></span>
+        <div id="a-line"></div>
+      </div>
+
+      <div class="device">
+        <div class="swiper-container">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide">
+              <div class="text-border"> <p>'.$text1.'</p> </div>
+            </div>
+            <div class="swiper-slide"> <img src='.$img1_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img2_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img3_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img4_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img5_url.'> </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pagination"></div>
+
+      <div class="audio_wrapper">
+        <audio src="'.$audio1_url.'" preload="auto" controls></audio>
+      </div>
+
+    </div> 
+
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/idangerous.swiper.min.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/audioplayer.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/wechat_ajax_yyhc_sub4.js"></script>
+
+  </body>
+  </html>');
+  print yyhc_page_sub15;
+}
+
+
+function wechat_ajax_yyhc_sub16() {
+  $nid = 43;  //yyhc node id
+  $raw_node = node_load($nid);
+  $node = entity_metadata_wrapper('node', $raw_node);
+  $title = $node->field_yyhc_sub1_title->value();
+  $text1 = $node->field_yyhc_sub1_text1->value();
+  $img_field = $node->field_yyhc_sub1_img1->value();
+  $img1_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img2->value();
+  $img2_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img3->value();
+  $img3_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img4->value();
+  $img4_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img5->value();
+  $img5_url = file_create_url($img_field['uri']);
+  $audio_field = $node->field_yyhc_sub1_audio1->value();
+  $audio1_url = file_create_url($audio_field['uri']);  
+
+
+  $circle_img = "http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/imgs/yyhc_anchor2.png";
+
+  define('yyhc_page_sub16', '
+  <!DOCTYPE html>  
+  <html>  
+  <head>  
+      <title>'. $title. '</title>
+      <meta charset="utf-8" />
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />  
+      <meta name="viewport" content="width=device-width, user-scalable=0,initial-scale=1.0,maximum-scale=1.0, minimum-scale=1.0" />  
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/audioplayer.css">      
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/yyhc_sub4.css">
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/idangerous.swiper.css">
+  </head>  
+  <body>
+    <div class="maincontent">
+
+
+      <div class="anchor-head">
+        <div id="anchor">
+          <p class="anchor-title top-left">' .$title .'</p>
+        </div>
+      </div>
+
+      <div class="anchor-line">
+        <span id="a-circle"><img src = '.$circle_img.' alt="anchor circle"></span>
+        <div id="a-line"></div>
+      </div>
+
+      <div class="device">
+        <div class="swiper-container">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide">
+              <div class="text-border"> <p>'.$text1.'</p> </div>
+            </div>
+            <div class="swiper-slide"> <img src='.$img1_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img2_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img3_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img4_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img5_url.'> </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pagination"></div>
+
+      <div class="audio_wrapper">
+        <audio src="'.$audio1_url.'" preload="auto" controls></audio>
+      </div>
+
+    </div> 
+
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/idangerous.swiper.min.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/audioplayer.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/wechat_ajax_yyhc_sub4.js"></script>
+
+  </body>
+  </html>');
+  print yyhc_page_sub16;
+}
+
+
+function wechat_ajax_yyhc_sub17() {
+  $nid = 44;  //yyhc node id
+  $raw_node = node_load($nid);
+  $node = entity_metadata_wrapper('node', $raw_node);
+  $title = $node->field_yyhc_sub1_title->value();
+  $text1 = $node->field_yyhc_sub1_text1->value();
+  $img_field = $node->field_yyhc_sub1_img1->value();
+  $img1_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img2->value();
+  $img2_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img3->value();
+  $img3_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img4->value();
+  $img4_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img5->value();
+  $img5_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img6->value();
+  $img6_url = file_create_url($img_field['uri']);
+  $audio_field = $node->field_yyhc_sub1_audio1->value();
+  $audio1_url = file_create_url($audio_field['uri']);  
+
+
+  $circle_img = "http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/imgs/yyhc_anchor2.png";
+
+  define('yyhc_page_sub17', '
+  <!DOCTYPE html>  
+  <html>  
+  <head>  
+      <title>'. $title. '</title>
+      <meta charset="utf-8" />
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />  
+      <meta name="viewport" content="width=device-width, user-scalable=0,initial-scale=1.0,maximum-scale=1.0, minimum-scale=1.0" />  
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/audioplayer.css">      
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/yyhc_sub4.css">
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/idangerous.swiper.css">
+  </head>  
+  <body>
+    <div class="maincontent">
+
+
+      <div class="anchor-head">
+        <div id="anchor">
+          <p class="anchor-title top-left">' .$title .'</p>
+        </div>
+      </div>
+
+      <div class="anchor-line">
+        <span id="a-circle"><img src = '.$circle_img.' alt="anchor circle"></span>
+        <div id="a-line"></div>
+      </div>
+
+      <div class="device">
+        <div class="swiper-container">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide">
+              <div class="text-border"> <p>'.$text1.'</p> </div>
+            </div>
+            <div class="swiper-slide"> <img src='.$img1_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img2_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img3_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img4_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img5_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img6_url.'> </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pagination"></div>
+
+      <div class="audio_wrapper">
+        <audio src="'.$audio1_url.'" preload="auto" controls></audio>
+      </div>
+
+    </div> 
+
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/idangerous.swiper.min.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/audioplayer.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/wechat_ajax_yyhc_sub4.js"></script>
+
+  </body>
+  </html>');
+  print yyhc_page_sub17;
+}
+
+
+function wechat_ajax_yyhc_sub18() {
+  $nid = 45;  //yyhc node id
+  $raw_node = node_load($nid);
+  $node = entity_metadata_wrapper('node', $raw_node);
+  $title = $node->field_yyhc_sub1_title->value();
+  $text1 = $node->field_yyhc_sub1_text1->value();
+  $img_field = $node->field_yyhc_sub1_img1->value();
+  $img1_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img2->value();
+  $img2_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img3->value();
+  $img3_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img4->value();
+  $img4_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img5->value();
+  $img5_url = file_create_url($img_field['uri']);
+  $audio_field = $node->field_yyhc_sub1_audio1->value();
+  $audio1_url = file_create_url($audio_field['uri']);  
+
+
+  $circle_img = "http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/imgs/yyhc_anchor2.png";
+
+  define('yyhc_page_sub18', '
+  <!DOCTYPE html>  
+  <html>  
+  <head>  
+      <title>'. $title. '</title>
+      <meta charset="utf-8" />
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />  
+      <meta name="viewport" content="width=device-width, user-scalable=0,initial-scale=1.0,maximum-scale=1.0, minimum-scale=1.0" />  
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/audioplayer.css">      
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/yyhc_sub4.css">
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/idangerous.swiper.css">
+  </head>  
+  <body>
+    <div class="maincontent">
+
+
+      <div class="anchor-head">
+        <div id="anchor">
+          <p class="anchor-title top-left">' .$title .'</p>
+        </div>
+      </div>
+
+      <div class="anchor-line">
+        <span id="a-circle"><img src = '.$circle_img.' alt="anchor circle"></span>
+        <div id="a-line"></div>
+      </div>
+
+      <div class="device">
+        <div class="swiper-container">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide">
+              <div class="text-border"> <p>'.$text1.'</p> </div>
+            </div>
+            <div class="swiper-slide"> <img src='.$img1_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img2_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img3_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img4_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img5_url.'> </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pagination"></div>
+
+      <div class="audio_wrapper">
+        <audio src="'.$audio1_url.'" preload="auto" controls></audio>
+      </div>
+
+    </div> 
+
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/idangerous.swiper.min.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/audioplayer.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/wechat_ajax_yyhc_sub4.js"></script>
+
+  </body>
+  </html>');
+  print yyhc_page_sub18;
+}
+
+
+function wechat_ajax_yyhc_sub19() {
+  $nid = 46;  //yyhc node id
+  $raw_node = node_load($nid);
+  $node = entity_metadata_wrapper('node', $raw_node);
+  $title = $node->field_yyhc_sub1_title->value();
+  $text1 = $node->field_yyhc_sub1_text1->value();
+  $img_field = $node->field_yyhc_sub1_img1->value();
+  $img1_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img2->value();
+  $img2_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img3->value();
+  $img3_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img4->value();
+  $img4_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img5->value();
+  $img5_url = file_create_url($img_field['uri']);
+  $audio_field = $node->field_yyhc_sub1_audio1->value();
+  $audio1_url = file_create_url($audio_field['uri']);  
+
+
+  $circle_img = "http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/imgs/yyhc_anchor2.png";
+
+  define('yyhc_page_sub19', '
+  <!DOCTYPE html>  
+  <html>  
+  <head>  
+      <title>'. $title. '</title>
+      <meta charset="utf-8" />
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />  
+      <meta name="viewport" content="width=device-width, user-scalable=0,initial-scale=1.0,maximum-scale=1.0, minimum-scale=1.0" />  
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/audioplayer.css">      
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/yyhc_sub4.css">
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/idangerous.swiper.css">
+  </head>  
+  <body>
+    <div class="maincontent">
+
+
+      <div class="anchor-head">
+        <div id="anchor">
+          <p class="anchor-title top-left">' .$title .'</p>
+        </div>
+      </div>
+
+      <div class="anchor-line">
+        <span id="a-circle"><img src = '.$circle_img.' alt="anchor circle"></span>
+        <div id="a-line"></div>
+      </div>
+
+      <div class="device">
+        <div class="swiper-container">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide">
+              <div class="text-border"> <p>'.$text1.'</p> </div>
+            </div>
+            <div class="swiper-slide"> <img src='.$img1_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img2_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img3_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img4_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img5_url.'> </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pagination"></div>
+
+      <div class="audio_wrapper">
+        <audio src="'.$audio1_url.'" preload="auto" controls></audio>
+      </div>
+
+    </div> 
+
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/idangerous.swiper.min.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/audioplayer.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/wechat_ajax_yyhc_sub4.js"></script>
+
+  </body>
+  </html>');
+  print yyhc_page_sub19;
+}
+
+
+function wechat_ajax_yyhc_sub20() {
+  $nid = 47;  //yyhc node id
+  $raw_node = node_load($nid);
+  $node = entity_metadata_wrapper('node', $raw_node);
+  $title = $node->field_yyhc_sub1_title->value();
+  $text1 = $node->field_yyhc_sub1_text1->value();
+  $img_field = $node->field_yyhc_sub1_img1->value();
+  $img1_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img2->value();
+  $img2_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img3->value();
+  $img3_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img4->value();
+  $img4_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_yyhc_sub1_img5->value();
+  $img5_url = file_create_url($img_field['uri']);
+  $audio_field = $node->field_yyhc_sub1_audio1->value();
+  $audio1_url = file_create_url($audio_field['uri']);  
+
+
+  $circle_img = "http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/imgs/yyhc_anchor2.png";
+
+  define('yyhc_page_sub20', '
+  <!DOCTYPE html>  
+  <html>  
+  <head>  
+      <title>'. $title. '</title>
+      <meta charset="utf-8" />
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />  
+      <meta name="viewport" content="width=device-width, user-scalable=0,initial-scale=1.0,maximum-scale=1.0, minimum-scale=1.0" />  
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/audioplayer.css">      
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/yyhc_sub4.css">
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/idangerous.swiper.css">
+  </head>  
+  <body>
+    <div class="maincontent">
+
+
+      <div class="anchor-head">
+        <div id="anchor">
+          <p class="anchor-title top-left">' .$title .'</p>
+        </div>
+      </div>
+
+      <div class="anchor-line">
+        <span id="a-circle"><img src = '.$circle_img.' alt="anchor circle"></span>
+        <div id="a-line"></div>
+      </div>
+
+      <div class="device">
+        <div class="swiper-container">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide">
+              <div class="text-border"> <p>'.$text1.'</p> </div>
+            </div>
+            <div class="swiper-slide"> <img src='.$img1_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img2_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img3_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img4_url.'> </div>
+            <div class="swiper-slide"> <img src='.$img5_url.'> </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pagination"></div>
+
+      <div class="audio_wrapper">
+        <audio src="'.$audio1_url.'" preload="auto" controls></audio>
+      </div>
+
+    </div> 
+
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/idangerous.swiper.min.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/audioplayer.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/wechat_ajax_yyhc_sub4.js"></script>
+
+  </body>
+  </html>');
+  print yyhc_page_sub20;
+}
+
+function wechat_ajax_yyhc(){
+
+/*
+    <style>
+      #yyhc-img-list {
+        list-style: none;
+        padding : 0 0 0 0;
+        line-height : 0;
+      }
+    </style>
+*/
+  define('yyhc_page', '
+  <!DOCTYPE html>  
+  <html>  
+  <head>  
+      <title>语音画册</title>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />  
+      <meta name="viewport" content="width=device-width, user-scalable=0,initial-scale=1.0,maximum-scale=1.0, minimum-scale=1.0" />  
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/html5reset.css" />
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/gridsystem.css" />
+  </head>  
+  <body>
+    <div class="wrapper maincontent">
+      <div class="head-img">
+      </div>
+      <div class="head-title">
+      </div>
+
+      <ul id = "yyhc-img-list">
+      </ul>
+    </div>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/wechat_ajax_yyhc.js"></script>
+  </body>
+  </html>');
+  print yyhc_page;
+}
+
+function wechat_ajax_yyhc_data() {
+    $nid = 19;  //yyhc node id
+    $raw_node = node_load($nid);
+    $node = entity_metadata_wrapper('node', $raw_node);
+    $img_field = $node->field_head_img->value();
+    $img_url = file_create_url($img_field['uri']);
+    $text = $node->field_head_title->value();
+    $img_number = $node->field_img_number->value();
+    $a = array('head_img'=>$img_url, 'head_title'=>$text, );
+
+    for ($i = 1; $i <= $img_number; $i++) {
+
+      $img_value = $node->{'field_img_'.$i}->value();; 
+      $url = file_create_url($img_value['uri']);
+      $a['img'.$i] = $url;
+    }
+
+    $a['img_num'] = $img_number;
+    drupal_json_output($a);
+}
+
+function wechat_ajax_pywh(){
+
+  $nid = 17;  //yyhc node id
+  $raw_node = node_load($nid);
+  $node = entity_metadata_wrapper('node', $raw_node);
+  $title = $node->field_pywh_title->value();
+
+  $text1 = $node->field_pywh_description->value();
+  $text2 = $node->field_pywh_description2->value();
+  $text3 = $node->field_pywh_description3->value();
+  $text4 = $node->field_pywh_description4->value();
+  $text5 = $node->field_pywh_description5->value();
+
+  $img_field = $node->field_pywh_img1->value();
+  $img1_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_pywh_img2->value();
+  $img2_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_pywh_img3->value();
+  $img3_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_pywh_img4->value();
+  $img4_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_pywh_img5->value();
+  $img5_url = file_create_url($img_field['uri']);
+
+  $audio_field = $node->field_pywh_audio->value();
+  $audio1_url = file_create_url($audio_field['uri']);
+
+  define('pywh_page', '
+  <!DOCTYPE html>  
+  <html>  
+  <head>  
+      <title>'. $title. '</title>
+      <meta charset="utf-8" />
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />  
+      <meta name="viewport" content="width=device-width, user-scalable=0,initial-scale=1.0,maximum-scale=1.0, minimum-scale=1.0" />  
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/pywh.css" />
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/audioplayer.css">      
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/idangerous.swiper.css">
+  </head>  
+  <body>
+
+      <div class="device">
+        <div class="swiper-container">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide"> <img src='.$img1_url.'> </div>
+            <div class="swiper-slide"> <p>'.$text1.'</p> </div>
+            <div class="swiper-slide"> <img src='.$img2_url.'> </div>
+            <div class="swiper-slide"> <p>'.$text2.'</p> </div>
+            <div class="swiper-slide"> <img src='.$img3_url.'> </div>
+            <div class="swiper-slide"> <p>'.$text3.'</p> </div>
+            <div class="swiper-slide"> <img src='.$img4_url.'> </div>
+            <div class="swiper-slide"> <p>'.$text4.'</p> </div>
+            <div class="swiper-slide"> <img src='.$img5_url.'> </div>
+            <div class="swiper-slide"> <p>'.$text5.'</p> </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pagination"></div>
+
+      <div class="audio_wrapper">
+        <audio src="'.$audio1_url.'" preload="auto" controls></audio>
+      </div>
+
+
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/idangerous.swiper.min.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/audioplayer.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/wechat_ajax_pywh.js"></script>
+  </body>
+  </html>');
+  print pywh_page;
+}
+/*
+    <div class="maincontent">
+    </div>  <!--maincontent -->
+*/
+
+function wechat_ajax_pywh_data() {
+  //echo 'hello world';
+  //$a = array('one', 'two', 'two', 'three');
+  //drupal_json_output(array_unique($a));
+
+    $nid = 17;  //pywh node id
+    $raw_node = node_load($nid);
+    $node = entity_metadata_wrapper('node', $raw_node);
+    $img_field = $node->field_pywh_img1->value();
+    $img_url = file_create_url($img_field['uri']);
+    $text = $node->field_pywh_description->value();
+
+    $a = array('img'=>$img_url, 'pywh'=>$text, );
+    drupal_json_output(array_unique($a));
+}
+
+
+function wechat_ajax_aboutus(){
+
+  $nid = 23;  //yyhc node id
+  $raw_node = node_load($nid);
+  $node = entity_metadata_wrapper('node', $raw_node);
+  $title = $node->field_zxfw_title->value();
+
+
+
+  $img_field = $node->field_zxfw_img1->value();
+  $img1_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_zxfw_img2->value();
+  $img2_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_zxfw_img3->value();
+  $img3_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_zxfw_img4->value();
+  $img4_url = file_create_url($img_field['uri']);
+  $img_field = $node->field_zxfw_img5->value();
+  $img5_url = file_create_url($img_field['uri']);
+
+  $img1_link = $node->field_zxfw_url1->value();
+  $img2_link = $node->field_zxfw_url2->value();
+  $img3_link = $node->field_zxfw_url3->value();
+  $img4_link = $node->field_zxfw_url4->value();
+
+  /*
+  $img_field = $node->field_zxfw_img5->value();
+  $img5_url = file_create_url($img_field['uri']);
+  $img5_link = $node->field_zxfw_url5->value();
+  */
+
+  define('aboutus_page', '
+  <!DOCTYPE html>  
+  <html>  
+  <head>  
+      <title>'.$title.'</title>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />  
+      <meta name="viewport" content="width=device-width, user-scalable=0,initial-scale=1.0,maximum-scale=1.0, minimum-scale=1.0" />  
+      <link rel="stylesheet" type="text/css" href="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/css/zxfw.css" />
+  </head>  
+  <body>
+    <div class="maincontent">
+      <div class="wrapper">
+        <div class="item"><a href="' . $img1_link . '"><img src="' . $img1_url . '" alt="平遥旅游局客服中心"/></a> </div>
+        <div class="item"><a href="' . $img2_link . '"><img src="' . $img2_url . '" alt="平遥味道卡"/></a> </div>
+        <div class="item"><a href="' . $img3_link . '"><img src="' . $img3_url . '" alt="梦乡网平遥服务处"/></a> </div>
+        <div class="item"><img src="' . $img5_url . '" alt="平遥旅游咨询电话"/></div>
+      </div>
+
+    </div>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="http://mxweixin.dreamland360.com/sites/all/modules/wechat_ajax/js/wechat_ajax_zxfw.js"></script>
+  </body>
+  </html>');
+/* remove 马普国旅
+        <div class="item"><a href="' . $img4_link . '"><img src="' . $img4_url . '" alt="马普国际旅行社"/></a> </div>
+*/
+  print aboutus_page;
+}
+
+function wechat_ajax_aboutus_data() {
+  //echo 'hello world';
+  //$a = array('one', 'two', 'two', 'three');
+  //drupal_json_output(array_unique($a));
+
+    $nid = 23;  //about us node id
+    $raw_node = node_load($nid);
+    $node = entity_metadata_wrapper('node', $raw_node);
+    $pyzxdh_txt = $node->field_zxfw_pyzxdh->value();
+
+    $a = array('pyzxdh_txt'=>$pyzxdh_txt);
+    drupal_json_output(array_unique($a));
+}
+
+
+function wechat_ajax_call_back($page_callback_result) {
+  //dpm($page_callback_result);
+  //$content = drupal_render($page_callback_result);
+  // Add CSS ans JS files, add some markup
+    $html = '<html><head><title></title>'  . '</head><body class="jquery-ajax-load">' . $page_callback_result . '</body></html>';
+    print $html;
+  // Perform end-of-request tasks.
+}
+

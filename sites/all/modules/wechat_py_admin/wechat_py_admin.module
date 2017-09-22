@@ -1,0 +1,783 @@
+<?php
+
+define('MENU_WECHAT_PY_ADMIN', 'menu-py-admin');
+
+/**
+ * hook_permission()
+ */
+function wechat_py_admin_permission() {
+  return array(
+    //general permission for py administrator
+    'wechat py admin module permission' => array(
+      'title' => t('Access wechat py admin module'),
+      'description' => t('访问梦乡平遥游管理模块'),
+    ),
+
+    //only for py news permission
+    'wechat py issue news permission' => array(
+      'title' => t('微信平遥发布消息权限'),
+      'description' => t('发布消息权限'),
+    ),
+
+    //only for py promote information permission
+    'wechat py adv information' => array(
+      'title' => t('微信平遥广告信息发布权限'),
+      'description' => t('广告信息发布消息权限'),
+    ),
+    //only for py administrator
+    'wechat py hotel ranking permission manage page' => array(
+      'title' => t('Access wechat hotel ranking page'),
+      'description' => t('访问酒店排名模块'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu()
+ */
+function wechat_py_admin_menu(){
+  
+  $items['wechat-py-admin'] = array(
+    'menu_name' => MENU_WECHAT_PY_ADMIN,
+    'title' => '梦乡平遥游管理主页面',
+    'page callback' => 'menu_wechat_py_admin_form',
+    'access callback' => 'user_access',
+    'access arguments' => array('wechat py admin module permission'),
+    'expanded' => TRUE,
+    'weight' => 0,
+  );
+
+  $items['wechat-py-admin/welcome-page'] = array(
+    'menu_name' => MENU_WECHAT_PY_ADMIN,
+    'title' => '管理欢迎页面',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('menu_wechat_py_admin_welcome_page_form'),
+    'description' => '修改编辑微信欢迎页面',
+    'access callback' => 'user_access',
+    'access arguments' => array('wechat py admin module permission'),
+    'weight' => 1,
+    'file' => 'wechat_py_admin_welcome_page_form.inc',
+  );
+
+  $items['wechat-py-admin/notify-message'] = array(
+    'menu_name' => MENU_WECHAT_PY_ADMIN,
+    'title' => '群发图文通知',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('menu_wechat_py_admin_notify_msg_form'),
+    'description' => '查看编辑分场景二维码图片',
+    'access callback' => 'user_access',
+    'access arguments' => array('wechat py issue news permission'),
+    'weight' => 2,
+    'file' => 'wechat_py_admin_notify_msg_form.inc',
+  );
+
+  $items['wechat-py-admin/notify-message/%/edit'] = array(
+    'menu_name' => MENU_WECHAT_PY_ADMIN,
+    'title' => '编辑一组消息内容',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('menu_wechat_py_admin_news_item_form', 2), //for news item menu link
+    'access callback' => 'user_access',
+    'access arguments' => array('wechat py issue news permission'),
+    'weight' => 3,
+    //do not use one file to store multiple form function, might be performance issue
+    'file' => 'wechat_py_admin_notify_news_item_form.inc',
+  );
+
+  $items['wechat-py-admin/qrscene'] = array(
+    'menu_name' => MENU_WECHAT_PY_ADMIN,
+    'title' => '分场景二维码图片',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('menu_wechat_py_admin_qrscene_form'),
+    'description' => '查看编辑分场景二维码图片',
+    'access callback' => 'user_access',
+    'access arguments' => array('wechat py admin module permission'),
+    'weight' => 4,
+    'file' => 'wechat_py_admin_qrscene_form.inc',
+  );
+
+  $items['wechat-py-admin/wechat-py-user'] = array(
+    'menu_name' => MENU_WECHAT_PY_ADMIN,
+    'title' => '平遥微信服务号用户管理',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('menu_wechat_py_admin_user_form'),
+    'description' => '所有已关注用户',
+    'access callback' => 'user_access',
+    'access arguments' => array('wechat py admin module permission'),
+    'weight' => 5,
+    'file' => 'wechat_py_admin_user_form.inc',
+  );
+
+  $items['wechat-py-admin/wechat-forward-user'] = array(
+    'menu_name' => MENU_WECHAT_PY_ADMIN,
+    'title' => '转发新闻消息',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('menu_wechat_py_admin_forward_news_form'),
+    'description' => '所有已关注用户',
+    'access callback' => 'user_access',
+    'access arguments' => array('wechat py admin module permission'),
+    'weight' => 6,
+    'file' => 'wechat_py_admin_forward_user_form.inc',
+  );
+
+  $items['wechat-py-admin/wechat-forward-user/news'] = array(
+    'title' => '消息转发',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+  );
+
+  $items['wechat-py-admin/wechat-forward-user/user'] = array(
+    'title' => '搜索用户表',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('menu_wechat_py_admin_forward_user_form'),
+    'description' => '搜索用户信息',
+    'access callback' => 'user_access',
+    'access arguments' => array('wechat py admin module permission'),
+    'file' => 'wechat_py_admin_forward_user_form.inc',
+    'type' => MENU_LOCAL_TASK,
+  );
+
+  $items['wechat-py-admin/promote-adv-info'] = array(
+    'menu_name' => MENU_WECHAT_PY_ADMIN,
+    'title' => '信息发布平台',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('menu_wechat_py_admin_promote_adv_info_form'),
+    'description' => '梦乡平遥游信息发布菜单',
+    'access callback' => 'user_access',
+    'access arguments' => array('wechat py adv information'),
+    'weight' => 7,
+    'file' => 'wechat_py_admin_promote_adv_info_form.inc',
+  );
+
+  $items['wechat-py-admin/event-statistic'] = array(
+    'menu_name' => MENU_WECHAT_PY_ADMIN,
+    'title' => '用户事件统计',
+    //'type' => MENU_CALLBACK,
+    //'page callback' => 'menu_wechat_py_event_statistic_form',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('menu_wechat_py_event_statistic_form'),
+    'description' => '梦乡平遥游事件统计表',
+    'access callback' => 'user_access',
+    //'access arguments' => array('wechat py admin module permission'),
+    'access arguments' => array('wechat py adv information'),
+    'weight' => 8,
+    'file' => 'wechat_py_admin_event_statistic_form.inc',
+  );
+
+  $items['wechat-py-admin/hotel-community'] = array(
+    'menu_name' => MENU_WECHAT_PY_ADMIN,
+    'title' => '客栈微论坛管理',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('menu_wechat_py_admin_hotel_community_form'),
+    'description' => '平遥客栈微论坛管理',
+    'access callback' => 'user_access',
+    //'access arguments' => array('wechat py admin module permission'),
+    'access arguments' => array('wechat py admin module permission'),
+    'weight' => 9,
+    'file' => 'wechat_py_admin_hotel_community_form.inc',
+  );
+
+  $items['wechat-py-admin/hotel-ranking'] = array(
+    'menu_name' => MENU_WECHAT_PY_ADMIN,
+    'title' => t('酒店排名管理'),
+    'description' => t('浏览，修改酒店排名'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('menu_wechat_hotel_ranking_form'),
+    'description' => '平遥酒店排名管理',
+    'access callback' => 'user_access',
+    'access arguments' => array('wechat py admin module permission'),
+    'weight' => 10,
+    'file' => 'wechat_py_admin_hotel_ranking_form.inc',
+  );
+
+  return $items;
+}
+
+/**
+ * wechat api mange callback page function
+ */
+function menu_wechat_py_admin_form(){
+  $render_array = array();
+  $render_array['header'] = array(
+    '#markup' => t('欢迎进入梦乡平遥游管理模块'),
+  );
+
+  return $render_array;
+}
+
+
+/**
+ * Implement hook_node_delete($node) after news deleted
+ */
+function wechat_py_admin_node_delete($node){
+
+  //for hotel ranking node
+  if ($node->type == 'node_hotel_list_item') {
+    if (db_table_exists('wechat_hotel_ranking')){
+      db_delete('wechat_hotel_ranking')
+      ->condition('uid', $node->uid)
+      ->execute();
+    }else{
+      drupal_set_message('do not find table name wechat_hotel_ranking');
+    }
+  }
+
+  //for wechat daily news node
+  if($node->type == 'wechat_daily_news'){
+
+    //get news index for delete all if no news in table
+    $query = db_select('wechat_py_daily_news_table', 't')
+      ->fields('t', array('news_index'))
+      ->condition('node_id', $node->nid, '=');
+    $index = $query->execute()->fetchAssoc();
+    $news_index = $index['news_index'];
+
+    db_delete('wechat_py_daily_news_table')
+    ->condition('node_id', $node->nid)
+    ->execute();
+
+    $result = db_query('SELECT t.node_id FROM {wechat_py_daily_news_table}
+                        t WHERE t.news_index = :index', array(':index' => $news_index));
+    $number = $result->rowCount();
+    if($number == 0){
+      //delete news table item
+      db_delete('wechat_py_daily_news_broadcast_table')
+      ->condition('news_index', $news_index)
+      ->execute();
+    }
+  }
+}
+
+/**
+ * hook_node_update($node)
+ */
+function wechat_py_admin_node_update($node){
+  
+  //for hotel ranking node
+  if ($node->type == 'node_hotel_list_item') {
+    if (db_table_exists('wechat_hotel_ranking')){
+      db_update('wechat_hotel_ranking')
+      ->fields(array('hotel_name' => trim($node->title)))
+      ->condition('uid', $node->uid)
+      ->execute();
+    }else{
+      drupal_set_message('do not find table name wechat_hotel_ranking');
+    }
+  }
+}
+
+/**
+ * Implements hook_node_presave($node)
+ **/
+function wechat_py_admin_node_presave($node) {
+
+  global $user, $base_url;
+  
+  //dpm($node);
+  //prepared dld article for send broadcast news
+  if ($node->type == 'wechat_daily_news') {
+
+    //dpm($node);
+    module_load_include('inc', 'wechat_api', 'wechat_api_send_msg_tpl');
+
+    $cover_file = file_load($node->field_news_picture[LANGUAGE_NONE][0]['fid']);
+    $cover_pic = $cover_file->uri;
+    //call temp media file to get image media_id
+    $json_data = wechat_api_upload_temp_media_file($cover_pic, 'image');
+
+    if ($json_data == '') {
+      drupal_set_message("封面图片未能上传, 请重新编辑和保存", $type = 'error');
+    }
+    //set media id for article
+    $node->field_cover_pic_thumb_media_id[LANGUAGE_NONE][0]['value'] = $json_data->media_id;
+
+    // Create a DOM object.
+    $html_obj = new simple_html_dom();
+
+    // Load HTML from a string.
+    $html_obj->load($node->field_news_content[LANGUAGE_NONE][0]['value']);
+
+    // responsive all image style.
+    foreach ($html_obj->find('img') as $image_obj ) {
+      $image_obj->attr['style'] = 'height: auto;max-width: 100%;';
+    }
+
+    // Release resources to avoid memory leak in some versions.
+
+// do not use file name in html->save()
+//    $scheme = file_default_scheme() . '://';
+//    $dld_article_html_content = file_create_url($scheme) . 'dld_article_html_content';
+    $string = $html_obj->save();
+    $node->field_news_content[LANGUAGE_NONE][0]['value'] = $string;
+
+    $scheme = file_default_scheme() . '://';
+    // upload image and get url to replace local url.
+    foreach ($html_obj->find('img') as $image_obj ) {
+      //dpm($image_obj->attr['src']);
+      $tmp = '';
+      if (preg_match('@^http.*www.*com@i', $image_obj->attr['src'], $matches)) {
+        $tmp = preg_split("@^http.*www.*com@i", $image_obj->attr['src']);
+        //dpm($tmp, 'www');
+        $img_uri = '/var/www/dreamland360_intro' . end($tmp);
+      } else if (preg_match('@^http.*mxweixin.*com@i', $image_obj->attr['src'], $matches)) {
+        $tmp = preg_split("@^http.*mxweixin.*com@i", $image_obj->attr['src']);
+        //dpm($tmp, 'mxweixin');
+        $img_uri = DRUPAL_ROOT . end($tmp);
+      } else {
+        dpm($image_obj->attr['src'], 'no match');
+      }
+
+      //dpm($img_uri);
+      //upload image to server
+      $json_url = wechat_api_upload_image_file($img_uri, '');
+      if (!empty($json_url->url)) {
+        $image_obj->attr['src'] = $json_url->url;
+      }
+    }
+
+    $string = $html_obj->save();
+
+    $node->field_send_prepared_content[LANGUAGE_NONE][0]['value'] = $string;
+
+    $html_obj->clear();
+    unset($html_obj);
+  }
+
+}
+/**
+ * Implement hook_node_insert($node) after node insert database
+ */
+function wechat_py_admin_node_insert($node){
+
+  //for hotel ranking node
+  if ($node->type == 'node_hotel_list_item') {
+    if (db_table_exists('wechat_hotel_ranking')){
+      $row = array('uid' => $node->uid,
+                   'ranking' => 0,
+                   'hotel_name' => trim($node->title));
+      db_insert('wechat_hotel_ranking')->fields($row)->execute();
+    }else{
+      drupal_set_message('do not find table name wechat_hotel_ranking');
+    }
+  }
+
+  //for wechat daily news node
+  if($node->type == 'wechat_daily_news'){
+    $news_time = variable_get('py_daily_news_created', 0);
+
+    if($news_time == 0){  //only create node into news item
+
+      $news_index = variable_get('py_daily_news_index', 0);
+      if($news_index != 0){
+        db_insert('wechat_py_daily_news_table')
+        ->fields(array(
+              'news_index' => $news_index,
+              'node_id' => $node->nid,
+          ))
+        ->execute();
+
+        //goto news item page
+        drupal_goto('wechat-py-admin/notify-message/' . $news_index . '/edit');
+      }
+
+    }else{ //insert two table when create a new news
+
+      $news_index = db_insert('wechat_py_daily_news_broadcast_table')
+      ->fields(array(
+            'created' => $news_time,
+            'userid' => $node->uid,
+        ))
+      ->execute(); 
+      if($news_index > 0){
+        db_insert('wechat_py_daily_news_table')
+        ->fields(array(
+              'news_index' => $news_index,
+              'node_id' => $node->nid,
+          ))
+        ->execute(); 
+      }
+      //goto news item page
+      drupal_goto('wechat-py-admin/notify-message/' . $news_index . '/edit');
+    }
+  }
+}
+
+/**
+ * Implements hook_form_alter()
+ */
+function wechat_py_admin_form_alter(&$form, &$form_state, $form_id){
+  global $user;
+
+  if($form_id == 'wechat_daily_news_node_form'){
+    $form['title']['#prefix'] = t('新闻标题不要太长，防止在微信上显示过长。');
+    $form['field_cover_pic_thumb_media_id']['#access'] = FALSE;
+  }
+
+  if($form_id == 'py_issue_info_node_form'){
+    $form['title']['#prefix'] = t('名称最多可输入12字');
+    $form['title']['#maxlength'] = 12;
+    $form['title']['#attributes'] = array('style' => array('width: 30em;'));
+    //dpm($form);
+    //dpm(user_roles(), 'user roles');
+    $role = array_slice($user->roles, 1, 1, true);
+    $rid = array_keys($role);
+    switch ($rid[0]) {
+      case '1'://匿名用户
+        break;
+      case '2'://注册用户
+        break;
+      case '3'://administrator
+        $form['title']['#title'] = '管理员';
+        break;
+      case '7'://美食攻略管理员
+        $form['title']['#title'] = '美食餐厅名称';
+        break;
+      case '8'://工艺精品管理员
+        $form['title']['#title'] = '商家名称';
+        break;
+      case '9'://字画篆刻管理员
+        $form['title']['#title'] = '商家或名人名称';
+        break;
+      case '10'://旅游线路管理员
+        break;
+      case '11'://其他推荐管理员
+        $form['title']['#title'] = '商家或店铺名称';
+        break;
+      default:
+        break;
+    }
+  }
+
+}
+
+
+/**
+ * Implements hook_cron().
+ * use crontab -e
+ * put a line
+ * 0 * * * * curl -s http://wechatsd.dreamland360.com/cron.php?cron_key=xxxx. cron_key generated by drupal
+ * Every hour server cron will call cron. But it's too tight schedule for get user list and information.
+ * We have to set a interval 10 hours basically to get user list. 
+ * Every call worker spend 5 mintues which based on users count is not big. Should adjust if user count > 50000
+ *
+ */
+function wechat_py_admin_cron() {
+
+  $interval = variable_get('cron_get_user_interval', 0);
+  //if time > 10 hours then call get user
+  if (time() >= $interval) {
+    //set 10 hours interval for get user
+    variable_set('cron_get_user_interval', time() + 60*60*10);
+    //call get user queue
+    $queue = DrupalQueue::get('wechat_py_get_user_queue');
+    $queue->createItem('wechat_py_get_user_queue');
+  }
+}
+
+/**
+ * Implements hook_cron_queue_info().
+ *
+ * hook_cron_queue_info() and family are new since Drupal 7, and allow any
+ * process to add work to the queue to be acted on when cron runs. Queues are
+ * described and worker callbacks are provided, and then only the worker
+ * callback needs to be implemented.
+ *
+ * All the details of queue use are done by the cron_queue implementation, so
+ * one doesn't need to know much about DrupalQueue().
+ *
+ * @see queue_example.module
+ */
+function wechat_py_admin_cron_queue_info() {
+  $queues['wechat_py_get_user_queue'] = array(
+    'worker callback' => 'wechat_py_get_user_queue_worker',
+    'time' => 600,  //spend 160 seconds insert 600 rows into table. 
+                    //5 mintues is enough now, should call this work by manually.
+                    //each time can update 10000, should spend 160/600*10000 = 45 mintues
+                    //then call get user next
+  );
+
+  return $queues;
+}
+
+/**
+ * Get user info and insert into table
+ */
+function get_user_info_from_server1($openid){
+
+  //call and get user info
+  $result = wechat_api_get_user_info($openid);
+  /*
+  watchdog('get user info',
+           'get_user_info_from_server1 user open id = @openid and result <pre>@result</pre>',
+           array('@openid' => $openid, '@result' => print_r($result, TRUE)),
+           $severity = WATCHDOG_ERROR);
+  */
+
+  if($result == ''){
+    watchdog('get user info',
+             '获取用户信息发生错误! user open id = @openid',
+             array('@openid' => $openid),
+             $severity = WATCHDOG_ERROR);
+  }else{
+
+    //first find new open id, it doesn't include table
+    $squery = db_select('wechat_py_subscribe_user_table', 't')
+      ->condition('t.openid', $result->openid)
+      ->fields('t', array('openid'))
+      ->execute();
+
+    $nums = $squery->rowCount();
+
+    if($nums == 0) {
+      //insert new openid
+      $emoji = base64_encode($result->nickname);
+      db_insert('wechat_py_subscribe_user_table')
+        ->fields(array(
+          'openid' => $result->openid,
+          'subscribe' => $result->subscribe,
+          'nickname' => $emoji,
+          'sex' => $result->sex,
+          'language' => $result->language,
+          'city' => $result->city,
+          'province' => $result->province,
+          'country' => $result->country,
+          'headimgurl' => $result->headimgurl,
+          'subscribe_time' => $result->subscribe_time,
+          'unionid' => '')) //Read wechat api unionid doc
+        ->execute();
+    } else {
+      //update nick name ....
+      $emoji = base64_encode($result->nickname);
+      //update openid, if return value is 0 then, insert
+      $query = db_update('wechat_py_subscribe_user_table')
+        ->fields(array(
+          'subscribe' => $result->subscribe,
+          'nickname' => $emoji,
+          'sex' => $result->sex,
+          'language' => $result->language,
+          'city' => $result->city,
+          'province' => $result->province,
+          'country' => $result->country,
+          'subscribe_time' => $result->subscribe_time,
+          'headimgurl' => $result->headimgurl,))
+        ->condition('openid', $result->openid);
+      $rows = $query->execute();
+    }
+
+  }
+}
+/**
+ * Get user info and insert into table
+ */
+function get_user_info_from_server($openid){
+
+  //call and get user info
+  $result = wechat_api_get_user_info($openid);
+
+  if($result == ''){
+    watchdog('get user info',
+             '获取用户信息发生错误! user open id = @openid',
+             array('@openid' => $openid),
+             $severity = WATCHDOG_ERROR);
+  }else{
+    //insert user info, first check if openid exist in the table
+    //watchdog('get user info', 'user info = <pre>@openid</pre>', array('@openid' => print_r($result, TRUE)));
+
+    try {
+      // No use for emoji, should use emoji.php
+      /*
+      if(!mb_check_encoding($result->nickname, 'UTF-8')){
+        watchdog('wechat emoji',
+                 'found non utf8 char @error',
+                 array('@error' => $result->nickname));
+      }
+      //'nickname' => mb_check_encoding($result->nickname, 'UTF-8') ? 
+      //                                $result->nickname : utf8_encode($result->nickname),
+      */
+
+      db_insert('wechat_py_subscribe_user_table')
+        ->fields(array(
+          'openid' => $result->openid,
+          'subscribe' => $result->subscribe,
+          'nickname' => $result->nickname,
+          'sex' => $result->sex,
+          'language' => $result->language,
+          'city' => $result->city,
+          'province' => $result->province,
+          'country' => $result->country,
+          'headimgurl' => $result->headimgurl,
+          'subscribe_time' => $result->subscribe_time,
+          'unionid' => '')) //Read wechat api unionid doc
+        ->execute();
+        //->condition('openid', $openid, '<>')  //mysql insert does not allow where <>
+    }
+    catch(Exception $e) {
+      $errorinfo = $e->errorInfo;
+
+      watchdog('before nickname get user info',
+                 'insert user openid: @openid info failed = <pre>@error</pre>',
+                 array('@openid' => $result->openid, 
+                       '@error' => print_r($errorinfo, TRUE)));
+      if(($errorinfo[0] == 23000) && ($errorinfo[1] == 1062)) {
+        //user table has this open id and update user info
+        db_update('wechat_py_subscribe_user_table')
+          ->fields(array(
+            'nickname' => $result->nickname,
+            'sex' => $result->sex,
+            'language' => $result->language,
+            'city' => $result->city,
+            'province' => $result->province,
+            'country' => $result->country,
+            'headimgurl' => $result->headimgurl,))
+          ->condition('openid', $result->openid)
+          ->execute();
+
+      } else if(($errorinfo[0] != 23000) && ($errorinfo[1] != 1062)) {
+
+        //non repeat insert error and it's emoji error
+        if(($errorinfo[0] == 'HY000') && ($errorinfo[1] == 1366)) {
+          
+          /*
+          $emoji = base64_encode('emoji:' . $result->nickname);
+          db_insert('wechat_py_subscribe_user_table')
+            ->fields(array(
+              'openid' => $result->openid,
+              'subscribe' => $result->subscribe,
+              'nickname' => $emoji,
+              'sex' => $result->sex,
+              'language' => $result->language,
+              'city' => $result->city,
+              'province' => $result->province,
+              'country' => $result->country,
+              'headimgurl' => $result->headimgurl,
+              'subscribe_time' => $result->subscribe_time,
+              'unionid' => '')) //Read wechat api unionid doc
+            ->execute();
+            */
+
+        } else {  //other error, can't handle it
+
+          watchdog('get user info',
+                   'insert user openid: @openid info failed = <pre>@error</pre>',
+                   array('@openid' => $result->openid, 
+                         '@error' => print_r($errorinfo, TRUE)));
+        }
+        /*
+        watchdog('get user info',
+                 '重复插入 user openid = @openid',
+                 array('@openid' => $openid),
+                 $severity = WATCHDOG_ERROR);
+        */
+        /*
+        watchdog('get user info',
+                 'insert user info failed = <pre>@error</pre>',
+                 array('@error' => print_r($errorinfo, TRUE)));
+        */
+      }
+    }
+  }
+}
+
+/**
+ * cron worker callback for wechat access token queues.
+ *
+ * @param object $item
+ *   Any object to be worked on.
+ */
+function wechat_py_get_user_queue_worker() {
+
+  $start_time = time();
+
+  module_load_include('inc', 'wechat_api', 'wechat_api_send_msg_tpl');
+  $user_list = wechat_api_get_user_list();
+
+  if($user_list == ''){
+    watchdog('get user info', 'get user list error in @line line:@filename',
+      array(
+      '@line' => __LINE__,
+      '@filename' => __FILE__,
+      ),
+      $severity = WATCHDOG_ERROR);
+    return;
+  }
+  
+  //get user infomation and save to wechat_py_subscribe_user_table table
+  $id_array = $user_list->data->openid;
+  foreach($id_array as $id => $openid){
+    get_user_info_from_server1($openid);
+  }
+
+  if($user_list->total > 10000){
+    //calculate cycle number for get next. Nofity the first 10000 value has been inserted.
+    $cycle = floor($user_list->total/$user_list->count);
+
+    for($i = 0; $i < $cycle; $i++){
+      $next_openid = $user_list->next_openid;
+
+      //get next user list
+      $user_list = wechat_api_get_user_list_next($next_openid);
+      if($user_list == ''){
+        watchdog('get user list next', 'get user list next error in @openid',
+          array('@openid' => $next_openid),
+          $severity = WATCHDOG_ERROR);
+        break;
+      }
+
+      //insert user info into table
+      $id_array = $user_list->data->openid;
+      foreach($id_array as $id => $openid){
+        get_user_info_from_server1($openid);
+      }
+    }
+  }
+
+  watchdog('get user list and info', 'all user info has been fetched');
+
+  $end_time = time();
+  $stime = $end_time - $start_time;
+
+  watchdog('get user list and info', 'spend @time seconds update', array('@time' => $stime));
+}
+
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function wechat_py_admin_form_user_login_block_alter(&$form, &$form_state) {
+  //dpm($form);
+  $form['name']['#title'] = t('账号(使用邮箱地址或者用户名)');
+  $form['name']['#size'] = 60;
+  $form['pass']['#size'] = 60;
+}
+
+/*
+function theme_menu_wechat_py_admin_list($variables) {
+  $title = $variables['title'];
+  $items = $variables['items'];
+
+  // Add the title to the list theme and
+  // state the list type. This defaults to 'ul'.
+  // Add a css class so that you can modify the list styling.
+  // We'll just call theme('item_list') to render.
+  $variables = array(
+    'items' => $items,
+    'title' => $title,
+  );
+  $output = theme('item_list', $variables);
+  return $output;
+}
+*/
+
+/**
+ * Implements hook_theme($existing, $type, $theme, $path).
+ */
+function wechat_py_admin_theme($existing, $type, $theme, $path){
+  return array(
+    'menu_wechat_hotel_ranking_form' => array(
+      'render element' => 'form',
+      'file' => 'wechat_py_admin_hotel_ranking_form.inc',
+    ),
+  );
+}
+
+/**
+ * End of wechat py admin module
+ */

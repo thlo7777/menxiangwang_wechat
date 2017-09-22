@@ -1,0 +1,8 @@
+name = wechat manage
+description = wechat manage module for wechat client page
+core = 7.x
+
+files[] = wechat_manage.module
+
+; Information added by drupal.org packaging script on 2013-10-25
+

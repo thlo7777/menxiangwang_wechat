@@ -1,0 +1,1007 @@
+<?php
+
+/**
+ * @file
+ * Module file for wechat hotel.
+ */
+
+define('MENU_HOTEL_MANAGE', 'menu-hotel-manage');
+
+/**
+ * Implements hook_permission().
+ *
+ * Since the access to our new custom pages will be granted based on
+ * special permissions, we need to define what those permissions are here.
+ * This ensures that they are available to enable on the user role
+ * administration pages.
+ */
+function wechat_hotel_permission() {
+  return array(
+    'access hotel manage page' => array(
+      'title' => t('Access hotel manage page'),
+      'description' => t('Allow users to access simple page'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_help()
+ */
+
+
+/**
+ * Implements hook_menu().
+ *
+ * Because hook_menu() registers URL paths for items defined by the function, it
+ * is necessary for modules that create pages. Each item can also specify a
+ * callback function for a given URL. The menu items returned here provide this
+ * information to the menu system.
+ *
+ * @see hook_menu()
+ */
+
+function wechat_hotel_menu() {
+
+  $items['hotels/hotel-item-list'] = array(
+    'title' => '酒店列表图片',
+
+    // Machine name of the menu in which the link should appear.
+    'menu_name' => MENU_HOTEL_MANAGE,
+    'page callback' => 'menu_hotel_item_list_page_callback',
+    'access callback' => 'user_access',
+    'access arguments' => array('access hotel manage page'),
+    'weight' => 0,
+  );
+
+  $items['hotels/hotel-imgs'] = array(
+    'title' => '酒店外观图片',
+
+    // Machine name of the menu in which the link should appear.
+    'menu_name' => MENU_HOTEL_MANAGE,
+    'page callback' => 'menu_hotel_image_page_callback',
+    'access callback' => 'user_access',
+    'access arguments' => array('access hotel manage page'),
+    'weight' => 1,
+  );
+
+  $items['hotels/hotel-intro'] = array(
+    'title' => '酒店信息',
+
+    // Machine name of the menu in which the link should appear.
+    'menu_name' => MENU_HOTEL_MANAGE,
+    'page callback' => 'menu_hotel_intro_page_callback',
+    'access callback' => 'user_access',
+    'access arguments' => array('access hotel manage page'),
+    'weight' => 2,
+  );
+
+  $items['hotels/room-info'] = array(
+    'title' => '客房信息',
+
+    // Machine name of the menu in which the link should appear.
+    'menu_name' => MENU_HOTEL_MANAGE,
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('menu_hotel_room_info_page_callback'),
+    'access callback' => 'user_access',
+    'access arguments' => array('access hotel manage page'),
+    'weight' => 3,
+  );
+
+  $items['hotels/user'] = array(
+    'title' => '管理员信息',
+
+    // Machine name of the menu in which the link should appear.
+    'menu_name' => MENU_HOTEL_MANAGE,
+    'page callback' => 'menu_hotel_admin_callback',
+    'access callback' => 'user_access',
+    'access arguments' => array('access hotel manage page'),
+    'weight' => 4,
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_theme($existing, $type, $theme, $path).
+ */
+function wechat_hotel_theme($existing, $type, $theme, $path){
+  return array(
+    'room_info_list_form' => array(
+      'render element' => 'form',
+    ),
+  );
+}
+
+function theme_room_info_list_form($variables) {
+  $form = $variables['form'];
+  // Initialize the variable which will store our table rows.
+  $rows = array();
+
+  foreach (element_children($form) as $id) {
+
+    // We are now ready to add each element of our $form data to the $rows
+    // array, so that they end up as individual table cells when rendered
+    // in the final table.  We run each element through the drupal_render()
+    // function to generate the final html markup for that element.
+    $rows[] = array(
+      'data' => array(
+        drupal_render($form[$id]['room_type']),
+        drupal_render($form[$id]['room_spare']),
+        drupal_render($form[$id]['room_price']),
+        drupal_render($form[$id]['room_bed']),
+        drupal_render($form[$id]['room_number']),
+      ),
+    );
+  }
+
+  $header = array(t('客房类型'), t('空余房间'), t('客房价格'), t('客房床铺'), t('客房人数'));
+
+  $table_id = 'room-items-table';
+
+  $form['table'] = array(
+    '#theme' => 'table',
+    '#header' => $header,
+    '#rows' => $rows,
+  );
+
+/*
+ * The snippet is same functionality withabove code.
+
+  $output = theme('table', array(
+    'header' => $header,
+    'rows' => $rows,
+  ));
+*/
+  $output = drupal_render_children($form);
+
+  return $output;
+}
+
+/**
+ * page callback for hotels/room-info
+ */
+function menu_hotel_room_info_page_callback($form, &$form_state){
+  global $user;
+  $render_array = array();
+
+  $render_array['create'] = array(
+    '#type' => 'fieldset', 
+    '#title' => t('提示'), 
+    '#weight' => 0, 
+    '#collapsible' => TRUE, 
+    '#collapsed' => FALSE,
+  );
+
+  $render_array['create']['link'] = array(
+    '#type' => 'link',
+    '#title' => t('创建新的客房信息'),
+    '#href' => 'node/add/node-hotel-room-info',
+    '#attributes' => array('class' => array('new-hotel-link')),
+    '#weight' => 0, 
+  );
+
+  $render_array['room list'] = array(
+    '#type' => 'fieldset', 
+    '#title' => t('酒店客房信息'), 
+    '#weight' => 1, 
+    '#collapsible' => TRUE, 
+    '#collapsed' => FALSE,
+  );
+
+/*
+  $view = views_embed_view('hotel_room_info_list');
+  $render_array['room list']['link'] = array(
+    '#markup' => $view,
+  );
+*/
+
+  $render_array['room list']['table'] = array(
+  //$render_array['room list'] = array(
+    '#tree' => TRUE,
+    '#theme' => 'room_info_list_form',
+    '#weight' => 2, 
+  );
+
+  $query = new EntityFieldQuery();
+
+  $query->entityCondition('entity_type', 'node')
+  ->entityCondition('bundle', 'node_hotel_room_info')
+  ->propertyCondition('status', NODE_PUBLISHED)
+  ->propertyCondition('uid', $user->uid)
+  ->fieldOrderBy('field_room_price', 'value', 'ASC')
+  ->range(0, 100);
+
+  $result = $query->execute();
+  if(count($result)){
+    $nodes = node_load_multiple(array_keys($result['node']));
+    foreach($nodes as $id => $node){
+      $rnode = entity_metadata_wrapper('node', $node);
+      $render_array['room list']['table'][$id] = array(
+      //$render_array['room list'][$id] = array(
+        'room_type' => array(
+          '#type' => 'link',
+          '#title' => check_plain(t($rnode->title->value())),
+          '#href' => 'node/' . $node->nid,
+        ),
+        'room_price' => array(
+          '#type' => 'textfield',
+          '#default_value' => check_plain($rnode->field_room_price->value()),
+          '#size' => 10,
+          '#maxlength' => 10,
+          '#field_prefix' => t('¥'),
+        ),
+        'room_bed' => array(
+          '#markup' => check_plain(t($rnode->field_bed->value())),
+        ),
+        'room_number' => array(
+          '#markup' => check_plain(t($rnode->field_number->value())),
+        ),
+        'room_spare' => array(
+          '#type' => 'textfield',
+          '#default_value' => check_plain($rnode->field_spare_room->value()),
+          '#size' => 10,
+          '#maxlength' => 10,
+        ),
+      );
+    }
+  }
+
+  $render_array['room list']['actions'] = array('#type' => 'actions');
+  $render_array['room list']['actions']['submit'] = array('#type' => 'submit', '#value' => t('保存'));
+  //$render_array['room list']['actions']['submit']['#validate'][] = 'menu_hotel_room_info_page_callback_validate';
+  $render_array['#validate'][] = 'menu_hotel_room_info_page_callback_validate';
+  return $render_array;
+}
+
+/**
+ * validation function for menu_hotel_room_info_page_callback form
+ */
+function menu_hotel_room_info_page_callback_validate($form, &$form_state){
+/**
+ *
+ * form_set_error() field not highlited red
+ *
+ * if($form_state['values']['panes']['webform_nid31'][0]['contact_person'] == '') {
+ * form_set_error('panes[webform_nid31][0][contact_person]', t('You must select a name for this group of settings.'));
+ * }
+ * If your form element is defined like that:
+
+ * $form['panes']['webform_nid31'][0]['contact_person'] = array( ... );
+ * your form_set_error call should look like that:
+ * form_set_error('panes][webform_nid31][0][contact_person', t('You must select a name for this group of settings.'));
+ *
+ */
+  //dpm($form_state);
+  foreach ($form_state['values']['table'] as $id => $item) {
+    if($item['room_spare'] < 0){
+      form_set_error('table][' . $id, t('空余房间数量不能小于0'));
+    }
+    if($item['room_spare'] > 100){
+      form_set_error('table][' . $id, t('空余房间数量不能大于100'));
+    }
+    if($item['room_price'] < 0){
+      //form_set_error('room list][table][' . $id, t('客房价格不能小于0'));
+      form_set_error('table][' . $id, t('客房价格不能小于0'));
+    }
+  }
+}
+
+/**
+ * Submit callback for the menu_hotel_room_info_page_callback form.
+ *
+ */
+function menu_hotel_room_info_page_callback_submit($form, &$form_state) {
+  // Because the form elements were keyed with the item ids from the database,
+  // we can simply iterate through the submitted values.
+  foreach ($form_state['values']['table'] as $id => $item) {
+    if(empty($item['room_spare'])){
+      $item['room_spare'] = 0;
+    }
+    if(empty($item['room_price'])){
+      $item['room_price'] = 0;
+    }
+
+    $node = node_load($id);
+    $node_wrapper = entity_metadata_wrapper('node', $node);
+    $node_wrapper->field_spare_room->set($item['room_spare']);
+    $node_wrapper->field_room_price->set($item['room_price']);
+    $node_wrapper->save();
+  }
+}
+/**
+ * page callback for /hotels/hotel-intro
+ */
+function menu_hotel_intro_page_callback(){
+  global $user;
+  $render_array = array();
+
+  $query = new EntityFieldQuery();
+
+  $query->entityCondition('entity_type', 'node')
+  ->entityCondition('bundle', 'node_hotel_information')
+  ->propertyCondition('status', NODE_PUBLISHED)
+  ->range(0, 10);
+
+  $result = $query->execute();
+  if(count($result)){
+    $nodes = node_load_multiple(array_keys($result['node']));
+    foreach($nodes as $node){
+      if($user->uid == $node->uid){
+        drupal_goto('node/'.$node->nid);
+        return $render_array;
+      }
+    }
+  }
+
+  $render_array['help'] = array(
+    '#type' => 'fieldset', 
+    '#title' => t('提示'), 
+    '#weight' => 5, 
+    '#collapsible' => TRUE, 
+    '#collapsed' => FALSE,
+  );
+
+  $render_array['help']['link'] = array(
+    '#type' => 'link',
+    '#title' => t('创建新的酒店信息'),
+    '#href' => 'node/add/node-hotel-information',
+    '#attributes' => array('class' => array('new-hotel-link')),
+  );
+  return $render_array;
+}
+
+/**
+ * Implements hook_element_info_alter(&$type)
+ */
+function  wechat_hotel_element_info_alter(&$type){
+  //dpm($type);
+  $type['radios']['#process'][] = '_wechat_hotel_remove_radio_na';
+}
+
+function _wechat_hotel_remove_radio_na($element){
+  //unset($element['#options']['_none']);
+  unset($element['_none']);
+  //dpm($element);
+  return $element;
+}
+
+/**
+ * page call back for /hotels/hotel-imgs
+ */
+function menu_hotel_image_page_callback(){
+  global $user;
+  $render_array = array();
+
+  $query = new EntityFieldQuery();
+
+  $query->entityCondition('entity_type', 'node')
+  ->entityCondition('bundle', 'node_hotel_view_images')
+  ->propertyCondition('status', NODE_PUBLISHED)
+  ->range(0, 10);
+
+  $result = $query->execute();
+  if(count($result)){
+    $nodes = node_load_multiple(array_keys($result['node']));
+    foreach($nodes as $node){
+      if($user->uid == $node->uid){
+        drupal_goto('node/'.$node->nid);
+        return $render_array;
+      }
+    }
+  }
+
+  $render_array['help'] = array(
+    '#type' => 'fieldset', 
+    '#title' => t('提示'), 
+    '#weight' => 5, 
+    '#collapsible' => TRUE, 
+    '#collapsed' => FALSE,
+  );
+
+  $render_array['help']['link'] = array(
+    '#type' => 'link',
+    '#title' => t('创建新的酒店外观图片'),
+    '#href' => 'node/add/node-hotel-view-images',
+    '#attributes' => array('class' => array('new-hotel-link')),
+  );
+  return $render_array;
+}
+
+/**
+ * page call back for /hotels/user
+ */
+function menu_hotel_admin_callback(){
+  drupal_goto('user');
+}
+
+/**
+ * page call back for /hotels/hotel-item-list
+ */
+function menu_hotel_item_list_page_callback(){
+  /*find nodes of node_hotel_list_item content type*/
+  global $user;
+  $render_array = array();
+
+  /* Use db query to fetch tabel records*/
+/*
+  $sql = 'SELECT nid FROM {node} n WHERE n.type = :type AND n.status = :status';
+  $result = db_query($sql,
+    array(
+      ':type' => 'node_hotel_list_item',
+      ':status' => 1,
+    )
+  );
+  $nids = array();
+  foreach ($result as $row) {
+    $nids[] = $row->nid;
+    //$node = node_load($row->nid);
+    //$renderable_array['node_list'][] = node_view($node, 'example_node_list');
+  }
+  dpm($nids, 'nids');
+*/
+
+  /* This is too complexity to get records*/
+  $query = new EntityFieldQuery();
+
+  $query->entityCondition('entity_type', 'node')
+  ->entityCondition('bundle', 'node_hotel_list_item')
+  ->propertyCondition('status', NODE_PUBLISHED)
+  ->range(0, 10);
+
+  $result = $query->execute();
+  if(count($result)){
+    $nodes = node_load_multiple(array_keys($result['node']));
+    foreach($nodes as $node){
+      if($user->uid == $node->uid){
+        drupal_goto('node/'.$node->nid);
+        //drupal_goto('view-hotel-list-item');
+        //$rnode = node_load($node->nid);
+        //$render_array['node_list'][] = node_view($rnode);
+        return $render_array;
+      }
+    }
+  }
+
+  $render_array['help'] = array(
+    '#type' => 'fieldset', 
+    '#title' => t('提示'), 
+    '#weight' => 5, 
+    '#collapsible' => TRUE, 
+    '#collapsed' => FALSE,
+  );
+
+  $render_array['help']['link'] = array(
+    '#type' => 'link',
+    '#title' => t('创建新的酒店列表图片'),
+    '#href' => 'node/add/node-hotel-list-item',
+    '#attributes' => array('class' => array('new-hotel-link')),
+  );
+  return $render_array;
+}
+/**
+ * Check user role
+ */
+function _check_inc_role($name, $roles){
+  if(in_array(trim($name), $roles, true)){
+    return TRUE; 
+  }else{
+    return FALSE;
+  }
+}
+
+/**
+ * Implements hook_file_validate($file)
+ */
+
+/**
+ * Implements hook_form_alter()
+ */
+function wechat_hotel_form_alter(&$form, &$form_state, $form_id){
+  //dpm($form, 'form alter');
+  //dpm($form_state, 'form state');
+
+  /* node hotel information comment field*/
+  if($form_id == 'comment_node_node_hotel_information_form'){
+    //hide($form['comment_body']);
+    //hide($form['actions']);
+  }
+  /* for user profile to hide field */
+  /*
+  if($form_id == 'user_profile_form'){
+    hide($form['field_wechat_subscribe']);
+    hide($form['field_wechat_openid']);
+    hide($form['field_wechat_nickname']);
+    hide($form['field_wechat_sex']);
+    hide($form['field_wechat_city']);
+    hide($form['field_wechat_province']);
+    hide($form['field_wechat_language']);
+    hide($form['field_wechat_subscribe_time']);
+    hide($form['field_wechat_longitude']);
+    hide($form['field_wechat_precision']);
+    hide($form['field_wechat_latitude']);
+    hide($form['field_wechat_unionid']);
+    hide($form['field_wechat_headimgurl']);
+    hide($form['field_wechat_country']);
+  }
+  */
+
+  /* for hotel imgs example when edit hotel item list*/
+  if (!empty($form['#node_edit_form'])) {
+    switch ($form_id) {
+      /*客房信息*/
+      case 'node_hotel_room_info_node_form':
+        hide($form['field_spare_room']);  //don't show spare room in node eidt/add page
+        $form['title']['#suffix'] = t('例句：<br>精致大床房<br>标准房<br>厢房<br>大土炕房(中宾)');
+      break;
+      /*酒店信息form*/
+      case 'node_hotel_information_node_form':
+        $form['node_img_example'] = array(
+          '#type' => 'fieldset',
+          '#title' => t('示例'),
+          '#collapsible' => FALSE,
+          '#collapsed' => FALSE,
+          '#weight' => -99,
+          '#attributes' => array('class' => array('node-img-example')),
+        );
+
+        $img_url = get_node_img_example_url('field_hotel_landscape_example');
+        if($img_url){
+          $image_form = array(
+            '#theme' => 'image_style',
+            '#path' => $img_url,
+            '#style_name' => 'mobile_320x560',
+          );
+
+          $form['node_img_example']['link'] = array(
+            '#markup' => '<a href="'. file_create_url($img_url) . '" target="_blank" class="example-img-link">' .
+                          t('参考样例和帮助') . '</a>',
+          );
+          $form['node_img_example']['image'] = array(
+            '#markup' => '<a href="' . file_create_url($img_url) . '" target="_blank class="example-img">' . 
+                          drupal_render($image_form) . '</a>',
+          );
+
+        }else{
+          $form['node_img_example']['image'] = array(
+            '#markup' => t('未找到样例图片'),
+          );
+        }
+        $form['field_free_wifi']['#prefix'] = t('酒店设施');
+        //dpm($form);
+      break;
+      /*酒店外观form*/
+      case 'node_hotel_view_images_node_form':
+        $form['node_img_example'] = array(
+          '#type' => 'fieldset',
+          '#title' => t('示例'),
+          '#collapsible' => FALSE,
+          '#collapsed' => FALSE,
+          '#weight' => -99,
+          '#attributes' => array('class' => array('node-img-example')),
+        );
+
+        $img_url = get_node_img_example_url('field_hotel_landscape_example');
+        if($img_url){
+          $image_form = array(
+            '#theme' => 'image_style',
+            '#path' => $img_url,
+            '#style_name' => 'mobile_320x560',
+          );
+
+          $form['node_img_example']['link'] = array(
+            '#markup' => '<a href="'. file_create_url($img_url) . '" target="_blank" class="example-img-link">' .
+                          t('参考样例和帮助') . '</a>',
+          );
+          $form['node_img_example']['image'] = array(
+            '#markup' => '<a href="' . file_create_url($img_url) . '" target="_blank" class="example-img">' . 
+                          drupal_render($image_form) . '</a>',
+          );
+
+        }else{
+          $form['node_img_example']['image'] = array(
+            '#markup' => t('未找到样例图片'),
+          );
+        }
+      break;
+      /*酒店列表form*/
+      case 'node_hotel_list_item_node_form':
+        
+        $form['node_img_example'] = array(
+          '#type' => 'fieldset',
+          '#title' => t('示例'),
+          '#collapsible' => FALSE,
+          '#collapsed' => FALSE,
+          '#weight' => -99,
+          '#attributes' => array('class' => array('node-img-example')),
+        );
+
+        $img_url = get_node_img_example_url('field_item_list_example');
+        if($img_url){
+          $image_form = array(
+            '#theme' => 'image_style',
+            '#path' => $img_url,
+            '#style_name' => 'mobile_320x560',
+          );
+
+          $form['node_img_example']['link'] = array(
+            '#markup' => '<a href="'. file_create_url($img_url) . 
+                         '" target="_blank" class="example-img-link">' .
+                         t('参考样例和帮助') . '</a>',
+/*
+            '#type' => 'link',
+            '#title' => t('参考样例和帮助'),
+            '#href' => file_create_url($img_url),
+            '#attributes' => array('class' => array('example-img-link')),
+*/
+          );
+
+          $form['node_img_example']['image'] = array(
+            '#markup' => '<a href="' . 
+                          file_create_url($img_url) . 
+                         '" target="_blank" class="example-img">' .
+                          /*two ways to render, one is theme, one is drupal_render. prefer drupal_render*/
+                          //theme('image_style', array('style_name' => 'mobile_thumbnail', 'path' => $img_url)) .
+                         drupal_render($image_form) .
+                         '</a>',
+            /*
+            '#theme' => 'image_style',
+            '#style_name' => 'mobile_thumbnail',
+            '#path' => $img_url,
+            */
+          );
+        }else{
+          $form['node_img_example']['image'] = array(
+            '#markup' => t('未找到样例图片'),
+          );
+        }
+        break;
+      default:
+        break;
+    }
+  }
+
+  /* modify user profile edit theme for hotel admin*/
+  if(user_access('access hotel manage page')) {
+    if($form_id == 'user_profile_form') {
+      $roles = $form['#user']->roles;
+      if(_check_inc_role('hotel_admin', $roles)){
+        $form['locale']['#weight'] = 2; /*follow user picture*/
+        $form['account']['mail']['#weight'] = 1;  /*follow reset password*/
+        $form['account']['pass_confirm'] = array(
+          '#type' => 'fieldset',
+          '#title' => $form['account']['pass']['#description'],
+          //'#weight' => 5,
+          '#collapsible' => FALSE,
+          '#collapsed' => FALSE,
+        );
+        $form['account']['pass_confirm']['pass'] = $form['account']['pass'];
+        unset($form['timezone']);
+        unset($form['mimemail']);
+        unset($form['account']['current_pass']['#description']);
+        unset($form['account']['pass']);
+      }
+    }
+  }
+}
+ 
+function get_node_img_example_url($field_type){
+
+  $query = new EntityFieldQuery();
+
+  $query->entityCondition('entity_type', 'node')
+  ->entityCondition('bundle', 'node_example_image')
+  ->range(0, 10);
+
+  $result = $query->execute();
+  if(count($result)){
+    $nodes = node_load_multiple(array_keys($result['node']));
+    foreach($nodes as $node){
+      $entity_node = entity_metadata_wrapper('node', $node);
+      $img_field = $entity_node->$field_type->value();
+      $img_url = file_create_url($img_field['uri']);
+      return $img_field['uri'];
+      //return $img_url;
+    }
+  }
+  return null;
+}
+
+
+function theme_example_image($variables) {
+  $image = $variables['image'];
+  $style = $variables['style'];
+
+  // theme_image_style() is the primary method for displaying images using
+  // one of the defined styles. The $variables array passed to the theme
+  // contains the following two important values:
+  // - 'style_name': the name of the image style to use when displaying the
+  //   image.
+  // - 'path': the $file->uri of the image to display.
+  //
+  // When given a style and an image path the function will first determine
+  // if a derivative image already exists, in which case the existing image
+  // will be displayed. If the derivative image does not already exist the
+  // function returns an <img> tag with a specially crafted callback URL
+  // as the src attribute for the tag. When accessed, the callback URL will
+  // generate the derivative image and serve it to the browser.
+  $img_path = file_create_url($image->uri);
+  $output = '<a href="' . $img_path . '" target="_blank">';
+  $output .= theme('image_style',
+    array(
+      'style_name' => $style,
+      'path' => $image->uri,
+      'getsize' => FALSE,
+    )
+  );
+  $output .= '</a>' . '<p>' . t('This image is being displayed using the image style %style_name.', array('%style_name' => $style)) . '</p>';
+  return $output;
+}
+
+
+/**
+ * Implements hook_node_view_alter(&$build)
+ */
+function wechat_hotel_node_view_alter(&$build){
+  /*Modify style of node hotel list item*/
+  if($build['#bundle'] == 'node_hotel_list_item'){
+    $rows = array();
+    $header = array();
+
+    $rows[] = array(
+      drupal_render($build['field_img2']['0']), 
+      drupal_render($build['field_img2']['1']), 
+      drupal_render($build['field_img2']['2']),
+    );
+    $rows[] = array(
+      drupal_render($build['field_img2']['3']), 
+      drupal_render($build['field_img2']['4']), 
+      drupal_render($build['field_img2']['5']),
+    );
+    $build['test'] = array(
+      '#theme' => 'table',
+      '#rows' => $rows,
+      '#header' => $header,
+      '#weight' => 5,
+    );
+  }
+
+  /* Modify style of node field field_room_imgs item */
+  if($build['#bundle'] == 'node_hotel_room_info'){
+    if (array_key_exists('field_room_imgs', $build)){
+      $rows = array();
+      $header = array();
+
+      $items = count($build['field_room_imgs']['#items']);
+      for($i = 0; $i < $items; $i++){
+        $rows[] = array(
+          drupal_render($build['field_room_imgs'][$i]), 
+          drupal_render($build['field_room_imgs'][++$i]), 
+          drupal_render($build['field_room_imgs'][++$i]), 
+        );
+      }
+
+      $build['others title'] = array(
+        '#markup' => $build['field_room_imgs']['#title'] . t(':&nbsp;'), 
+        '#prefix' => '<div class="field-label">',
+        '#suffix' => '</div>',
+        '#weight' => $build['field_room_imgs']['#weight'],
+      );
+      $build['others'] = array(
+        '#theme' => 'table',
+        '#rows' => $rows,
+        '#header' => $header,
+        '#weight' => $build['field_room_imgs']['#weight'],
+      );
+      unset($build['field_room_imgs']);
+    }
+  }
+
+  /* Modify style of node hotel views item*/
+  if($build['#bundle'] == 'node_hotel_view_images'){
+    $rows = array();
+    $header = array();
+
+    $items = count($build['field_door_imgs']['#items']);
+    for($i = 0; $i < $items; $i++){
+      $rows[] = array(
+        drupal_render($build['field_door_imgs'][$i]), 
+        drupal_render($build['field_door_imgs'][++$i]), 
+        drupal_render($build['field_door_imgs'][++$i]), 
+      );
+    }
+
+    $build['door title'] = array(
+      '#markup' => $build['field_door_imgs']['#title'] . t(':&nbsp;'), 
+      '#prefix' => '<div class="field-label">',
+      '#suffix' => '</div>',
+      '#weight' => $build['field_door_imgs']['#weight'],
+    );
+    $build['door'] = array(
+      '#theme' => 'table',
+      '#rows' => $rows,
+      '#header' => $header,
+      '#weight' => $build['field_door_imgs']['#weight'],
+    );
+    unset($build['field_door_imgs']);
+  }
+
+  /* Modify style of node field street view item*/
+  if($build['#bundle'] == 'node_hotel_view_images'){
+    if(array_key_exists('field_stree_imgs', $build)){
+      $rows = array();
+      $header = array();
+
+      $items = count($build['field_stree_imgs']['#items']);
+      for($i = 0; $i < $items; $i++){
+        $rows[] = array(
+          drupal_render($build['field_stree_imgs'][$i]), 
+          drupal_render($build['field_stree_imgs'][++$i]), 
+          drupal_render($build['field_stree_imgs'][++$i]), 
+        );
+      }
+
+      $build['street title'] = array(
+        '#markup' => $build['field_stree_imgs']['#title'] . t(':&nbsp;'), 
+        '#prefix' => '<div class="field-label">',
+        '#suffix' => '</div>',
+        '#weight' => $build['field_stree_imgs']['#weight'],
+      );
+      $build['street'] = array(
+        '#theme' => 'table',
+        '#rows' => $rows,
+        '#header' => $header,
+        '#weight' => $build['field_stree_imgs']['#weight'],
+      );
+      unset($build['field_stree_imgs']);
+    }
+  }
+
+  /* Modify style of node field field_lobby_imgs item */
+  if($build['#bundle'] == 'node_hotel_view_images'){
+    if(array_key_exists('field_lobby_imgs', $build)){
+      $rows = array();
+      $header = array();
+
+      $items = count($build['field_lobby_imgs']['#items']);
+      for($i = 0; $i < $items; $i++){
+        $rows[] = array(
+          drupal_render($build['field_lobby_imgs'][$i]), 
+          drupal_render($build['field_lobby_imgs'][++$i]), 
+          drupal_render($build['field_lobby_imgs'][++$i]), 
+        );
+      }
+
+      $build['lobby title'] = array(
+        '#markup' => $build['field_lobby_imgs']['#title'] . t(':&nbsp;'), 
+        '#prefix' => '<div class="field-label">',
+        '#suffix' => '</div>',
+        '#weight' => $build['field_lobby_imgs']['#weight'],
+      );
+      $build['lobby'] = array(
+        '#theme' => 'table',
+        '#rows' => $rows,
+        '#header' => $header,
+        '#weight' => $build['field_lobby_imgs']['#weight'],
+      );
+      unset($build['field_lobby_imgs']);
+    }
+  }
+  
+  /* Modify style of node field field_room_images item */
+  if($build['#bundle'] == 'node_hotel_view_images'){
+    if(array_key_exists('field_room_images', $build)){
+      $rows = array();
+      $header = array();
+
+      $items = count($build['field_room_images']['#items']);
+      for($i = 0; $i < $items; $i++){
+        $rows[] = array(
+          drupal_render($build['field_room_images'][$i]), 
+          drupal_render($build['field_room_images'][++$i]), 
+          drupal_render($build['field_room_images'][++$i]), 
+        );
+      }
+
+      $build['room title'] = array(
+        '#markup' => $build['field_room_images']['#title'] . t(':&nbsp;'), 
+        '#prefix' => '<div class="field-label">',
+        '#suffix' => '</div>',
+        '#weight' => $build['field_room_images']['#weight'],
+      );
+      $build['room'] = array(
+        '#theme' => 'table',
+        '#rows' => $rows,
+        '#header' => $header,
+        '#weight' => $build['field_room_images']['#weight'],
+      );
+      unset($build['field_room_images']);
+    }
+  }
+
+  /* Modify style of node field field_others item */
+  if($build['#bundle'] == 'node_hotel_view_images'){
+    if(array_key_exists('field_others', $build)){
+      $rows = array();
+      $header = array();
+
+      $items = count($build['field_others']['#items']);
+      for($i = 0; $i < $items; $i++){
+        $rows[] = array(
+          drupal_render($build['field_others'][$i]), 
+          drupal_render($build['field_others'][++$i]), 
+          drupal_render($build['field_others'][++$i]), 
+        );
+      }
+
+      $build['others title'] = array(
+        '#markup' => $build['field_others']['#title'] . t(':&nbsp;'), 
+        '#prefix' => '<div class="field-label">',
+        '#suffix' => '</div>',
+        '#weight' => $build['field_others']['#weight'],
+      );
+      $build['others'] = array(
+        '#theme' => 'table',
+        '#rows' => $rows,
+        '#header' => $header,
+        '#weight' => $build['field_others']['#weight'],
+      );
+      unset($build['field_others']);
+    }
+  }
+
+
+  /* Modify style of node hotel information comments item */
+  if($build['#bundle'] == 'node_hotel_information'){
+    unset($build['comments']);
+  }
+
+  //dpm($build);
+
+}
+ 
+
+/**
+ * Implements MODULE_preprocess_HOOK(&$variables)
+ */
+function wechat_hotel_preprocess_page(&$vars){
+  //dpm($vars, 'module preprocess page');
+  if(!empty($vars['user']->name)){
+    $vars['secondary_menu']['menu-2']['title'] = t('管理员：') . $vars['user']->name;
+  }
+}
+
+
+/**
+ * Implements hook_menu_alter()
+ */
+function wechat_hotel_menu_alter(&$item){
+  //dpm($item);
+  //dpm($_GET['destination'], '_get');
+  $item['user/%user/edit']['title'] = t('修改用户信息');
+  $item['user/%user/view']['title'] = t('用户信息');
+  /*
+  if(!empty($item['node/add/node-hotel-list-item'])){
+    $item['node/add/node-hotel-list-item']['title callback'] = 'menu_callback_hotel_page_title';
+  }
+  */
+}
+
+
+/**
+ * Implements hook_modules_installed().
+ */
+function wechat_hotel_modules_installed($modules) {
+  if (in_array('menu', $modules)) {
+    $menu = array(
+      'menu_name' => 'menu-hotel-manage',
+      'title' => t('酒店管理菜单'),
+      'description' => t('hotel link'),
+    );
+    menu_save($menu);
+  }
+}
+
+
+/**
+ * End of wechat hotel module
+ */

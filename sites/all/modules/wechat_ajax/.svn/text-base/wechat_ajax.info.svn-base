@@ -1,0 +1,8 @@
+name = wechat ajax
+description = wechat ajax module for wechat client page
+core = 7.x
+
+files[] = wechat_ajax.module
+
+; Information added by drupal.org packaging script on 2013-10-25
+

@@ -1,0 +1,119 @@
+#py-mobile-merchandise-show .ui-header {
+  border-style: none;
+}
+
+#py-mobile-merchandise-show .ui-content {
+  padding: 7px;
+}
+
+.swiper-container {
+  width: 100%;
+  border-bottom: 1px solid #aaaaaa;
+}
+
+#merchandise-name h3 {
+  margin: 0.5em 0 0.5em 0;
+}
+
+#merchandise-price h3 {
+  margin: 0.5em 0 0.5em 0;
+}
+
+#merchandise-sku p {
+  color: #525252;
+}
+
+#pay-footer {
+  background-color: #fff;
+  border-color: #fff;
+}
+
+#pay-button,
+#cart-button {
+  margin: 0.2em;
+  font-size: 1em;
+}
+
+#pay-button {
+  background-color: #CF5A1C;
+}
+
+/*footer company */
+#py-mobile-merchandise-show .company {
+  padding: 0.3em 0;
+}
+#py-mobile-merchandise-show .shadow-text{
+  font-size: 0.9em;
+  color: #BB7431;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+/*all ckeditor css*/
+/* General indentation & positioning classes */
+
+#merchandise-content .rteindent1 {
+    margin-left: 40px;
+}
+#merchandise-content .rteindent2 {
+    margin-left: 80px;
+}
+#merchandise-content .rteindent3 {
+    margin-left: 120px;
+}
+#merchandise-content .rteindent4 {
+    margin-left: 160px;
+}
+#merchandise-content .rteleft {
+    text-align: left;
+}
+#merchandise-content .rteright {
+    text-align: right;
+}
+#merchandise-content .rtecenter {
+    text-align: center;
+}
+#merchandise-content .rtejustify {
+    text-align: justify;
+}
+#merchandise-content .ibimage_left {
+    float: left;
+}
+#merchandise-content .ibimage_right {
+    float: right;
+}
+#merchandise-content img {
+  display: block !important;
+  width: 100% !important;
+}
+#merchandise-comments .ui-listview {
+  margin: 0.5em 0 0 0;
+}
+
+#merchandise-comments .ui-navbar {
+  margin: 1.3em 0 0 0;
+}
+
+#merchandise-comments .ui-listview>.ui-li-static.ui-li-has-thumb {
+  min-height: 5em;
+  padding-left: 5.5em;
+}
+
+#merchandise-comments .ui-listview>.ui-li-static {
+  white-space: inherit;
+}
+
+#goto-home {
+    position: fixed;
+    top: 400px;
+    z-index: 9999;
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+    background-color: rgba(251,135,12,0.75);
+    padding: 8px;
+    font-weight: 100;
+    right: 2px;
+    color: #ffffff;
+    text-decoration: none;
+    text-shadow: 0 0px 0 #ffffff;
+}
+

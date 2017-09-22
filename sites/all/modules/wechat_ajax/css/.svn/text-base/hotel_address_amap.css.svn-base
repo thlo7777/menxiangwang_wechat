@@ -1,0 +1,35 @@
+body{
+  margin:0;
+  height:100%;
+  width:100%;
+  position:absolute;
+}
+#mapContainer{
+  position: absolute;
+  top:0;
+  left: 0;
+  right:0;
+  bottom:0;
+}
+
+span{
+  display: block;
+  /*height: 40px;*/
+  width: 7em;
+  text-align: left;
+  padding-left: 10px;
+  padding-right: 10px;
+  line-height: 25px;
+  background-color:#fff;
+  border:1px solid #ccc;
+  color:#FF6BBB;
+  font-size:1em;
+  border-radius:7px;
+}
+
+@media only screen and (max-width : 320px) {
+}
+
+@media only screen and (min-width : 321px) {
+}
+

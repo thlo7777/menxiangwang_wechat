@@ -1,0 +1,1190 @@
+<?php
+/**
+ * Implements hook_enable()
+ */
+function wechat_py_shopping_enable() {
+  if (module_exists('menu')) {
+    $menu = array(
+      'menu_name' => MENU_WECHAT_PY_SHOPPING,
+      'title' => t('平遥商城管理菜单'),
+      'description' => t('平遥商城管理菜单'),
+    );
+    menu_save($menu);
+  }
+}
+
+/**
+ * Implements hook_uninstall().
+ *
+ * It's good to clean up after ourselves
+ */
+function wechat_py_shopping_uninstall() {
+  db_drop_table('wechat_py_shopping_adv_table');
+  db_drop_table('wechat_py_commodity_category_table');
+  db_drop_table('wechat_py_shopping_weight_section_table');
+}
+
+/**
+ * Implements hook_schema()
+ */
+function wechat_py_shopping_schema(){
+  $schema = array();
+
+  //wechat api token interface table
+  $schema['wechat_py_shopping_adv_table'] = array(
+    // Example (partial) specification for table "wechat hotel ranking".
+    'description' => 'Display py shopping advertisement',
+    'fields' => array(
+      'id' => array('description' => 'table index',
+                    'type' => 'serial',
+                    'unsigned' => TRUE,
+                    'not null' => TRUE,),
+
+      'image' => array('description' => 'adv image, use gif',
+                     'type' => 'varchar',
+                     'size' => 'normal',
+                     'length' => '1024',
+                     'not null' => FALSE,
+                     'default' => '',),
+
+      'link'=> array('description' => 'image link to detail commodity information',
+                      'type' => 'varchar',
+                      'length' => '1024',
+                      'not null' => FALSE,
+                      'default' => '',),
+
+      'created' => array('description' => 'created time',
+                     'type' => 'int',
+                     'size' => 'normal',
+                     'not null' => TRUE,),
+    ),
+
+    'primary key' => array('id'),
+  );
+
+  //py goods category table
+  $schema['wechat_py_commodity_category_table'] = array(
+    // Example (partial) specification for table "wechat hotel ranking".
+    'description' => 'store shopping commodity category',
+    'fields' => array(
+      'id' => array('description' => 'table index',
+                    'type' => 'serial',
+                    'unsigned' => TRUE,
+                    'not null' => TRUE,),
+
+      'name' => array('description' => 'category name',
+                     'type' => 'varchar',
+                     'size' => 'normal',
+                     'length' => '128',
+                     'not null' => FALSE),
+
+      'level'=> array('description' => 'category level for commodity',
+                     'type' => 'int',
+                     'size' => 'tiny',
+                     'unsigned' => TRUE,),
+
+      'pid'=> array('description' => 'category parent id for commodity',
+                     'type' => 'int',
+                     'unsigned' => TRUE,),
+    ),
+
+    'primary key' => array('id'),
+  );
+  return $schema;
+}
+
+function wechat_py_shopping_update_7000(&$sandbox){
+  $schema = array();
+  //wechat py qrcode scene table.
+  $schema['wechat_py_merchant_group_table'] = array(
+    'description' => 'wechat merchant product group',
+    'fields' => array(
+
+      'group_id' => array('description' => 'group id from wechat',
+                      'type' => 'int',
+                      'size' => 'normal',
+                      'unsigned' => TRUE,
+                      'not null' => TRUE,),
+
+      'group_name' => array('description' => 'group name',
+                      'type' => 'varchar',
+                      'size' => 'normal',
+                      'length' => 255,
+                      'not null' => TRUE,),
+    ),
+
+    'primary key' => array('group_id'),
+  );
+
+  db_create_table('wechat_py_merchant_group_table', $schema['wechat_py_merchant_group_table']);
+}
+
+function wechat_py_shopping_update_7001(&$sandbox){
+  $schema = array();
+  //wechat py qrcode scene table.
+  $schema['wechat_py_nation_city_code_table'] = array(
+    'description' => 'wechat merchant py nation area code and name',
+    'fields' => array(
+      'id' => array('description' => 'table index',
+                    'type' => 'serial',
+                    'unsigned' => TRUE,
+                    'not null' => TRUE,),
+
+      'plevel' => array('description' => 'parents level, it would be root(0) if area is province',
+                      'type' => 'int',
+                      'size' => 'normal',
+                      'unsigned' => TRUE,
+                      'not null' => TRUE,),
+
+      'area_code' => array('description' => 'province or city code',
+                      'type' => 'int',
+                      'size' => 'normal',
+                      'unsigned' => TRUE,
+                      'not null' => TRUE,),
+
+      'area_name' => array('description' => 'province or city name',
+                      'type' => 'varchar',
+                      'size' => 'normal',
+                      'length' => 32,
+                      'not null' => TRUE,),
+    ),
+
+    'primary key' => array('id'),
+  );
+
+  db_create_table('wechat_py_nation_city_code_table', $schema['wechat_py_nation_city_code_table']);
+}
+
+function wechat_py_shopping_update_7002(&$sandbox){
+  $schema = array();
+  //wechat py qrcode scene table.
+  $schema['wechat_py_shopping_weight_section_table'] = array(
+    'description' => 'wechat pingyao shopping merchant express weight section',
+    'fields' => array(
+      'id' => array('description' => 'table index',
+                    'type' => 'serial',
+                    'unsigned' => TRUE,
+                    'not null' => TRUE,),
+
+      'start_weight' => array('description' => 'start of weight section ',
+                      'type' => 'int',
+                      'size' => 'normal',
+                      'unsigned' => TRUE,
+                      'not null' => TRUE,),
+
+      'end_weight' => array('description' => 'end of weight section',
+                      'type' => 'int',
+                      'size' => 'normal',
+                      'unsigned' => TRUE,
+                      'not null' => TRUE,),
+
+      'price' => array('description' => 'price of weight section',
+                      'type' => 'numeric',
+                      'size' => 'normal',
+                      'not null' => TRUE,
+                      'default' => 0,
+                      'precision' => 7,
+                      'scale' => 2),
+    ),
+
+    'primary key' => array('id'),
+  );
+
+  db_create_table('wechat_py_shopping_weight_section_table', $schema['wechat_py_shopping_weight_section_table']);
+}
+
+function wechat_py_shopping_update_7003(&$sandbox){
+  $field = array(
+    'type' => 'int',
+    'size' => 'tiny',
+    'unsigned' => TRUE,
+    'not null' => TRUE,
+    'default' => 0,
+    'description' => 'The flag of city level, 0-province 1-capital 2-city of province 3-county or city of city.',
+  );
+
+  db_add_field('wechat_py_nation_city_code_table', 'city_level', $field);
+}
+
+function wechat_py_shopping_update_7004(&$sandbox){
+  $schema = array();
+  //wechat py qrcode scene table.
+  $schema['wechat_py_shopping_weight_section_table'] = array(
+    'description' => 'wechat pingyao shopping merchant express weight section',
+    'fields' => array(
+      'id' => array('description' => 'table index',
+                    'type' => 'serial',
+                    'unsigned' => TRUE,
+                    'not null' => TRUE,),
+
+      'start_weight' => array('description' => 'start of weight section ',
+                      'type' => 'numeric',
+                      'size' => 'normal',
+                      'unsigned' => TRUE,
+                      'not null' => TRUE,
+                      'default' => 0,
+                      'precision' => 7,
+                      'scale' => 2),
+
+      'start_price' => array('description' => 'price of start weight section',
+                      'type' => 'numeric',
+                      'size' => 'normal',
+                      'unsigned' => TRUE,
+                      'not null' => TRUE,
+                      'default' => 0,
+                      'precision' => 7,
+                      'scale' => 2),
+
+      'unit_weight' => array('description' => 'end of weight section',
+                      'type' => 'numeric',
+                      'size' => 'normal',
+                      'unsigned' => TRUE,
+                      'not null' => TRUE,
+                      'default' => 0,
+                      'precision' => 7,
+                      'scale' => 2),
+
+      'unit_price' => array('description' => 'price of weight section',
+                      'type' => 'numeric',
+                      'size' => 'normal',
+                      'unsigned' => TRUE,
+                      'not null' => TRUE,
+                      'default' => 0,
+                      'precision' => 7,
+                      'scale' => 2),
+    ),
+
+    'primary key' => array('id'),
+  );
+
+  db_create_table('wechat_py_shopping_weight_section_table', $schema['wechat_py_shopping_weight_section_table']);
+}
+
+function wechat_py_shopping_update_7005(&$sandbox){
+  $schema = array();
+  //wechat py qrcode scene table.
+  $schema['wechat_py_shopping_merchant_express_template_table'] = array(
+    'description' => 'wechat pingyao shopping merchant express template',
+    'fields' => array(
+      'id' => array('description' => 'table index',
+                    'type' => 'serial',
+                    'unsigned' => TRUE,
+                    'not null' => TRUE,),
+
+      'template_name' => array('description' => 'template name',
+                    'type' => 'varchar',
+                    'size' => 'normal',
+                    'length' => '128',
+                    'not null' => FALSE,
+                    'default' => '',),
+    ),
+
+    'primary key' => array('id'),
+  );
+
+  db_create_table('wechat_py_shopping_merchant_express_template_table',
+                 $schema['wechat_py_shopping_merchant_express_template_table']);
+}
+
+function wechat_py_shopping_update_7006(&$sandbox){
+  $schema = array();
+  //wechat py qrcode scene table.
+  $schema['wechat_py_shopping_weight_area_table'] = array(
+    'description' => 'wechat pingyao shopping merchant express template',
+    'fields' => array(
+      'id' => array('description' => 'table index',
+                    'type' => 'serial',
+                    'unsigned' => TRUE,
+                    'not null' => TRUE,),
+
+      'template_id' => array('description' => 'express template id',
+                      'type' => 'int',
+                      'size' => 'normal',
+                      'unsigned' => TRUE,
+                      'not null' => TRUE,),
+
+      'area_code' => array('description' => 'city code',
+                      'type' => 'int',
+                      'size' => 'normal',
+                      'unsigned' => TRUE,
+                      'not null' => TRUE,),
+
+      'area_name' => array('description' => 'city name',
+                      'type' => 'varchar',
+                      'size' => 'normal',
+                      'length' => 32,
+                      'not null' => TRUE,),
+
+      //98: city self  4:city of province(include zhixiashi county, exclude capital city) 6: county of province
+      'city_level' => array('description' => 'The flag of city level.',
+                      'type' => 'int',
+                      'size' => 'tiny',
+                      'unsigned' => TRUE,
+                      'not null' => TRUE,
+                      'default' => 0,),
+
+      'weight_sections' => array('description' => 'weight sections id1:id2:id3',
+                    'type' => 'varchar',
+                    'size' => 'normal',
+                    'length' => '128',
+                    'not null' => FALSE,
+                    'default' => '',),
+    ),
+
+    'primary key' => array('id'),
+  );
+
+  db_create_table('wechat_py_shopping_weight_area_table',
+                 $schema['wechat_py_shopping_weight_area_table']);
+}
+
+function wechat_py_shopping_update_7007(&$sandbox){
+  $schema = array();
+  //wechat py qrcode scene table.
+  $schema['mobile_shopping_user_address_table'] = array(
+    'description' => 'mobile shopping store user address',
+    'fields' => array(
+      'id' => array('description' => 'table index',
+                    'type' => 'serial',
+                    'unsigned' => TRUE,
+                    'not null' => TRUE,),
+
+      'openid' => array('description' => 'wechat user open id',
+                     'type' => 'varchar',
+                     'size' => 'normal',
+                     'length' => 64,
+                     'not null' => TRUE,),
+
+      'user_name' => array('description' => 'post off user name',
+                      'type' => 'varchar',
+                      'size' => 'normal',
+                      'length' => 64,
+                      'not null' => TRUE,),
+
+      'user_tel' => array('description' => 'mobile or telephone',
+                      'type' => 'varchar',
+                      'size' => 'normal',
+                      'length' => 32,
+                      'not null' => TRUE,),
+
+      'city_1' => array('description' => 'The first level of city.',
+                      'type' => 'varchar',
+                      'size' => 'normal',
+                      'length' => 64,
+                      'not null' => TRUE,),
+
+      'city_1_code' => array('description' => 'should use termid of first city level.',
+                      'type' => 'varchar',
+                      'size' => 'normal',
+                      'length' => 32,
+                      'not null' => TRUE,),
+
+      'city_2' => array('description' => 'The second level of city.',
+                      'type' => 'varchar',
+                      'size' => 'normal',
+                      'length' => 64,
+                      'not null' => TRUE,),
+
+      'city_2_code' => array('description' => 'should use termid of second city level.',
+                      'type' => 'varchar',
+                      'size' => 'normal',
+                      'length' => 32,
+                      'not null' => TRUE,),
+
+      'city_3' => array('description' => 'The third level of city.',
+                      'type' => 'varchar',
+                      'size' => 'normal',
+                      'length' => 64,
+                      'not null' => TRUE,),
+
+      'city_3_code' => array('description' => 'should use termid of third city level.',
+                      'type' => 'varchar',
+                      'size' => 'normal',
+                      'length' => 32,
+                      'not null' => TRUE,),
+
+      'detail_address' => array('description' => 'user detail address info',
+                    'type' => 'varchar',
+                    'size' => 'normal',
+                    'length' => 128,
+                    'not null' => FALSE,
+                    'default' => '',),
+    ),
+
+    'primary key' => array('id'),
+  );
+
+  db_create_table('mobile_shopping_user_address_table',
+                 $schema['mobile_shopping_user_address_table']);
+}
+
+function wechat_py_shopping_update_7008(&$sandbox){
+  $schema = array();
+  //wechat py qrcode scene table.
+  $schema['mobile_shopping_user_cart_table'] = array(
+    'description' => 'mobile shopping store user cart records',
+    'fields' => array(
+      'id' => array('description' => 'table index',
+                    'type' => 'serial',
+                    'unsigned' => TRUE,
+                    'not null' => TRUE,),
+
+      'openid' => array('description' => 'wechat user open id',
+                    'type' => 'varchar',
+                    'size' => 'normal',
+                    'length' => 64,
+                    'not null' => TRUE,),
+
+      'MD5' => array('description' => 'md5 for openid',
+                    'type' => 'varchar',
+                    'size' => 'normal',
+                    'length' => 32,
+                    'default' => '',),
+
+      'merchandise_id' => array('description' => 'merchandise id = node id',
+                    'type' => 'varchar',
+                    'size' => 'normal',
+                    'length' => 16,
+                    'not null' => TRUE,),
+
+      'purchase_volume' => array('description' => 'volume of purchase',
+                    'type' => 'int',
+                    'size' => 'small',
+                    'unsigned' => TRUE,
+                    'not null' => TRUE,),
+
+      'cart_checkin' => array('description' => 'if this merchandise check in or not  0=uncheck, 1=checkin',
+                     'type' => 'int',
+                     'size' => 'tiny',
+                     'not null' => TRUE,
+                     'unsigned' => TRUE,),
+
+      'purchase_date' => array('description' => 'purchase time.',
+                     'type' => 'int',
+                     'size' => 'normal',
+                     'not null' => TRUE,),
+
+    ),
+
+    'primary key' => array('id'),
+  );
+
+  db_create_table('mobile_shopping_user_cart_table',
+                 $schema['mobile_shopping_user_cart_table']);
+}
+
+function wechat_py_shopping_update_7009(&$sandbox){
+  $schema = array();
+  //wechat py qrcode scene table.
+  $schema['mobile_shopping_user_order_table'] = array(
+    'description' => 'mobile shopping store user order records',
+    'fields' => array(
+      'id' => array('description' => 'table index',
+                    'type' => 'serial',
+                    'unsigned' => TRUE,
+                    'not null' => TRUE,),
+
+      'openid' => array('description' => 'wechat user open id',
+                    'type' => 'varchar',
+                    'size' => 'normal',
+                    'length' => 64,
+                    'not null' => TRUE,),
+
+      'MD5' => array('description' => 'md5 for openid',
+                    'type' => 'varchar',
+                    'size' => 'normal',
+                    'length' => 32,
+                    'default' => '',),
+                    
+      'out_trade_no' => array('description' => 'order number, Dtime-16randstring',
+                    'type' => 'varchar',
+                    'size' => 'normal',
+                    'length' => 32,
+                    'not null' => TRUE,),
+
+      'order_state' => array('description' => 'order state, 0-unpay, 1 paied and checking, 2 post and closed, 3 refund',
+                    'type' => 'int',
+                    'size' => 'tiny',
+                    'unsigned' => TRUE,
+                    'default' => 0,),
+
+      'prepay_id' => array('description' => 'prepay id',
+                    'type' => 'varchar',
+                    'size' => 'normal',
+                    'length' => 64,
+                    'default' => '',),
+
+      'transaction_id' => array('description' => 'wechat transaction id',
+                    'type' => 'varchar',
+                    'size' => 'normal',
+                    'length' => 32,
+                    'default' => '',),
+
+
+      'time_end' => array('description' => '支付完成时间',
+                     'type' => 'int',
+                     'size' => 'normal',
+                     'default' => 0,),
+
+      'total_fee' => array('description' => 'total fee, unit is cent',
+                    'type' => 'int',
+                    'size' => 'normal',
+                    'default' => 0,
+                    'not null' => TRUE,),
+    ),
+
+    'primary key' => array('id'),
+  );
+
+  $schema['mobile_shopping_user_order_detail_table'] = array(
+    'description' => 'mobile shopping store user order detail records',
+    'fields' => array(
+      'id' => array('description' => 'table index',
+                    'type' => 'serial',
+                    'unsigned' => TRUE,
+                    'not null' => TRUE,),
+
+      'order_index' => array('description' => ' user order table index',
+                    'type' => 'int',
+                    'size' => 'normal',
+                    'unsigned' => TRUE,
+                    'not null' => TRUE,),
+
+      'merchandise_id' => array('description' => 'merchandise id = node id',
+                    'type' => 'varchar',
+                    'size' => 'normal',
+                    'length' => 16,
+                    'not null' => TRUE,),
+
+      'm_title' => array('description' => 'merchandise name',
+                    'type' => 'varchar',
+                    'size' => 'normal',
+                    'length' => 128,
+                    'not null' => TRUE,),
+
+      'm_purl' => array('description' => 'merchandise image url',
+                    'type' => 'varchar',
+                    'size' => 'normal',
+                    'length' => 512,
+                    'not null' => TRUE,),
+
+      'm_price' => array('description' => 'merchandise price',
+                    'type' => 'numeric',
+                    'size' => 'normal',
+                    'default' => 0.00,
+                    'precision' => 10,
+                    'scale' => 2,
+                    'not null' => TRUE,),
+
+      'm_volume' => array('description' => 'user purchase volume',
+                    'type' => 'int',
+                    'size' => 'small',
+                    'default' => 0,
+                    'unsigned' => TRUE,),
+
+      'exp_fee' => array('description' => 'post express fee',
+                    'type' => 'numeric',
+                    'size' => 'normal',
+                    'default' => 0.00,
+                    'precision' => 10,
+                    'scale' => 2,
+                    'not null' => TRUE,),
+
+      'point_p' => array('description' => 'score points price',
+                    'type' => 'numeric',
+                    'size' => 'normal',
+                    'default' => 0.00,
+                    'precision' => 10,
+                    'scale' => 2,
+                    'default' => 0.00,),
+      'point' => array('description' => 'score points',
+                    'type' => 'int',
+                    'size' => 'small',
+                    'default' => 0,
+                    'unsigned' => TRUE,),
+
+      'discount' => array('description' => 'discount price',
+                    'type' => 'numeric',
+                    'size' => 'normal',
+                    'precision' => 10,
+                    'scale' => 2,
+                    'default' => 0.00,),
+    ),
+
+    'primary key' => array('id'),
+  );
+
+  db_create_table('mobile_shopping_user_order_table',
+                 $schema['mobile_shopping_user_order_table']);
+  db_create_table('mobile_shopping_user_order_detail_table',
+                 $schema['mobile_shopping_user_order_detail_table']);
+}
+
+//add two fields to mobile_shopping_user_order_table
+function wechat_py_shopping_update_7010(&$sandbox){
+
+  $fields = array(
+      'time_start' => array('description' => '订单生成时间',
+                     'type' => 'int',
+                     'size' => 'normal',
+                     'default' => 0,),
+
+      'time_expire' => array('description' => '订单失效时间',
+                     'type' => 'int',
+                     'size' => 'normal',
+                     'default' => 0,),
+  );
+
+  foreach ($fields as $key => $field)  {
+    if (!db_field_exists('mobile_shopping_user_order_table', $key)) {
+      db_add_field('mobile_shopping_user_order_table', $key, $field);
+    }
+  }
+}
+
+//add one field to mobile_shopping_user_order_table
+function wechat_py_shopping_update_7011(&$sandbox){
+
+  $fields = array(
+      'order_detail' => array('description' => '订单详细列表，只给客户浏览',
+                    'type' => 'varchar',
+                    'size' => 'normal',
+                    'length' => 16000,
+                    'default' => '',),
+  );
+
+  foreach ($fields as $key => $field)  {
+    if (!db_field_exists('mobile_shopping_user_order_table', $key)) {
+      db_add_field('mobile_shopping_user_order_table', $key, $field);
+    }
+  }
+}
+
+//add one field to mobile_shopping_user_order_table
+function wechat_py_shopping_update_7012(&$sandbox){
+
+  if (!db_field_exists('mobile_shopping_user_order_table', $key)) {
+    db_drop_field('mobile_shopping_user_order_table', 'time_start');
+    db_drop_field('mobile_shopping_user_order_table', 'time_expire');
+    db_drop_field('mobile_shopping_user_order_table', 'time_end');
+    db_drop_field('mobile_shopping_user_order_table', 'prepay_id');
+
+  }
+  $fields = array(
+    'time_start' => array('description' => '订单生成时间',
+                    'type' => 'varchar',
+                    'size' => 'normal',
+                    'length' => 16,
+                    'default' => '',),
+
+    'time_expire' => array('description' => '订单失效时间',
+                    'type' => 'varchar',
+                    'size' => 'normal',
+                    'length' => 16,
+                    'default' => '',),
+
+    'time_end' => array('description' => '支付完成时间',
+                    'type' => 'varchar',
+                    'size' => 'normal',
+                    'length' => 16,
+                    'default' => '',),
+
+    'prepay_package' => array('description' => 'prepay return package for js after unified order, contains prepay id',
+                  'type' => 'varchar',
+                  'size' => 'normal',
+                  'length' => 512,
+                  'default' => '',),
+  );
+
+  foreach ($fields as $key => $field)  {
+    if (!db_field_exists('mobile_shopping_user_order_table', $key)) {
+      db_add_field('mobile_shopping_user_order_table', $key, $field);
+    }
+  }
+}
+
+function wechat_py_shopping_update_7013(&$sandbox){
+
+  $fields = array(
+    'item_total' => array('description' => '单商品合计',
+                    'type' => 'numeric',
+                    'size' => 'normal',
+                    'default' => 0.00,
+                    'precision' => 10,
+                    'scale' => 2,
+                    'not null' => TRUE,),
+
+  );
+
+  foreach ($fields as $key => $field)  {
+    if (!db_field_exists('mobile_shopping_user_order_detail_table', $key)) {
+      db_add_field('mobile_shopping_user_order_detail_table', $key, $field);
+    }
+  }
+}
+
+function wechat_py_shopping_update_7014(&$sandbox){
+
+  $fields = array(
+    'discount' => array('description' => '商品促销折扣',
+                    'type' => 'numeric',
+                    'size' => 'normal',
+                    'default' => 0.00,
+                    'precision' => 10,
+                    'scale' => 2,),
+
+  );
+
+  foreach ($fields as $key => $field)  {
+    if (!db_field_exists('mobile_shopping_user_order_detail_table', $key)) {
+      db_add_field('mobile_shopping_user_order_detail_table', $key, $field);
+    }
+  }
+}
+
+function wechat_py_shopping_update_7015(&$sandbox){
+
+  $fields = array(
+    'order_addr' => array('description' => '收货地址',
+                  'type' => 'varchar',
+                  'size' => 'normal',
+                  'length' => 512,
+                  'default' => '',),
+
+  );
+
+  foreach ($fields as $key => $field)  {
+    if (!db_field_exists('mobile_shopping_user_order_table', $key)) {
+      db_add_field('mobile_shopping_user_order_table', $key, $field);
+    }
+  }
+}
+
+function wechat_py_shopping_update_7016(&$sandbox){
+
+  $fields = array(
+    'area_term_id' => array('description' => '商品所在区域',
+                  'type' => 'varchar',
+                  'size' => 'normal',
+                  'length' => 32,
+                  'default' => '',),
+
+  );
+
+  foreach ($fields as $key => $field)  {
+    if (!db_field_exists('mobile_shopping_user_order_detail_table', $key)) {
+      db_add_field('mobile_shopping_user_order_detail_table', $key, $field);
+    }
+  }
+}
+
+function wechat_py_shopping_update_7017(&$sandbox){
+
+  $fields = array(
+    'exp_no' => array('description' => '快递单号',
+                  'type' => 'varchar',
+                  'size' => 'normal',
+                  'length' => 64,
+                  'default' => '',),
+
+    'exp_company_name' => array('description' => '快递公司发货地',
+                  'type' => 'varchar',
+                  'size' => 'normal',
+                  'length' => 128,
+                  'default' => '',),
+
+    'exp_time_end' => array('description' => '发货时间',
+                  'type' => 'varchar',
+                  'size' => 'normal',
+                  'length' => 16,
+                  'default' => '',),
+  );
+
+  foreach ($fields as $key => $field)  {
+    if (!db_field_exists('mobile_shopping_user_order_detail_table', $key)) {
+      db_add_field('mobile_shopping_user_order_detail_table', $key, $field);
+    }
+  }
+}
+
+function wechat_py_shopping_update_7018(&$sandbox){
+  //add user points and friends table
+  $schema = array();
+  //wechat py qrcode scene table.
+  $schema['mobile_shopping_user_friends_table'] = array(
+    'description' => 'mobile shopping user poinst friends table',
+    'fields' => array(
+      'id' => array('description' => 'table index',
+                    'type' => 'serial',
+                    'unsigned' => TRUE,
+                    'not null' => TRUE,),
+
+      'openid' => array('description' => 'youself openid',
+                    'type' => 'varchar',
+                    'size' => 'normal',
+                    'length' => 64,
+                    'not null' => TRUE,),
+
+      'MD5' => array('description' => 'md5 for youself openid',
+                    'type' => 'varchar',
+                    'size' => 'normal',
+                    'length' => 32,
+                    'default' => '',),
+                    
+      'f_openid' => array('description' => 'openid of friends',
+                    'type' => 'varchar',
+                    'size' => 'normal',
+                    'length' => 64,
+                    'not null' => TRUE,),
+
+      'f_openid_nick_name' => array('description' => 'friends nick name',
+                    'type' => 'varchar',
+                    'size' => 'normal',
+                    'length' => 128,
+                    'default' => '',),
+
+      'f_openid_head_img_url' => array('description' => 'friends head image url',
+                    'type' => 'varchar',
+                    'size' => 'normal',
+                    'length' => 512,
+                    'default' => '',),
+
+      'regist_time' => array('description' => '加入时间',
+                     'type' => 'int',
+                     'size' => 'normal',
+                     'default' => 0,),
+
+    ),
+
+    'primary key' => array('id'),
+  );
+
+  $schema['mobile_shopping_user_points_table'] = array(
+    'description' => 'mobile shopping user points records',
+    'fields' => array(
+      'id' => array('description' => 'table index',
+                    'type' => 'serial',
+                    'unsigned' => TRUE,
+                    'not null' => TRUE,),
+
+      'openid' => array('description' => 'wechat user open id',
+                    'type' => 'varchar',
+                    'size' => 'normal',
+                    'length' => 64,
+                    'not null' => TRUE,),
+
+      'MD5' => array('description' => 'md5 for openid',
+                    'type' => 'varchar',
+                    'size' => 'normal',
+                    'length' => 32,
+                    'default' => '',),
+                    
+      'total_points' => array('description' => 'total points for friends support',
+                    'type' => 'int',
+                    'size' => 'normal',
+                    'unsigned' => TRUE,
+                    'default' => 0,),
+
+      'curr_points' => array('description' => 'rest of points',
+                    'type' => 'int',
+                    'size' => 'normal',
+                    'unsigned' => TRUE,
+                    'default' => 0,),
+
+      'points_desc' => array('description' => 'points descriptiong text',
+                    'type' => 'varchar',
+                    'size' => 'normal',
+                    'length' => 2048,
+                    'default' => '',),
+
+      'qr_scan_image_url' => array('description' => 'image for promote self qr code',
+                    'type' => 'varchar',
+                    'size' => 'normal',
+                    'length' => 128,
+                    'default' => '',),
+    ),
+
+    'primary key' => array('id'),
+  );
+
+  db_create_table('mobile_shopping_user_friends_table',
+                 $schema['mobile_shopping_user_friends_table']);
+  db_create_table('mobile_shopping_user_points_table',
+                 $schema['mobile_shopping_user_points_table']);
+
+}
+
+function wechat_py_shopping_update_7019(&$sandbox){
+
+  $fields = array(
+    'orig_head_img_url' => array('description' => 'original head image url',
+                  'type' => 'varchar',
+                  'size' => 'normal',
+                  'length' => 255,
+                  'default' => '',),
+
+    'orig_nick_name' => array('description' => 'original user nick name',
+                  'type' => 'varchar',
+                  'size' => 'normal',
+                  'length' => 128,
+                  'default' => '',),
+  );
+
+  foreach ($fields as $key => $field)  {
+    if (!db_field_exists('mobile_shopping_user_points_table', $key)) {
+      db_add_field('mobile_shopping_user_points_table', $key, $field);
+    }
+  }
+}
+
+
+/*
+ * Add area_id and area express fee field
+ */
+function wechat_py_shopping_update_7020(&$sandbox) {
+
+  $fields = array(
+    'area_id' => array('description' => '商品所在区域',
+                  'type' => 'varchar',
+                  'size' => 'normal',
+                  'length' => 32,
+                  'default' => '',),
+
+    'area_exp_fee' => array('description' => '订单邮费',
+                  'type' => 'numeric',
+                  'size' => 'normal',
+                  'default' => 0.00,
+                  'precision' => 10,
+                  'scale' => 2,
+                  'not null' => TRUE,),
+  );
+
+  foreach ($fields as $key => $field)  {
+    if (!db_field_exists('mobile_shopping_user_order_table', $key)) {
+      db_add_field('mobile_shopping_user_order_table', $key, $field);
+    }
+  }
+}
+
+
+/*
+ * test table for order and order detail
+ */
+function wechat_py_shopping_update_7021(&$sandbox) {
+  $schema = array();
+  $schema['test_mobile_shopping_user_order_table'] = array(
+    'description' => 'mobile shopping store user order records',
+    'fields' => array(
+      'id' => array('description' => 'table index',
+                    'type' => 'serial',
+                    'unsigned' => TRUE,
+                    'not null' => TRUE,),
+
+      'openid' => array('description' => 'wechat user open id',
+                    'type' => 'varchar',
+                    'size' => 'normal',
+                    'length' => 64,
+                    'not null' => TRUE,),
+
+      'MD5' => array('description' => 'md5 for openid',
+                    'type' => 'varchar',
+                    'size' => 'normal',
+                    'length' => 32,
+                    'default' => '',),
+                    
+      'out_trade_no' => array('description' => 'order number, Dtime-16randstring',
+                    'type' => 'varchar',
+                    'size' => 'normal',
+                    'length' => 32,
+                    'not null' => TRUE,),
+
+      'order_state' => array('description' => 'order state, 0-unpay, 1 paied and checking, 2 post and closed, 3 refund',
+                    'type' => 'int',
+                    'size' => 'tiny',
+                    'unsigned' => TRUE,
+                    'default' => 0,),
+
+      'transaction_id' => array('description' => 'wechat transaction id',
+                    'type' => 'varchar',
+                    'size' => 'normal',
+                    'length' => 32,
+                    'default' => '',),
+
+      'total_fee' => array('description' => 'total fee, unit is cent',
+                    'type' => 'int',
+                    'size' => 'normal',
+                    'default' => 0,
+                    'not null' => TRUE,),
+
+      'order_detail' => array('description' => '订单详细列表，只给客户浏览',
+                    'type' => 'varchar',
+                    'size' => 'normal',
+                    'length' => 16000,
+                    'default' => '',),
+
+      'time_start' => array('description' => '订单生成时间',
+                      'type' => 'varchar',
+                      'size' => 'normal',
+                      'length' => 16,
+                      'default' => '',),
+
+      'time_expire' => array('description' => '订单失效时间',
+                      'type' => 'varchar',
+                      'size' => 'normal',
+                      'length' => 16,
+                      'default' => '',),
+
+      'time_end' => array('description' => '支付完成时间',
+                      'type' => 'varchar',
+                      'size' => 'normal',
+                      'length' => 16,
+                      'default' => '',),
+
+      'prepay_package' => array('description' => 'prepay return package for js after unified order, contains prepay id',
+                    'type' => 'varchar',
+                    'size' => 'normal',
+                    'length' => 512,
+                    'default' => '',),
+
+      'order_addr' => array('description' => '收货地址',
+                    'type' => 'varchar',
+                    'size' => 'normal',
+                    'length' => 512,
+                    'default' => '',),
+
+      'area_id' => array('description' => '商品所在区域',
+                    'type' => 'varchar',
+                    'size' => 'normal',
+                    'length' => 32,
+                    'default' => '',),
+
+      'area_exp_fee' => array('description' => '订单邮费',
+                    'type' => 'numeric',
+                    'size' => 'normal',
+                    'default' => 0.00,
+                    'precision' => 10,
+                    'scale' => 2,
+                    'not null' => TRUE,),
+    ),
+
+    'primary key' => array('id'),
+  );
+
+  $schema['test_mobile_shopping_user_order_detail_table'] = array(
+    'description' => 'mobile shopping store user order detail records',
+    'fields' => array(
+      'id' => array('description' => 'table index',
+                    'type' => 'serial',
+                    'unsigned' => TRUE,
+                    'not null' => TRUE,),
+
+      'order_index' => array('description' => ' user order table index',
+                    'type' => 'int',
+                    'size' => 'normal',
+                    'unsigned' => TRUE,
+                    'not null' => TRUE,),
+
+      'merchandise_id' => array('description' => 'merchandise id = node id',
+                    'type' => 'varchar',
+                    'size' => 'normal',
+                    'length' => 16,
+                    'not null' => TRUE,),
+
+      'm_title' => array('description' => 'merchandise name',
+                    'type' => 'varchar',
+                    'size' => 'normal',
+                    'length' => 128,
+                    'not null' => TRUE,),
+
+      'm_purl' => array('description' => 'merchandise image url',
+                    'type' => 'varchar',
+                    'size' => 'normal',
+                    'length' => 512,
+                    'not null' => TRUE,),
+
+      'm_price' => array('description' => 'merchandise price',
+                    'type' => 'numeric',
+                    'size' => 'normal',
+                    'default' => 0.00,
+                    'precision' => 10,
+                    'scale' => 2,
+                    'not null' => TRUE,),
+
+      'm_volume' => array('description' => 'user purchase volume',
+                    'type' => 'int',
+                    'size' => 'small',
+                    'default' => 0,
+                    'unsigned' => TRUE,),
+
+      'exp_fee' => array('description' => 'post express fee',
+                    'type' => 'numeric',
+                    'size' => 'normal',
+                    'default' => 0.00,
+                    'precision' => 10,
+                    'scale' => 2,
+                    'not null' => TRUE,),
+
+      'point_p' => array('description' => 'score points price',
+                    'type' => 'numeric',
+                    'size' => 'normal',
+                    'default' => 0.00,
+                    'precision' => 10,
+                    'scale' => 2,
+                    'default' => 0.00,),
+      'point' => array('description' => 'score points',
+                    'type' => 'int',
+                    'size' => 'small',
+                    'default' => 0,
+                    'unsigned' => TRUE,),
+
+      'discount' => array('description' => '商品促销折扣',
+                    'type' => 'numeric',
+                    'size' => 'normal',
+                    'default' => 0.00,
+                    'precision' => 10,
+                    'scale' => 2,),
+
+      'item_total' => array('description' => '单商品合计',
+                      'type' => 'numeric',
+                      'size' => 'normal',
+                      'default' => 0.00,
+                      'precision' => 10,
+                      'scale' => 2,
+                      'not null' => TRUE,),
+
+      'area_term_id' => array('description' => '商品所在区域',
+                  'type' => 'varchar',
+                  'size' => 'normal',
+                  'length' => 32,
+                  'default' => '',),
+
+      'exp_no' => array('description' => '快递单号',
+                    'type' => 'varchar',
+                    'size' => 'normal',
+                    'length' => 64,
+                    'default' => '',),
+
+      'exp_company_name' => array('description' => '快递公司发货地',
+                    'type' => 'varchar',
+                    'size' => 'normal',
+                    'length' => 128,
+                    'default' => '',),
+
+      'exp_time_end' => array('description' => '发货时间',
+                    'type' => 'varchar',
+                    'size' => 'normal',
+                    'length' => 16,
+                    'default' => '',),
+    ),
+
+    'primary key' => array('id'),
+  );
+
+  db_create_table('test_mobile_shopping_user_order_table',
+                 $schema['test_mobile_shopping_user_order_table']);
+  db_create_table('test_mobile_shopping_user_order_detail_table',
+                 $schema['test_mobile_shopping_user_order_detail_table']);
+}
+/**
+ * End of wechat py shopping module
+ */

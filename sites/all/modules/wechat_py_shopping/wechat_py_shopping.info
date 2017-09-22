@@ -1,0 +1,16 @@
+name = wechat_py_shopping 
+description = 梦乡平遥游商城模块.
+
+dependencies[] = ctools
+dependencies[] = panels
+
+dependencies[] = wechat_api
+dependencies[] = plupload
+dependencies[] = libraries
+
+core = 7.x
+files[] = views/wechat_py_shopping_views_handler_field_order_state.inc
+files[] = views/wechat_py_shopping_views_handler_field_time_end.inc
+files[] = views/wechat_py_shopping_views_handler_field_area_id.inc
+files[] = views/wechat_py_shopping_views_handler_field_total_fee.inc
+

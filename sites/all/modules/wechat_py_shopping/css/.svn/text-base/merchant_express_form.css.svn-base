@@ -1,0 +1,110 @@
+.container-break-line {
+  clear: both;
+  border-top: 1px solid #d0d0d0;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+.container-name label[for=edit-container-name-name] {
+  display: inline;
+  margin-right: 5em;
+}
+
+.container-name .description {
+  margin-left: 20em;
+}
+
+.container-delivery label[for=edit-container-delivery-delivery] {
+  margin-right: 6em;
+}
+
+.merchant-express-head-font {
+  margin-right: 6em;
+}
+
+.container-select .form-select {
+  margin-left: 2em;
+}
+
+/*
+.form-item label[for=edit-fieldset-container-startprice-label] {
+  margin-left: 2em;
+}
+*/
+
+div.js_edit_area {
+  margin: 0 0.2em 0 0.2em;
+}
+
+div.js_delete_area {
+  margin: 0 0.2em 0 0.3em;
+}
+
+.start-level {
+  text-align: right;
+  margin: 0 3em 0 0.5em;
+}
+
+.weight-unit {
+  text-align: right;
+  margin: 0 5em 0 4em;
+}
+
+.weight-price {
+  text-align: right;
+  margin: 0 0 0 3em;
+}
+
+.weight-label-1,
+.weight-label-2,
+.weight-label-3,
+.weight-label-4 {
+  font-size: 1.2em;
+}
+
+.weight-label-1 {
+  margin-right: 6em;
+}
+.weight-label-2 {
+  margin-right: 3em;
+}
+.weight-label-3 {
+  margin-right: 6em;
+}
+
+.start-weight-text .field-suffix{
+  margin-right: 2.5em;
+}
+
+.start-price-text .field-suffix {
+  margin-right: 2.5em;
+}
+
+.unit-weight-text .field-suffix {
+  margin-right: 2.5em;
+}
+
+.merchant-express-label {
+  /*margin: 0 4em 0 1.5em;*/
+  float: left;
+  font-size: 1.2em;
+  width: 60%;
+}
+
+/*multi select overwrite*/
+.ms-container{
+  width: 100%;
+}
+.ms-container .ms-list{
+  height: 259px;
+}
+
+.radio-area-selection {
+  margin: 10px;
+}
+
+.list-container {
+  border: solid 1px rgba(128, 128, 128, 0.37);
+  overflow: scroll;
+  height: 500px;
+}

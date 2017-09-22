@@ -1,0 +1,60 @@
+@font-face {
+  font-family: 'Droid Serif', serif;
+  font-weight: normal;
+  font-style: normal;
+}
+
+body { 
+  width: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  height: 100%;
+  overflow: hidden;
+  margin : 0 auto;
+  padding : 0;
+  font : 100%/1.4 'Droid Serif', serif;
+  text-align: center;
+  background-color: #ebebeb;
+}
+
+.maincontent {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  position: relative;
+  padding: 0px;
+  overflow: hidden;
+}
+
+ul {
+  padding: 0;
+  margin: 1em;
+  list-style: none;
+}
+
+ul li{
+  width: 100%;
+  margin: 0 auto;
+  border-top: 1px solid #ffffff;
+  border-bottom: 1px solid #7e7e7e;
+}
+
+ul li:first-child {
+  border-top: 0px;
+}
+.item {
+  padding: 5px 0px 5px 5px;
+  margin: 5px auto;
+  width:99%;
+  max-width: 100%;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.item img {
+  padding: 0px;
+  margin: 0;
+  width: 99%;
+  display: block;
+}

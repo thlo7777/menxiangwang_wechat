@@ -1,0 +1,51 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the wechat hotel module.
+ */
+
+/**
+ * Implements of hook_install().
+ */
+function wechat_hotel_install() {
+  if (module_exists('menu')) {
+    $menu = array(
+      'menu_name' => MENU_HOTEL_MANAGE,
+      'title' => t('酒店管理菜单'),
+      'description' => t('hotel link'),
+    );
+    menu_save($menu);
+  }
+}
+
+
+/**
+ * Implements hook_enable().
+ */
+function wechat_hotel_enable() {
+  if (module_exists('menu')) {
+    $menu = array(
+      'menu_name' => MENU_HOTEL_MANAGE,
+      'title' => t('酒店管理菜单'),
+      'description' => t('hotel link'),
+    );
+    menu_save($menu);
+  }
+}
+
+/**
+ * Implements hook_disable().
+ */
+function wechat_hotel_disable() {
+  // Delete the hotel manage menu.
+  if (module_exists('menu')) {
+    if ($hotel_menu = menu_load(MENU_HOTEL_MANAGE)) {
+      menu_delete($hotel_menu);
+    }
+  }
+}
+
+/**
+ * End of wechat hotel module
+ */

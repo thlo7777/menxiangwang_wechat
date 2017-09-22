@@ -1,0 +1,6 @@
+name = wechat database table
+description = A module for create wechat database table.
+core = 7.x
+
+files[] = wechat_table.module
+files[] = wechat_table.install

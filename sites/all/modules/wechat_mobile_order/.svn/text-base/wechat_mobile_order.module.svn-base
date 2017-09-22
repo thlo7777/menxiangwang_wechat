@@ -1,0 +1,101 @@
+<?php
+
+define('MENU_WECHAT_MOBILE_ORDER', 'wechat-mobile-order');
+
+/**
+ * hook_permission()
+ */
+function wechat_mobile_order_permission() {
+  return array(
+    'wechat mobile order module permission' => array(
+      'title' => t('访问梦乡平遥游公众号手机端模块'),
+      'description' => t('只有页面管理员可访问'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu().
+ */
+function wechat_mobile_order_menu(){
+  $items = array();
+  
+  $items[MENU_WECHAT_MOBILE_ORDER . '/order-list'] = array(
+    'menu_name' => 'menu-shopping-mangement-menu',
+    'title' => '所有订单列表/月度结算单',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('menu_wechat_mobile_order_list_form'),
+    'access callback' => 'user_access',
+    'access arguments' => array('wechat mobile order module permission'),
+    'weight' => 6,
+    'file' => 'wechat_mobile_order_list_form.inc',
+  );
+
+  $items[MENU_WECHAT_MOBILE_ORDER . '/order-detail/%/%'] = array(
+    'type' => MENU_CALLBACK,
+    'title' => '微商城订单详情',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('wechat_mobile_order_detail_form', 2, 3),
+    'description' => '微商城订单详情',
+    'access callback' => 'user_access',
+    'access arguments' => array('wechat mobile order module permission'),
+    'access arguments' => array('wechat py mobile module permission'),
+    'weight' => 7,
+    'file' => 'wechat_mobile_order_detail_form.inc',
+  );
+
+  $items[MENU_WECHAT_MOBILE_ORDER . '/area-order-list'] = array(
+    'menu_name' => 'menu-shopping-mangement-menu',
+    'title' => '地区订单列表/月度结算单',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('menu_wechat_mobile_area_order_list_form'),
+    'access callback' => 'area_user_roles_permission',
+    'access arguments' => array(array('微商城管理员')),
+    'weight' => 8,
+    'file' => 'wechat_mobile_area_order_list_form.inc',
+  );
+
+  return $items;
+}
+
+function area_user_roles_permission($roles) {
+  if (user_is_logged_in()) {
+
+    global $user;
+    if (in_array('administrator', $user->roles)) {
+      return TRUE;
+    }
+    foreach ($roles as $role) {
+      if (in_array($role, $user->roles) && !in_array('page_admin', $user->roles)) {
+          return TRUE;
+      }
+    }
+
+    return FALSE;
+  } else {
+      return FALSE;
+  }
+}
+
+/**
+ * Implement hook_element_info_alter(&$type)
+ **/
+function wechat_mobile_order_element_info_alter(&$type) {
+  if (isset($type['date_popup'])) {
+    $type['date_popup']['#process'][] = 'wechat_mobile_order_date_popup_process';
+  }
+}
+
+function wechat_mobile_order_date_popup_process($element, $form_state, $complete_form) {
+  if ($element['#name'] == 'date2_filters') {
+    $element['date']['#title'] = '到 日期';
+  }
+  unset($element['date']['#description']);
+  unset($element['time']['#description']);
+
+  return $element;
+}
+
+/**
+ * End of wechat mobile order module
+ */

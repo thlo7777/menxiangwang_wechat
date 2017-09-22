@@ -1,0 +1,214 @@
+<?php
+
+/**
+ * hook_help()
+ */
+function wechat_manage_help($path, $arg){
+ switch ($path) {
+    case "admin/help#wechat_manage":
+      return '<p>' . t("管理微信功能") . '</p>';
+      break;
+  }
+
+}
+
+/**
+ * Implements hook_menu().
+ */
+function wechat_manage_menu(){
+$items['admin/config/wechat-manage'] = array(
+    'title' => t('微信管理'),
+    'position' => 'left',
+    'weight' => 30, // Less weight so that it will appear to the extreme left, before dashboard.
+    'page callback' => 'system_admin_menu_block_page',
+    'access arguments' => array('administer site configuration'),
+    'file' => 'system.admin.inc',
+    'file path' => drupal_get_path('module', 'system'),
+  );
+
+  
+ $items['admin/config/wechat-manage/get-userids'] = array(
+    'title' => t('获取微信用户OPENID'),
+    'page callback' => 'get_userids_callback',
+    'access callback' => TRUE,
+    'type' => MENU_NORMAL_ITEM,
+    'weight' => 0,
+  );
+
+ $items['admin/config/wechat-manage/insert-userids'] = array(
+    'title' => t('存储微信用户OPENID'),
+    'page callback' => 'insert_userids_callback',
+    'access callback' => TRUE,
+    'type' => MENU_NORMAL_ITEM,
+    'weight' => 1,
+  );
+
+ $items['admin/config/wechat-manage/delete-userids'] = array(
+    'title' => t('删除微信用户OPENID'),
+    'page callback' => 'delete_userids_callback',
+    'access callback' => TRUE,
+    'type' => MENU_NORMAL_ITEM,
+    'weight' => 2,
+  );
+
+ $items['admin/config/wechat-manage/userinfo'] = array(
+    'title' => t('获取微信用户基本信息'),
+    'page callback' => 'userinfo_callback',
+    'access callback' => TRUE,
+    'type' => MENU_NORMAL_ITEM,
+    'weight' => 3,
+  );
+
+ $items['admin/config/wechat-manage/delete-userinfo'] = array(
+    'title' => t('删除微信用户基本信息'),
+    'page callback' => 'del_userinfo_callback',
+    'access callback' => TRUE,
+    'type' => MENU_NORMAL_ITEM,
+    'weight' => 4,
+  );
+
+ $items['admin/config/wechat-manage/create-wechat-menu'] = array(
+    'title' => t('创建微信菜单'),
+    'page callback' => 'create_wechat_menu',
+    'access callback' => TRUE,
+    'type' => MENU_NORMAL_ITEM,
+    'weight' => 6,
+  );
+
+ $items['admin/config/wechat-manage/get-wechat-menu'] = array(
+    'title' => t('获取微信菜单'),
+    'page callback' => 'get_wechat_menu',
+    'access callback' => TRUE,
+    'type' => MENU_NORMAL_ITEM,
+    'weight' => 7,
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_admin_paths_alter(). It add callback content to admin overlay.
+ */
+function wechat_manage_admin_paths_alter(&$paths) {
+    $paths['admin/config/wechat-manage/get-userids'] = TRUE;
+    $paths['admin/config/wechat-manage/insert-userids'] = TRUE;
+    $paths['admin/config/wechat-manage/delete-userids'] = TRUE;
+    $paths['admin/config/wechat-manage/userinfo'] = TRUE;
+    $paths['admin/config/wechat-manage/delete-userinfo'] = TRUE;
+    $paths['admin/config/wechat-manage/create-wechat-menu'] = TRUE;
+    $paths['admin/config/wechat-manage/get-wechat-menu'] = TRUE;
+}
+
+/*delete all openid user*/
+function del_userinfo_callback(){
+  $userid = db_query('SELECT n.entity_id FROM {field_data_field_wechat_openid} n');
+
+  foreach($userid as $value){
+    user_delete($value->entity_id);
+  }
+  return t('删除所有微信用户基本信息');
+}
+
+/* buld insert all open id to user profile*/
+function userinfo_callback(){
+  include(wechat_py_path . wechat_api_path . '/wechat_user_info.php');
+  include(wechat_py_path . wechat_api_path . '/emoji.php');
+
+  $openid = db_query('SELECT n.field_user_openids_value FROM {field_data_field_user_openids} n');
+// Result is returned as a iterable object that returns a stdClass object on each iteration
+  foreach ($openid as $value) {
+    $result= wechat_get_usrinfo($value->field_user_openids_value);
+    //print($value->field_user_openids_value);
+
+    /*load exist user, and modify if subscribe changed*/
+    $userid = db_query('SELECT n.entity_id FROM 
+                        {field_data_field_wechat_openid} n WHERE 
+                        n.field_wechat_openid_value = :openid', 
+                        array(':openid'=>$value->field_user_openids_value));
+    $exists = $userid->rowcount();
+    if($exists > 0){
+      $user = user_load($userid->fetchObject()->entity_id);
+      //$user = entity_load('user', array($userid->fetchObject()->entity_id));  foreach($user as $value){}
+      $user_oldprofile = entity_metadata_wrapper('user', $user);  //use foreach for entity_load
+      if($result->subscribe != $user_oldprofile->field_wechat_subscribe->value()){
+        //print('need changed'. $result->openid);
+        if($result->subscribe == 0){
+          //$user->name = $result->openid;
+          $user_oldprofile->field_wechat_openid->set($result->openid);
+          $user_oldprofile->field_wechat_subscribe->set($result->subscribe);
+        }
+        
+      }else{
+        //print('same exist'.$result->openid);
+        continue;
+      }
+    }else{
+      //print_r2($result);
+      $newUser = entity_create('user', array());
+      $newUser->name = $result->openid;
+      $newUser->pass = '1234';
+      $newUser->mail = 'aaa@bbb.ccc';
+      $newUser->status = 1;
+      $newUser->created = $result->subscribe_time;
+      $user_profile = entity_metadata_wrapper('user', $newUser);
+      if($result->subscribe == 0){
+        $user_profile->field_wechat_subscribe->set($result->subscribe);
+        $user_profile->field_wechat_openid->set($result->openid);
+      }else{
+        $user_profile->field_wechat_subscribe->set($result->subscribe);
+        $user_profile->field_wechat_openid->set($result->openid);
+        $user_profile->field_wechat_nickname->set(emoji_unified_to_html(emoji_google_to_unified($result->nickname)));
+        $user_profile->field_wechat_sex->set($result->sex);
+        $user_profile->field_wechat_city->set($result->city);
+        $user_profile->field_wechat_country->set($result->province);
+        $user_profile->field_wechat_province->set($result->country);
+        $user_profile->field_wechat_language->set($result->language);
+        $user_profile->field_wechat_headimgurl->set($result->headimgurl);
+        $user_profile->field_wechat_subscribe_time->set($result->subscribe_time);
+      }
+
+      $user_profile->save();  //save new user into database
+    }
+
+  }
+  //print_r2($newUser);
+  //print_r2($user_profile);
+  return t('存储所有微信用户基本信息');
+}
+
+function get_userids_callback(){
+  //$view = views_get_view('user_open_id_list_page');
+  //print $view->preview('default');
+  //dpm(views_embed_view('user_open_id_list_page', 'page'));
+  //print '<div id = "content">' . views_embed_view('user_open_id_list_page', 'page') . '</div>'; //It's wired since character sets is not UTF8, but use views_get_view ok
+  $view = views_get_view('user_open_id_list_page');
+  $view->set_display('page');
+  //print $view->get_title();
+  //print $view->preview('page');
+  return $view->preview('page');
+}
+
+function insert_userids_callback(){
+  include(wechat_py_path . wechat_api_path . '/wechat_get_openids.php');
+  wechat_get_openids();
+  return "insert all openids";
+}
+
+function delete_userids_callback(){
+  include(wechat_py_path . wechat_api_path . '/wechat_get_openids.php');
+  wechat_delete_all_openids();
+  return "delete all openids";
+}
+
+function create_wechat_menu(){
+  include(wechat_py_path . wechat_api_path . '/wechat_manage_menu.php');
+  wechat_create_menu();
+
+  return "创建微信菜单";
+}
+
+function get_wechat_menu(){
+  include(wechat_py_path . wechat_api_path . '/wechat_manage_menu.php');
+  dpm(wechat_get_menu());
+  return "返回微信菜单";
+}
+

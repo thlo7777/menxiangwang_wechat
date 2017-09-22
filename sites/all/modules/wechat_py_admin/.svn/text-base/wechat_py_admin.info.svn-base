@@ -1,0 +1,6 @@
+name = wechat_py_admin 
+description = 梦乡平遥游公众号管理模块.
+
+dependencies[] = wechat_api
+core = 7.x
+

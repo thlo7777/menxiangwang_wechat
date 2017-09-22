@@ -1,0 +1,43 @@
+(function($){
+  $(document).ready(function(){
+
+    $(".container-inline").click(function(){
+      var nid = $(this).attr('id');
+      //console.log(nid);
+      if(nid == '梦乡平遥游公共论坛'){
+        window.location.href = "http://yochat.cn/mhLWHiNM";
+      }else{
+        window.location.href = "http://yochat.cn/mhLWHiNM?destination=/tab/home/post-list/tag/" + nid;
+      }
+
+    });
+
+    $('body').scrollToTop({
+    distance: 200,
+    speed: 1000,
+    easing: 'linear',
+    animation: 'fade', // fade, slide, none
+    animationSpeed: 500,
+
+    mobile: {
+        width: 768,
+        distance: 100,
+        speed: 1000,
+        easing: 'easeInOutElastic',
+        animation: 'slide',
+        animationSpeed: 200
+    },
+
+    trigger: null, // Set a custom triggering element. Can be an HTML string or jQuery object
+    target: null, // Set a custom target element for scrolling to. Can be element or number
+    text: '回到首页', // Text for element, can contain HTML
+
+    skin: null,
+    throttle: 250,
+
+    namespace: 'scrollToTop'
+    });
+
+
+  }); //document ready
+})(jQuery);

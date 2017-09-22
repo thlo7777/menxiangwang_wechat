@@ -1,0 +1,26 @@
+#py-mobile-my-doc-page .ui-header {
+  border-style: none;
+}
+
+#py-mobile-my-doc-page #edit-addr-panel,
+#py-mobile-my-doc-page #remove-addr-panel {
+  width: 15em;
+}
+
+#py-mobile-my-doc-page .ui-content {
+  padding: 7px;
+}
+
+#remove-panel-list-view p {
+  margin-left: 0.5em;
+  font-size: 0.9em;
+}
+
+/*
+#friends .ui-listview>li.ui-last-child img:first-child:not(.ui-li-icon) {
+  -webkit-border-bottom-left-radius: 0;
+  border-bottom-left-radius: 0;
+  -webkit-border-top-left-radius: 0;
+  border-top-left-radius: 0;
+}
+*/

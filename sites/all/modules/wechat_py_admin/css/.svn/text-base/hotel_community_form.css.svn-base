@@ -1,0 +1,66 @@
+ul.title-intro {
+  list-style: none;
+  padding: 0 0 0 0;
+}
+
+.title-intro .container-inline{
+  position: relative;
+  border: 1px solid #d0d0d0;
+}
+
+.title-intro img.title-image {
+  margin-right: 3em;
+}
+
+div.title-text {
+  font-size: 1.5em;
+  text-align: center;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+div.title-text:before {
+    content: '';
+    display: inline-block;
+    vertical-align: middle;
+    height: 100%;
+  }
+  span {
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+div.link-center {
+  text-align: right;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+div.link-center:before {
+    content: '';
+    display: inline-block;
+    vertical-align: middle;
+    height: 100%;
+  }
+  a {
+    margin-right: 0.5em;
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+.title-text span {
+  display: inline-block;
+  vertical-align: middle;
+  line-height: normal;      
+}
+
+a.title-link {
+  font-size: 1.5em;
+}
+

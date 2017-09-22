@@ -1,0 +1,49 @@
+#py-mobile-my-order-page .ui-header {
+  border-style: none;
+}
+
+#py-mobile-my-order-page .ui-content {
+  padding: 7px;
+}
+
+#py-mobile-my-order-page .ui-collapsible-content {
+  padding: 0;
+}
+
+#unpaid-order, #paid-order {
+  overflow: hidden;
+}
+
+.ui-li-static.ui-collapsible > .ui-collapsible-heading {
+  margin: 0;
+}
+
+.ui-li-static.ui-collapsible {
+  padding: 0;
+}
+
+.ui-li-static.ui-collapsible > .ui-collapsible-heading > .ui-btn {
+  border-top-width: 0;
+}
+
+.ui-li-static.ui-collapsible > .ui-collapsible-heading.ui-collapsible-heading-collapsed > .ui-btn,
+.ui-li-static.ui-collapsible > .ui-collapsible-content {
+  border-bottom-width: 0;
+}
+
+.ui-content .ui-listview {
+  margin: 0.2em;
+}
+
+#order-title p {
+  font-size: 0.9em;
+}
+
+.order-detail-item>.ui-li-static.ui-li-has-thumb {
+  padding-left: 5em;
+}
+
+.order-detail-item>.ui-li-static {
+  padding: 0;
+}
+

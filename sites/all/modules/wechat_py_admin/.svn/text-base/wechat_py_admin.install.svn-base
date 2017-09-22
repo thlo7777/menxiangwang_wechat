@@ -1,0 +1,1026 @@
+<?php
+/**
+ * Implements hook_schema()
+ */
+function wechat_py_admin_schema(){
+  $schema = array();
+
+  //wechat api token interface table
+  $schema['wechat_py_welcome_page_table'] = array(
+    // Example (partial) specification for table "wechat hotel ranking".
+    'description' => 'display wechat py welcome page when user follow',
+    'fields' => array(
+      'id' => array('description' => 'id',
+                    'type' => 'serial',
+                    'unsigned' => TRUE,
+                    'not null' => TRUE,),
+
+      'welcome_text' => array('description' => 'welcom content',
+                     'type' => 'varchar',
+                     'size' => 'normal',
+                     'length' => 512,
+                     'not null' => TRUE,),
+    ),
+    'primary key' => array('id'),
+  );
+
+  //wechat hotel ranking
+  $schema['wechat_hotel_ranking'] = array(
+    // Example (partial) specification for table "wechat hotel ranking".
+    'description' => 'for wechat hotel ranking',
+    'fields' => array(
+      'id' => array('description' => 'id',
+                    'type' => 'serial',
+                    'unsigned' => TRUE,
+                    'not null' => TRUE,),
+
+      'uid' => array('description' => 'uid',
+                     'type' => 'int',
+                     'unsigned' => TRUE,
+                     'not null' => TRUE,),
+
+      'ranking' => array('description' => 'hotel ranking',
+                         'type' => 'int',
+                         'unsigned' => TRUE,
+                         'not null' => TRUE,),
+
+      'hotel_name' => array('description' => 'Hotel name',
+                            'type' => 'varchar',
+                            'length' => 255,
+                            'not null' => TRUE,
+                            'default' => '',),
+
+      'hotel_longitude' => array('description' => 'hotel address latitude',
+                                 'type' => 'numeric',
+                                 'size' => 'normal',
+                                 'default' => 0,
+                                 'precision' => 10,
+                                 'scale' => 6,
+                                 'not null' => TRUE,),
+
+      'hotel_latitude' => array('description' => 'hotel address latitude',
+                                 'type' => 'numeric',
+                                 'size' => 'normal',
+                                 'default' => 0,
+                                 'precision' => 10,
+                                 'scale' => 6,
+                                 'not null' => TRUE,),
+    ),
+    'indexes' => array(
+      'ranking' => array('ranking'),
+    ),
+    'primary key' => array('id'),
+  );
+
+  //wechat py qrcode scene table.
+  $schema['wechat_py_qrscene_table'] = array(
+    'description' => 'wechat pingyao qrcode scene description',
+    'fields' => array(
+      'id' => array('description' => 'id',
+                    'type' => 'serial',
+                    'unsigned' => TRUE,
+                    'not null' => TRUE,),
+
+      'action_name' => array('description' => 'for temporary or permanent',
+                    'type' => 'varchar',
+                    'size' => 'normal',
+                    'length' => 32,
+                    'not null' => TRUE,),
+
+      'scene' => array('description' => 'Place name of subscribe san',
+                     'type' => 'varchar',
+                     'size' => 'normal',
+                     'length' => 255,
+                     'not null' => TRUE,),
+
+      'scene_id' => array('description' => 'value of scene',
+                     'type' => 'int',
+                     'size' => 'normal',
+                     'unsigned' => TRUE,
+                     'not null' => TRUE,),
+
+      'ticket' => array('description' => 'qrcode ticket for get image',
+                     'type' => 'varchar',
+                     'size' => 'normal',
+                     'length' => 255,
+                     'not null' => TRUE,),
+
+      'qrscene_image_file'=> array(
+                      'description' => 'qrscene bar code image file name',
+                      'type' => 'varchar',
+                      'length' => '1024',
+                      'not null' => FALSE,
+                      'default' => '',),
+
+      'qrscene_image_width' => array(
+                      'description' => 'qrscene bar code image width',
+                      'type' => 'int',
+                      'size' => 'normal',
+                      'unsigned' => TRUE,
+                      'not null' => FALSE,
+                      'default' => 0,),
+
+      'qrscene_image_height' => array(
+                      'description' => 'qrscene bar code image height',
+                      'type' => 'int',
+                      'size' => 'normal',
+                      'unsigned' => TRUE,
+                      'not null' => FALSE,
+                      'default' => 0,),
+    ),
+
+    'unique keys' => array('scene_id' => array('scene_id')),
+    'primary key' => array('id'),
+  );
+
+  //subscribe user by qrscene table
+  $schema['wechat_py_subscribe_user_table'] = array(
+    'description' => 'wechat pingyao subscribe user information',
+    'fields' => array(
+      'openid' => array('description' => 'wechat user open id',
+                     'type' => 'varchar',
+                     'size' => 'normal',
+                     'length' => 64,
+                     'not null' => TRUE,),
+
+      'subscribe' => array('description' => 'flag of subscribe user only 0 or 1',
+                     'type' => 'int',
+                     'size' => 'tiny',
+                     'unsigned' => TRUE,
+                     'not null' => TRUE,),
+
+      'nickname' => array('description' => 'user nick name',
+                     'type' => 'varchar',
+                     'size' => 'normal',
+                     'length' => 512,
+                     'not null' => TRUE,),
+
+      'sex' => array('description' => 'gender of subscribe user only 0/Unknow, 1/male, 2/female',
+                     'type' => 'int',
+                     'size' => 'tiny',
+                     'unsigned' => TRUE,
+                     'not null' => TRUE,),
+
+      'language' => array('description' => 'Language of user',
+                     'type' => 'varchar',
+                     'size' => 'normal',
+                     'length' => 32,
+                     'not null' => TRUE,),
+
+      'city' => array('description' => 'city',
+                     'type' => 'varchar',
+                     'size' => 'normal',
+                     'length' => 32,
+                     'not null' => TRUE,),
+
+      'province' => array('description' => 'province',
+                     'type' => 'varchar',
+                     'size' => 'normal',
+                     'length' => 32,
+                     'not null' => TRUE,),
+
+      'country' => array('description' => 'country',
+                     'type' => 'varchar',
+                     'size' => 'normal',
+                     'length' => 32,
+                     'not null' => TRUE,),
+
+      'headimgurl' => array('description' => 'headimgurl',
+                     'type' => 'varchar',
+                     'size' => 'normal',
+                     'length' => 512,
+                     'not null' => TRUE,),
+
+      'subscribe_time' => array('description' => 'time of subscribe',
+                     'type' => 'int',
+                     'size' => 'normal',
+                     'not null' => TRUE,),
+
+      'unionid' => array('description' => 'wechat user unionid',
+                     'type' => 'varchar',
+                     'size' => 'normal',
+                     'length' => 64,
+                     'not null' => TRUE,),
+    ),
+
+    'indexes' => array(
+      'nickname'            => array('nickname'),
+      'nickname_openid'     => array('nickname', 'openid'),
+    ),
+
+    'primary key' => array('openid'),
+  );
+
+  //subscribe user by qrscene table
+  $schema['wechat_py_qrscene_subscribe_table'] = array(
+    'description' => 'wechat pingyao user subscribe statistics from specific places like hotel, shopping etc',
+    'fields' => array(
+      'id' => array('description' => 'id',
+                    'type' => 'serial',
+                    'unsigned' => TRUE,
+                    'not null' => TRUE,),
+
+      'scene_id' => array('description' => 'value of scene',
+                     'type' => 'int',
+                     'size' => 'normal',
+                     'unsigned' => TRUE,
+                     'not null' => TRUE,),
+
+      'openid' => array('description' => 'wechat user open id',
+                     'type' => 'varchar',
+                     'size' => 'normal',
+                     'length' => 64,
+                     'not null' => TRUE,),
+
+    ),
+
+    'foreign keys' => array(
+      'fk_name_scene_id' => array(
+      'table' => 'wechat_py_qrscene_table',
+      'columns' => array('scene_id' => 'scene_id'),
+      ),
+      'fk_name_open_id' => array(
+      'table' => 'wechat_py_subscribe_user_table',
+      'columns' => array('openid' => 'openid'),
+      ),
+    ),
+
+    'unique keys' => array('scene_id' => array('scene_id')),
+    'primary key' => array('id'),
+  );
+
+
+  $schema['wechat_py_daily_news_broadcast_table'] = array(
+    'description' => 'wechat pingyao daily news to keep all of news of node',
+    'fields' => array(
+      'news_index' => array('description' => 'index of each of news',
+                    'type' => 'serial',
+                    'unsigned' => TRUE,
+                    'not null' => TRUE,),
+
+      'broadcast' => array('description' => '0-Non broadcast, 1-broadcasted',
+                     'type' => 'int',
+                     'size' => 'tiny',
+                     'unsigned' => TRUE,
+                     'default' => 0,),
+
+      'created' => array('description' => 'news created time',
+                     'type' => 'int',
+                     'size' => 'normal',
+                     'not null' => TRUE,),
+
+      'issue' => array('description' => 'The flag of send to user 0 unsend 1 sent.',
+                     'type' => 'int',
+                     'size' => 'tiny',
+                     'unsigned' => TRUE,
+                     'default' => 0,),
+
+      'userid' => array('description' => 'user id for news',
+                     'type' => 'int',
+                     'size' => 'normal',
+                     'unsigned' => TRUE,
+                     'default' => 0,),
+
+      'media_id' => array('description' => 'for upload news and return media id for image and text news',
+                     'type' => 'varchar',
+                     'size' => 'normal',
+                     'length' => 255,
+                     'default' => '',),
+    ),
+
+    'primary key' => array('news_index'),
+  );
+
+  $schema['wechat_py_daily_news_table'] = array(
+    'description' => 'wechat pingyao daily news to keep all of news of node',
+    'fields' => array(
+      'id' => array('description' => 'index of every records',
+                    'type' => 'serial',
+                    'unsigned' => TRUE,
+                    'not null' => TRUE,),
+
+      'news_index' => array('description' => 'index of each of news',
+                     'type' => 'int',
+                     'size' => 'normal',
+                     'unsigned' => TRUE,
+                     'not null' => TRUE,),
+
+      'node_id' => array('description' => 'news node id',
+                     'type' => 'int',
+                     'size' => 'normal',
+                     'unsigned' => TRUE,
+                     'not null' => TRUE,),
+    ),
+
+    'foreign keys' => array(
+      'fk_node_id' => array(
+      'table' => 'node',
+      'columns' => array('node_id' => 'nid'),
+      ),
+    ),
+
+    'indexes' => array(
+      'news_number'            => array('news_index'),
+      'news_nodes'     => array('news_index', 'node_id'),
+    ),
+    'primary key' => array('id'),
+  );
+
+  //forward user table
+  $schema['wechat_py_forward_user_table'] = array(
+    'description' => 'wechat pingyao forward news to user table',
+    'fields' => array(
+      'openid' => array('description' => 'wechat user open id',
+                     'type' => 'varchar',
+                     'size' => 'normal',
+                     'length' => 64,
+                     'not null' => TRUE,),
+
+      'subscribe' => array('description' => 'flag of subscribe user only 0 or 1',
+                     'type' => 'int',
+                     'size' => 'tiny',
+                     'unsigned' => TRUE,
+                     'not null' => TRUE,),
+
+      'nickname' => array('description' => 'user nick name',
+                     'type' => 'varchar',
+                     'size' => 'normal',
+                     'length' => 512,
+                     'not null' => TRUE,),
+
+      'sex' => array('description' => 'gender of subscribe user only 0/Unknow, 1/male, 2/female',
+                     'type' => 'int',
+                     'size' => 'tiny',
+                     'unsigned' => TRUE,
+                     'not null' => TRUE,),
+
+      'city' => array('description' => 'city',
+                     'type' => 'varchar',
+                     'size' => 'normal',
+                     'length' => 32,
+                     'not null' => TRUE,),
+
+      'province' => array('description' => 'province',
+                     'type' => 'varchar',
+                     'size' => 'normal',
+                     'length' => 32,
+                     'not null' => TRUE,),
+
+      'country' => array('description' => 'country',
+                     'type' => 'varchar',
+                     'size' => 'normal',
+                     'length' => 32,
+                     'not null' => TRUE,),
+
+      'headimgurl' => array('description' => 'headimgurl',
+                     'type' => 'varchar',
+                     'size' => 'normal',
+                     'length' => 512,
+                     'not null' => TRUE,),
+    ),
+
+    'indexes' => array(
+      'nickname'            => array('nickname'),
+      'nickname_openid'     => array('nickname', 'openid'),
+    ),
+
+    'primary key' => array('openid'),
+  );
+
+  return $schema;
+}
+
+/**
+ * Implements hook_uninstall().
+ *
+ * It's good to clean up after ourselves
+ */
+function wechat_py_admin_uninstall() {
+  db_drop_table('wechat_py_welcome_page_table');
+  db_drop_table('wechat_py_qrscene_table');
+  db_drop_table('wechat_py_qrscene_subscribe_table');
+  db_drop_table('wechat_py_subscribe_user_table');
+}
+
+/**
+ * Implements hook_install().
+ */
+function wechat_py_admin_install() {
+  // Insert welcome page into the database.
+  $row = array('welcome_text' => t('你好，欢迎关注梦乡平遥游！'));
+  if(db_table_exists('wechat_py_welcome_page_table')) {
+    db_insert('wechat_py_welcome_page_table')->fields($row)->execute();
+  }
+
+}
+
+/**
+ * Implements hook_enable()
+ */
+function wechat_py_admin_enable() {
+  if (module_exists('menu')) {
+    $menu = array(
+      'menu_name' => MENU_WECHAT_PY_ADMIN,
+      'title' => t('微信平遥管理菜单'),
+      'description' => t('微信平遥后台管理菜单'),
+    );
+    menu_save($menu);
+  }
+}
+
+/**
+ *Implement hook_update_N(&$sandbox)
+ */
+function wechat_py_admin_update_7000(&$sandbox){
+  $schema = array();
+  //wechat py qrcode scene table.
+  $schema['wechat_py_qrscene_table'] = array(
+    'description' => 'wechat pingyao qrcode scene description',
+    'fields' => array(
+      'id' => array('description' => 'id',
+                      'type' => 'serial',
+                      'unsigned' => TRUE,
+                      'not null' => TRUE,),
+
+      'scene' => array('description' => 'Place name of subscribe san',
+                      'type' => 'varchar',
+                      'size' => 'normal',
+                      'length' => 255,
+                      'not null' => TRUE,),
+
+      'scene_id' => array('description' => 'value of scene',
+                      'type' => 'int',
+                      'size' => 'normal',
+                      'unsigned' => TRUE,
+                      'not null' => TRUE,),
+
+      'ticket' => array('description' => 'qrcode ticket for get image',
+                      'type' => 'varchar',
+                      'size' => 'normal',
+                      'length' => 255,
+                      'not null' => TRUE,),
+
+      'qrscene_image_id' => array(
+                      'description' => 'qrscene bar code image file id',
+                      'type' => 'int',
+                      'size' => 'normal',
+                      'unsigned' => TRUE,
+                      'not null' => FALSE,
+                      'default' => 0,),
+
+      'qrscene_image_title'=> array(
+                      'description' => 'qrscene bar code image file name',
+                      'type' => 'varchar',
+                      'length' => '1024',
+                      'not null' => FALSE,
+                      'default' => '',),
+
+      'qrscene_image_width' => array(
+                      'description' => 'qrscene bar code image width',
+                      'type' => 'int',
+                      'size' => 'normal',
+                      'unsigned' => TRUE,
+                      'not null' => FALSE,
+                      'default' => 0,),
+
+      'qrscene_image_height' => array(
+                      'description' => 'qrscene bar code image height',
+                      'type' => 'int',
+                      'size' => 'normal',
+                      'unsigned' => TRUE,
+                      'not null' => FALSE,
+                      'default' => 0,),
+    ),
+
+    'unique keys' => array('scene_id' => array('scene_id')),
+    'primary key' => array('id'),
+  );
+
+  db_create_table('wechat_py_qrscene_table', $schema['wechat_py_qrscene_table']);
+
+  //subscribe user by qrscene table
+  $schema['wechat_py_qrscene_subscribe_table'] = array(
+    'description' => 'wechat pingyao user subscribe statistics from specific places like hotel, shopping etc',
+    'fields' => array(
+      'id' => array('description' => 'id',
+                    'type' => 'serial',
+                    'unsigned' => TRUE,
+                    'not null' => TRUE,),
+
+      'scene_id' => array('description' => 'value of scene',
+                     'type' => 'int',
+                     'size' => 'normal',
+                     'unsigned' => TRUE,
+                     'not null' => TRUE,),
+
+      'openid' => array('description' => 'wechat user open id',
+                     'type' => 'varchar',
+                     'size' => 'normal',
+                     'length' => 64,
+                     'not null' => TRUE,),
+
+    ),
+
+    'foreign keys' => array(
+      'fk_name_scene_id' => array(
+        'table' => 'wechat_py_qrscene_table',
+        'columns' => array('scene_id' => 'scene_id'),
+      ),
+
+      'fk_name_open_id' => array(
+        'table' => 'wechat_py_subscribe_user_table',
+        'columns' => array('openid' => 'openid'),
+      ),
+    ),
+
+    'unique keys' => array('scene_id' => array('scene_id')),
+    'primary key' => array('id'),
+  );
+
+  db_create_table('wechat_py_qrscene_subscribe_table', $schema['wechat_py_qrscene_subscribe_table']);
+
+  //subscribe user by qrscene table
+  $schema['wechat_py_subscribe_user_table'] = array(
+    'description' => 'wechat pingyao subscribe user information',
+    'fields' => array(
+      'id' => array('description' => 'id',
+                    'type' => 'serial',
+                    'unsigned' => TRUE,
+                    'not null' => TRUE,),
+
+      'subscribe' => array('description' => 'flag of subscribe user only 0 or 1',
+                     'type' => 'int',
+                     'size' => 'tiny',
+                     'unsigned' => TRUE,
+                     'not null' => TRUE,),
+
+      'openid' => array('description' => 'wechat user open id',
+                     'type' => 'varchar',
+                     'size' => 'normal',
+                     'length' => 64,
+                     'not null' => TRUE,),
+
+      'nickname' => array('description' => 'user nick name',
+                     'type' => 'varchar',
+                     'size' => 'normal',
+                     'length' => 512,
+                     'not null' => TRUE,),
+
+      'sex' => array('description' => 'gender of subscribe user only 0/Unknow, 1/male, 2/female',
+                     'type' => 'int',
+                     'size' => 'tiny',
+                     'unsigned' => TRUE,
+                     'not null' => TRUE,),
+
+      'language' => array('description' => 'Language of user',
+                     'type' => 'varchar',
+                     'size' => 'normal',
+                     'length' => 32,
+                     'not null' => TRUE,),
+
+      'city' => array('description' => 'city',
+                     'type' => 'varchar',
+                     'size' => 'normal',
+                     'length' => 32,
+                     'not null' => TRUE,),
+
+      'province' => array('description' => 'province',
+                     'type' => 'varchar',
+                     'size' => 'normal',
+                     'length' => 32,
+                     'not null' => TRUE,),
+
+      'country' => array('description' => 'country',
+                     'type' => 'varchar',
+                     'size' => 'normal',
+                     'length' => 32,
+                     'not null' => TRUE,),
+
+      'headimgurl' => array('description' => 'headimgurl',
+                     'type' => 'varchar',
+                     'size' => 'normal',
+                     'length' => 512,
+                     'not null' => TRUE,),
+
+      'headimgurl' => array('description' => 'headimgurl',
+                     'type' => 'varchar',
+                     'size' => 'normal',
+                     'length' => 512,
+                     'not null' => TRUE,),
+
+      'subscribe_time' => array('description' => 'time of subscribe',
+                     'type' => 'int',
+                     'size' => 'normal',
+                     'not null' => TRUE,),
+
+      'unionid' => array('description' => 'wechat user unionid',
+                     'type' => 'varchar',
+                     'size' => 'normal',
+                     'length' => 64,
+                     'not null' => TRUE,),
+    ),
+
+    'foreign keys' => array(
+      'fk_name_scene_id' => array(
+      'table' => 'wechat_py_qrscene_table',
+      'columns' => array('scene_id' => 'scene_id'),
+      ),
+    ),
+
+    'unique keys' => array('scene_id' => array('scene_id')),
+    'primary key' => array('id'),
+  );
+
+  db_create_table('wechat_py_subscribe_user_table', $schema['wechat_py_subscribe_user_table']);
+}
+
+function wechat_py_admin_update_7001(&$sandbox){
+  $fields = array(
+      'qrscene_image_id' => array(
+                      'description' => 'qrscene bar code image file id',
+                      'type' => 'int',
+                      'size' => 'normal',
+                      'unsigned' => TRUE,
+                      'not null' => FALSE,
+                      'default' => 0,),
+
+      'qrscene_image_title'=> array(
+                      'description' => 'qrscene bar code image file name',
+                      'type' => 'varchar',
+                      'length' => '1024',
+                      'not null' => FALSE,
+                      'default' => '',),
+
+      'qrscene_image_width' => array(
+                      'description' => 'qrscene bar code image width',
+                      'type' => 'int',
+                      'size' => 'normal',
+                      'unsigned' => TRUE,
+                      'not null' => FALSE,
+                      'default' => 0,),
+
+      'qrscene_image_height' => array(
+                      'description' => 'qrscene bar code image height',
+                      'type' => 'int',
+                      'size' => 'normal',
+                      'unsigned' => TRUE,
+                      'not null' => FALSE,
+                      'default' => 0,),
+  );
+
+  foreach ($fields as $key => $field)  {
+    if (!db_field_exists('wechat_py_qrscene_table', $key)) {
+      db_add_field('wechat_py_qrscene_table', $key, $field);
+    }
+  }
+
+}
+
+function wechat_py_admin_update_7002(&$sandbox){
+  if (!db_field_exists('wechat_py_qrscene_table', $key)) {
+    db_drop_field('wechat_py_qrscene_table', 'qrscene_image_id');
+    db_drop_field('wechat_py_qrscene_table', 'qrscene_image_title');
+  }
+  $fields = array(
+      'qrscene_image_file'=> array(
+                      'description' => 'qrscene bar code image file name',
+                      'type' => 'varchar',
+                      'length' => '1024',
+                      'not null' => FALSE,
+                      'default' => '',),
+  );
+
+  foreach ($fields as $key => $field)  {
+    if (!db_field_exists('wechat_py_qrscene_table', $key)) {
+      db_add_field('wechat_py_qrscene_table', $key, $field);
+    }
+  }
+
+}
+
+function wechat_py_admin_update_7003(&$sandbox){
+
+  $schema['wechat_py_daily_news_broadcast_table'] = array(
+    'description' => 'wechat pingyao daily news to keep all of news of node',
+    'fields' => array(
+      'news_index' => array('description' => 'index of each of news',
+                    'type' => 'serial',
+                    'unsigned' => TRUE,
+                    'not null' => TRUE,),
+
+      'broadcast' => array('description' => '0-Non broadcast, 1-broadcasted',
+                     'type' => 'int',
+                     'size' => 'tiny',
+                     'unsigned' => TRUE,
+                     'default' => 0,),
+
+      'created' => array('description' => 'news created time',
+                     'type' => 'int',
+                     'size' => 'normal',
+                     'not null' => TRUE,),
+    ),
+
+    'primary key' => array('news_index'),
+  );
+  db_create_table('wechat_py_daily_news_broadcast_table', $schema['wechat_py_daily_news_broadcast_table']);
+
+  $schema['wechat_py_daily_news_table'] = array(
+    'description' => 'wechat pingyao daily news to keep all of news of node',
+    'fields' => array(
+      'id' => array('description' => 'index of every records',
+                    'type' => 'serial',
+                    'unsigned' => TRUE,
+                    'not null' => TRUE,),
+
+      'news_index' => array('description' => 'index of each of news',
+                     'type' => 'int',
+                     'size' => 'normal',
+                     'unsigned' => TRUE,
+                     'not null' => TRUE,),
+
+      'node_id' => array('description' => 'news node id',
+                     'type' => 'int',
+                     'size' => 'normal',
+                     'unsigned' => TRUE,
+                     'not null' => TRUE,),
+    ),
+
+    'foreign keys' => array(
+      'fk_node_id' => array(
+      'table' => 'node',
+      'columns' => array('node_id' => 'nid'),
+      ),
+    ),
+
+    'indexes' => array(
+      'news_number'            => array('news_index'),
+      'news_nodes'     => array('news_index', 'node_id'),
+    ),
+    'primary key' => array('id'),
+  );
+  db_create_table('wechat_py_daily_news_table', $schema['wechat_py_daily_news_table']);
+
+}
+
+function wechat_py_admin_update_7004(&$sandbox){
+
+  $field = array(
+    'type' => 'int',
+    'size' => 'tiny',
+    'unsigned' => TRUE,
+    'not null' => TRUE,
+    'default' => 0,
+    'description' => 'The flag of send to user 0 unsend/ 1 sent.',
+  );
+
+  db_add_field('wechat_py_daily_news_broadcast_table', 'issue', $field);
+
+}
+
+function wechat_py_admin_update_7006(&$sandbox){
+
+  $field = array(
+    'type' => 'int',
+    'size' => 'normal',
+    'unsigned' => TRUE,
+    'not null' => TRUE,
+    'default' => 0,
+    'description' => 'user id for news',
+  );
+
+  db_add_field('wechat_py_daily_news_broadcast_table', 'userid', $field);
+}
+
+//Drop wechat_py_subscribe_user_table and delete id field because openid can be primary key
+//when db_insert can check by exception error
+function wechat_py_admin_update_7007(&$sandbox){
+  db_drop_table('wechat_py_subscribe_user_table');
+  //subscribe user by qrscene table
+  $schema['wechat_py_subscribe_user_table'] = array(
+    'description' => 'wechat pingyao subscribe user information',
+    'fields' => array(
+      'openid' => array('description' => 'wechat user open id',
+                     'type' => 'varchar',
+                     'size' => 'normal',
+                     'length' => 64,
+                     'not null' => TRUE,),
+
+      'subscribe' => array('description' => 'flag of subscribe user only 0 or 1',
+                     'type' => 'int',
+                     'size' => 'tiny',
+                     'unsigned' => TRUE,
+                     'not null' => TRUE,),
+
+      'nickname' => array('description' => 'user nick name',
+                     'type' => 'varchar',
+                     'size' => 'normal',
+                     'length' => 512,
+                     'not null' => TRUE,),
+
+      'sex' => array('description' => 'gender of subscribe user only 0/Unknow, 1/male, 2/female',
+                     'type' => 'int',
+                     'size' => 'tiny',
+                     'unsigned' => TRUE,
+                     'not null' => TRUE,),
+
+      'language' => array('description' => 'Language of user',
+                     'type' => 'varchar',
+                     'size' => 'normal',
+                     'length' => 32,
+                     'not null' => TRUE,),
+
+      'city' => array('description' => 'city',
+                     'type' => 'varchar',
+                     'size' => 'normal',
+                     'length' => 32,
+                     'not null' => TRUE,),
+
+      'province' => array('description' => 'province',
+                     'type' => 'varchar',
+                     'size' => 'normal',
+                     'length' => 32,
+                     'not null' => TRUE,),
+
+      'country' => array('description' => 'country',
+                     'type' => 'varchar',
+                     'size' => 'normal',
+                     'length' => 32,
+                     'not null' => TRUE,),
+
+      'headimgurl' => array('description' => 'headimgurl',
+                     'type' => 'varchar',
+                     'size' => 'normal',
+                     'length' => 512,
+                     'not null' => TRUE,),
+
+      'subscribe_time' => array('description' => 'time of subscribe',
+                     'type' => 'int',
+                     'size' => 'normal',
+                     'not null' => TRUE,),
+
+      'unionid' => array('description' => 'wechat user unionid',
+                     'type' => 'varchar',
+                     'size' => 'normal',
+                     'length' => 64,
+                     'not null' => TRUE,),
+    ),
+
+    'indexes' => array(
+      'nickname'            => array('nickname'),
+      'nickname_openid'     => array('nickname', 'openid'),
+    ),
+
+    'primary key' => array('openid'),
+  );
+  db_create_table('wechat_py_subscribe_user_table', $schema['wechat_py_subscribe_user_table']);
+}
+
+//add media_id field for broadcast table, record news index media_id and can use it again
+function wechat_py_admin_update_7008(&$sandbox){
+
+  $field = array(
+    'type' => 'varchar',
+    'size' => 'normal',
+    'length' => 255,
+    'default' => '',
+    'description' => 'for upload news and return media id for image and text news',
+  );
+
+  db_add_field('wechat_py_daily_news_broadcast_table', 'media_id', $field);
+}
+
+//Add action name for qrscene table
+function wechat_py_admin_update_7009(&$sandbox){
+
+  $field = array(
+    'description' => 'for temporary or permanent',
+    'type' => 'varchar',
+    'size' => 'normal',
+    'length' => 32,
+    'not null' => TRUE,
+  );
+
+  db_add_field('wechat_py_qrscene_table', 'action_name', $field);
+}
+
+//Add forward news to user table
+function wechat_py_admin_update_7010(&$sandbox){
+
+  //forward user table
+  $schema['wechat_py_forward_user_table'] = array(
+    'description' => 'wechat pingyao forward news to user table',
+    'fields' => array(
+      'openid' => array('description' => 'wechat user open id',
+                     'type' => 'varchar',
+                     'size' => 'normal',
+                     'length' => 64,
+                     'not null' => TRUE,),
+
+      'headimgurl' => array('description' => 'headimgurl',
+                     'type' => 'varchar',
+                     'size' => 'normal',
+                     'length' => 512,
+                     'not null' => TRUE,),
+
+      'nickname' => array('description' => 'user nick name',
+                     'type' => 'varchar',
+                     'size' => 'normal',
+                     'length' => 512,
+                     'not null' => TRUE,),
+
+      'subscribe' => array('description' => 'flag of subscribe user only 0 or 1',
+                     'type' => 'int',
+                     'size' => 'tiny',
+                     'unsigned' => TRUE,
+                     'not null' => TRUE,),
+
+      'sex' => array('description' => 'gender of subscribe user only 0/Unknow, 1/male, 2/female',
+                     'type' => 'int',
+                     'size' => 'tiny',
+                     'unsigned' => TRUE,
+                     'not null' => TRUE,),
+
+      'city' => array('description' => 'city',
+                     'type' => 'varchar',
+                     'size' => 'normal',
+                     'length' => 32,
+                     'not null' => TRUE,),
+
+      'province' => array('description' => 'province',
+                     'type' => 'varchar',
+                     'size' => 'normal',
+                     'length' => 32,
+                     'not null' => TRUE,),
+
+      'country' => array('description' => 'country',
+                     'type' => 'varchar',
+                     'size' => 'normal',
+                     'length' => 32,
+                     'not null' => TRUE,),
+    ),
+
+    'indexes' => array(
+      'nickname'            => array('nickname'),
+      'nickname_openid'     => array('nickname', 'openid'),
+    ),
+
+    'primary key' => array('openid'),
+  );
+
+  db_create_table('wechat_py_forward_user_table', $schema['wechat_py_forward_user_table']);
+
+}
+
+//Add forward news to user table
+function wechat_py_admin_update_7011(&$sandbox){
+
+  //forward user table
+  $schema['wechat_event_statistic_table'] = array(
+    'description' => 'wechat pingyao collect every event for user sub/unsub scan qr code etc.',
+    'fields' => array(
+      'id' => array('description' => 'id',
+                    'type' => 'serial',
+                    'unsigned' => TRUE,
+                    'not null' => TRUE,),
+
+      'openid' => array('description' => 'wechat user open id.',
+                       'type' => 'varchar',
+                       'size' => 'normal',
+                       'length' => 64,
+                       'not null' => TRUE,),
+
+      'msgtype' => array('description' => 'message type had received',
+                     'type' => 'varchar',
+                     'size' => 'normal',
+                     'length' => 32,
+                     'not null' => TRUE,),
+
+      'event' => array('description' => 'event type',
+                     'type' => 'varchar',
+                     'size' => 'normal',
+                     'length' => 32,
+                     'not null' => TRUE,),
+
+      'eventkey' => array('description' => 'event value depends on event type',
+                     'type' => 'varchar',
+                     'size' => 'normal',
+                     'length' => 255,
+                     'not null' => TRUE,
+                     'default' => '',),
+
+      'createtime' => array('description' => 'time of event',
+                     'type' => 'int',
+                     'size' => 'normal',
+                     'not null' => TRUE,),
+    ),
+
+    'primary key' => array('id'),
+  );
+
+  db_create_table('wechat_event_statistic_table', $schema['wechat_event_statistic_table']);
+
+}
+
+/**
+ * End of wechat py admin module
+ */

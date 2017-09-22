@@ -1,0 +1,63 @@
+#mobile-city-culture-article .ui-content {
+}
+
+#mobile-city-culture-article .error-message {
+  font-size: 1.2em;
+  color: red;
+  margin: 0 auto;
+  text-align: center;
+}
+
+#mobile-city-culture-article .article-body img {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 auto;
+}
+
+
+/*all ckeditor css*/
+/* General indentation & positioning classes */
+
+.article-body .rteindent1 {
+    margin-left: 40px;
+}
+.article-body .rteindent2 {
+    margin-left: 80px;
+}
+.article-body .rteindent3 {
+    margin-left: 120px;
+}
+.article-body .rteindent4 {
+    margin-left: 160px;
+}
+.article-body .rteleft {
+    text-align: left;
+}
+.article-body .rteright {
+    text-align: right;
+}
+.article-body .rtecenter {
+    text-align: center;
+}
+.article-body .rtejustify {
+    text-align: justify;
+}
+.article-body .ibimage_left {
+    float: left;
+}
+.article-body .ibimage_right {
+    float: right;
+}
+
+
+/*footer company */
+#mobile-city-culture-article .company {
+  padding: 0.3em 0;
+}
+#mobile-city-culture-article .shadow-text{
+  font-size: 0.9em;
+  color: #BB7431;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+

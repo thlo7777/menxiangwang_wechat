@@ -1,0 +1,223 @@
+<?php
+
+/**
+ * hook_permission()
+ */
+function wechat_table_permission() {
+  return array(
+    'wechat table permission manage page' => array(
+      'title' => t('Access wechat table page'),
+      'description' => t('访问wechat table 模块'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu()
+ */
+function wechat_table_menu(){
+  $items['wechat-table/hotel-ranking'] = array(
+    'title' => t('酒店排名'),
+    'description' => t('浏览，修改酒店排名'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('wechat_table_hotel_ranking_form'),
+    'access callback' => 'user_access',
+    'access arguments' => array('wechat table permission manage page'),
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_theme($existing, $type, $theme, $path).
+ */
+function wechat_table_theme($existing, $type, $theme, $path){
+  return array(
+    'wechat_table_hotel_ranking_form' => array(
+      'render element' => 'form',
+    ),
+  );
+}
+
+/**
+ * Theme template for hotel ranking form
+ */
+function theme_wechat_table_hotel_ranking_form($variables){
+  $form = $variables['form'];
+  // Initialize the variable which will store our table rows.
+  $rows = array();
+
+  foreach (element_children($form['ranking_items']) as $id) {
+
+    // We are now ready to add each element of our $form data to the $rows
+    // array, so that they end up as individual table cells when rendered
+    // in the final table.  We run each element through the drupal_render()
+    // function to generate the final html markup for that element.
+    $rows[] = array(
+      'data' => array(
+        // Add our 'name' column.
+        drupal_render($form['ranking_items'][$id]['hotel_name']),
+        // Add our 'description' column.
+        drupal_render($form['ranking_items'][$id]['ranking']),
+        // add hotel_latitude and hotel_longitude column
+        drupal_render($form['ranking_items'][$id]['hotel_longitude']),
+        drupal_render($form['ranking_items'][$id]['hotel_latitude']),
+      ),
+      // To support the tabledrag behaviour, we need to assign each row of the
+      // table a class attribute of 'draggable'. This will add the 'draggable'
+      // class to the <tr> element for that row when the final table is
+      // rendered.
+      //'class' => array('draggable'),
+    );
+  }
+
+  $header = array(t('酒店名称'), t('列表排名'), t('酒店地理位置：经度'), t('酒店地理位置：纬度'));
+
+  $table_id = 'ranking-items-table';
+
+  $output = theme('table', array(
+    'header' => $header,
+    'rows' => $rows,
+    //'attributes' => array('id' => $table_id),
+  ));
+
+  $output .= drupal_render_children($form);
+
+  return $output;
+}
+
+/** 
+ * hotel ranking form
+ */
+function wechat_table_hotel_ranking_form($form, &$form_state){
+  // Identify that the elements in 'example_items' are a collection, to
+  // prevent Form API from flattening the array when submitted.
+  $form['ranking_items']['#tree'] = TRUE;
+
+  if (db_table_exists('wechat_hotel_ranking')){
+    $query = db_select('wechat_hotel_ranking', 't');
+    $query->fields('t', array('id','hotel_name', 'ranking', 'hotel_longitude', 'hotel_latitude'));
+
+    // Don't forget to tell the query object how to find the header information.
+    $result = $query->orderBy('ranking', 'ASC')->execute();
+
+    foreach ($result as $item) {
+      $form['ranking_items'][$item->id] = array(
+        // set hotel name to display item
+        'hotel_name' => array(
+          '#markup' => check_plain(t($item->hotel_name)),
+        ),
+
+        // We'll use a form element of type '#textfield' to display the item
+        // description, which will allow the value to be changed via the form.
+        // We limit the input to 255 characters, which is the limit we set on
+        // the database field.
+        'ranking' => array(
+          '#type' => 'textfield',
+          '#default_value' => check_plain($item->ranking),
+          '#size' => 2,
+          '#maxlength' => 2,
+        ),
+        'hotel_longitude' => array(
+          '#type' => 'textfield',
+          '#default_value' => check_plain($item->hotel_longitude),
+          '#size' => 15,
+          '#maxlength' => 15,
+        ),
+        'hotel_latitude' => array(
+          '#type' => 'textfield',
+          '#default_value' => check_plain($item->hotel_latitude),
+          '#size' => 15,
+          '#maxlength' => 15,
+        ),
+
+      );
+    }
+  }
+
+  $form['actions'] = array('#type' => 'actions');
+  $form['actions']['submit'] = array('#type' => 'submit', '#value' => t('保存'));
+  return $form;
+}
+
+/**
+ * Submit callback for the wechat_table_hotel_ranking_form form.
+ *
+ */
+function wechat_table_hotel_ranking_form_submit($form, &$form_state) {
+  // Because the form elements were keyed with the item ids from the database,
+  // we can simply iterate through the submitted values.
+  //dpm($form_state);
+  foreach ($form_state['values']['ranking_items'] as $id => $item) {
+    db_update('wechat_hotel_ranking')
+    ->fields(array(
+        'ranking' => $item['ranking'],
+        'hotel_longitude' => $item['hotel_longitude'],
+        'hotel_latitude' => $item['hotel_latitude'],
+      ))
+    ->condition('id', $id)
+    ->execute();
+  }
+}
+
+/**
+ * hook_node_insert($node)
+ */
+function wechat_table_node_insert($node){
+  global $user;
+
+  if (in_array('hotel_admin', $user->roles)) {
+    if ($node->type == 'node_hotel_list_item') {
+      if (db_table_exists('wechat_hotel_ranking')){
+        $row = array('uid' => $node->uid,
+                     'ranking' => 0,
+                     'hotel_name' => trim($node->title));
+        db_insert('wechat_hotel_ranking')->fields($row)->execute();
+      }else{
+        drupal_set_message('do not find table name wechat_hotel_ranking');
+      }
+    }
+  }
+}
+
+/**
+ * hook_node_update($node)
+ */
+function wechat_table_node_update($node){
+  global $user;
+
+  if (in_array('hotel_admin', $user->roles)) {
+    if ($node->type == 'node_hotel_list_item') {
+      if (db_table_exists('wechat_hotel_ranking')){
+        db_update('wechat_hotel_ranking')
+        ->fields(array('hotel_name' => trim($node->title)))
+        ->condition('uid', $node->uid)
+        ->execute();
+      }else{
+        drupal_set_message('do not find table name wechat_hotel_ranking');
+      }
+    }
+  }
+}
+
+/**
+ * hook_node_delete($node)
+ */
+function wechat_table_node_delete($node){
+  global $user;
+
+  if (in_array('hotel_admin', $user->roles)) {
+    if ($node->type == 'node_hotel_list_item') {
+      if (db_table_exists('wechat_hotel_ranking')){
+        db_delete('wechat_hotel_ranking')
+        ->condition('uid', $node->uid)
+        ->execute();
+      }else{
+        drupal_set_message('do not find table name wechat_hotel_ranking');
+      }
+    }
+  }
+}
+
+/**
+ * End of wechat hotel module
+ */

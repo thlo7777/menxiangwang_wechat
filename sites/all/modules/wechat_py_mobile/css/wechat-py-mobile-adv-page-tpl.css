@@ -1,0 +1,79 @@
+#py-mobile-adv-page .ui-content {
+  padding: 7px;
+}
+
+#py-mobile-adv-page .error-message {
+  font-size: 1.2em;
+  color: red;
+  margin: 0 auto;
+  text-align: center;
+}
+
+#py-mobile-adv-page .adv-item-content img {
+  display: block;
+  width: 100% !important;
+  margin: 0 auto;
+}
+
+#py-mobile-adv-page .adv-item-content p {
+  font-size: 1.2em;
+}
+
+#py-mobile-adv-page .adv-item-content {
+  border-width: 0;
+  border-style: none;
+}
+
+.uibla .ui-body {
+  margin: 2px 1px 0 1px;
+  padding: 5px;
+}
+
+/*footer company */
+#py-mobile-adv-page .company {
+  padding: 0.3em 0;
+}
+#py-mobile-adv-page .shadow-text{
+  font-size: 0.9em;
+  color: #BB7431;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+/*all ckeditor css*/
+/* General indentation & positioning classes */
+
+#mobile-adv-content .rteindent1 {
+    margin-left: 40px;
+}
+#mobile-adv-content .rteindent2 {
+    margin-left: 80px;
+}
+#mobile-adv-content .rteindent3 {
+    margin-left: 120px;
+}
+#mobile-adv-content .rteindent4 {
+    margin-left: 160px;
+}
+#mobile-adv-content .rteleft {
+    text-align: left;
+}
+#mobile-adv-content .rteright {
+    text-align: right;
+}
+#mobile-adv-content .rtecenter {
+    text-align: center;
+}
+#mobile-adv-content .rtejustify {
+    text-align: justify;
+}
+#mobile-adv-content .ibimage_left {
+    float: left;
+}
+#mobile-adv-content .ibimage_right {
+    float: right;
+}
+#mobile-adv-content img {
+  display: block !important;
+  width: 100% !important;
+}
+

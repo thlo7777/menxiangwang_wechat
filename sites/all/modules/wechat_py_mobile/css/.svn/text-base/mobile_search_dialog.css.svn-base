@@ -1,0 +1,4 @@
+#py-mobile-search-dialog .ui-block-a,
+#py-mobile-search-dialog .ui-block-b {
+  padding: 0 5px;
+}

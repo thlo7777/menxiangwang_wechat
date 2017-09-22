@@ -1,0 +1,96 @@
+<?php
+/**
+ * Implements hook_schema()
+ */
+function wechat_table_schema(){
+  $schema = array();
+  $schema['wechat_hotel_ranking'] = array(
+    // Example (partial) specification for table "wechat hotel ranking".
+    'description' => 'for wechat hotel ranking',
+    'fields' => array(
+      'id' => array('description' => 'id',
+                    'type' => 'serial',
+                    'unsigned' => TRUE,
+                    'not null' => TRUE,),
+
+      'uid' => array('description' => 'uid',
+                     'type' => 'int',
+                     'unsigned' => TRUE,
+                     'not null' => TRUE,),
+
+      'ranking' => array('description' => 'hotel ranking',
+                         'type' => 'int',
+                         'unsigned' => TRUE,
+                         'not null' => TRUE,),
+
+      'hotel_name' => array('description' => 'Hotel name',
+                            'type' => 'varchar',
+                            'length' => 255,
+                            'not null' => TRUE,
+                            'default' => '',),
+
+      'hotel_longitude' => array('description' => 'hotel address latitude',
+                                 'type' => 'numeric',
+                                 'size' => 'normal',
+                                 'default' => 0,
+                                 'precision' => 10,
+                                 'scale' => 6,
+                                 'not null' => TRUE,),
+
+      'hotel_latitude' => array('description' => 'hotel address latitude',
+                                 'type' => 'numeric',
+                                 'size' => 'normal',
+                                 'default' => 0,
+                                 'precision' => 10,
+                                 'scale' => 6,
+                                 'not null' => TRUE,),
+    ),
+    'indexes' => array(
+      'ranking' => array('ranking'),
+    ),
+    'primary key' => array('id'),
+  );
+  return $schema;
+}
+
+/**
+ * Implements hook_install().
+ */
+/*
+function wechat_table_install() {
+  // Insert some values into the database.
+  $rows = array(
+    array(
+      'uid' => 0,
+      'hotel_name' => t('给哈哈人酒店'),
+      'ranking' => 0,
+    ),
+    array(
+      'uid' => 0,
+      'hotel_name' => t('伴娘伴娘吧'),
+      'ranking' => 1,
+    ),
+    array(
+      'uid' => 0,
+      'hotel_name' => t('博得酒店'),
+      'ranking' => 2,
+    ),
+  );
+  if (db_table_exists('wechat_hotel_ranking')) {
+    foreach ($rows as $row) {
+      db_insert('wechat_hotel_ranking')->fields($row)->execute();
+    }
+  }
+}
+*/
+/**
+ * Implements hook_uninstall().
+ *
+ * It's good to clean up after ourselves
+ */
+function wechat_table_uninstall() {
+  db_drop_table('wechat_hotel_ranking');
+}
+/**
+ * End of wechat table module
+ */

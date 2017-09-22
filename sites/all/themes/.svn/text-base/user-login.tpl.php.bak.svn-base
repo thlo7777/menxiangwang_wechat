@@ -1,0 +1,29 @@
+
+<?php
+/*
+
+
+<?php print render($form['actions']); ?>
+
+
+
+			<?php print drupal_render($form['captcha']); ?>
+			drupal_set_message(t('hello'), 'status');
+
+    <?php print $name; // Display username field ?>
+    <?php print $submit; // Display submit button ?>
+<?php print drupal_render_children($form); ?>
+
+ */
+
+
+
+?>
+
+
+<?php print render($form['name']); // Display name field ?>
+<?php print render($form['pass']); // Display Password field ?>
+<?php print render($form['captcha']); ?>
+<?php print render($form['form_build_id']); ?>
+<?php print render($form['form_id']); ?>
+<?php print render($form['actions']); //display submit button ?>

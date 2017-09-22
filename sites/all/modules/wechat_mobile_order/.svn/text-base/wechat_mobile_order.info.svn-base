@@ -1,0 +1,8 @@
+name = wechat_mobile_order
+description = 梦乡平遥游公众号手机端订单与结算单.
+
+dependencies[] = wechat_api
+dependencies[] = wechat_py_admin
+dependencies[] = wechat_hotel
+core = 7.x
+

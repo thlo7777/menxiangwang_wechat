@@ -1,0 +1,36 @@
+<!DOCTYPE html>  
+<html>  
+<head>
+  <title></title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>  
+  <meta name="viewport" 
+        content="width=device-width, user-scalable=0,initial-scale=1.0,maximum-scale=1.0, minimum-scale=1.0"/>  
+  <link rel="stylesheet" type="text/css" href="../css/swiper.min.css">
+  <link rel="stylesheet" type="text/css" href="../css/xxzs_hotel_image_it.css">
+</head> 
+
+<body>
+  <div class="hotel-item"></div>
+  <div class="swiper-container">
+    <div class="swiper-wrapper">
+<!--
+      <div class="swiper-slide"><img src='1.png'/></div>
+      <div class="swiper-slide"><img src='2.png'/></div>
+      <div class="swiper-slide"><img src='3.png'/></div>
+      <div class="swiper-slide"><img src='4.png'/></div>
+      <div class="swiper-slide"><img src='5.png'/></div>
+-->
+    </div>
+    <!-- Add Pagination -->
+    <div class="swiper-pagination"></div>
+    <!-- Add Arrows -->
+    <div class="swiper-button-next"></div>
+    <div class="swiper-button-prev"></div>       
+  </div>
+
+  <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+  <script type="text/javascript" src="../js/doT.min.js"></script>
+  <script type="text/javascript" src="../js/swiper.jquery.min.js"></script>
+  <script type="text/javascript" src="../js/ajax_hotel_images.js"></script>
+</body>
+</html>

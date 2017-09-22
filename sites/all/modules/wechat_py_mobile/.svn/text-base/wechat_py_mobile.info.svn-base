@@ -1,0 +1,8 @@
+name = wechat_py_mobile 
+description = 梦乡平遥游公众号手机端模块.
+
+dependencies[] = wechat_api
+dependencies[] = wechat_py_admin
+dependencies[] = wechat_hotel
+core = 7.x
+

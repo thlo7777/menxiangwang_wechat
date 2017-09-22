@@ -1,0 +1,1823 @@
+<?php
+
+define('MENU_WECHAT_PY_MOBILE', 'wechat-py-mobile');
+
+/**
+ * hook_permission()
+ */
+function wechat_py_mobile_permission() {
+  return array(
+    'wechat py mobile module permission' => array(
+      'title' => t('访问梦乡平遥游公众号手机端模块'),
+      'description' => t('目前所有人都可以访问'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu().
+ */
+function wechat_py_mobile_menu(){
+  $items = array();
+  
+  $items[MENU_WECHAT_PY_MOBILE . '/news/%/edit'] = array(
+    'type' => MENU_CALLBACK,
+    'description' => t('wechat pingyao mobile show news by node id menu'),
+    'page callback' => 'wechat_py_mobile_news_page',
+    'page arguments' => array(2),
+    'delivery callback' => 'deliver_news_html_page_callback',
+    'access callback' => 'user_access',
+    'access arguments' => array('wechat py mobile module permission'),
+    'file' => 'wechat_py_mobile_news_page.inc',
+  );
+
+  $items[MENU_WECHAT_PY_MOBILE . '/shopping-home-page'] = array(
+    'type' => MENU_CALLBACK,
+    'description' => t('wechat pingyao mobile shopping home page'),
+    'page callback' => 'wechat_py_mobile_shopping_home_page',
+    //'page arguments' => array(2),
+    'delivery callback' => 'deliver_shopping_home_page_callback',
+    'access callback' => 'user_access',
+    'access arguments' => array('wechat py mobile module permission'),
+    'file' => 'wechat_py_mobile_shopping_home_page.inc',
+  );
+
+  $items[MENU_WECHAT_PY_MOBILE . '/xxzs-home-page'] = array(
+    'type' => MENU_CALLBACK,
+    'description' => t('wechat pingyao mobile xiu xian zhu su information'),
+    'page callback' => 'wechat_py_mobile_xxzs_home_page',
+    'delivery callback' => 'deliver_xxzs_home_page_callback',
+    'access callback' => 'user_access',
+    'access arguments' => array('wechat py mobile module permission'),
+    'file' => 'wechat_py_mobile_xxzs_home_page.inc',
+  );
+
+  $items[MENU_WECHAT_PY_MOBILE . '/xxzs-item-page/%'] = array(
+    'type' => MENU_CALLBACK,
+    'description' => t('wechat pingyao mobile xiu xian zhu su information'),
+    'page callback' => 'wechat_py_mobile_xxzs_item_page',
+    'page arguments' => array(2),
+    'delivery callback' => 'deliver_xxzs_page_item_callback',
+    'access callback' => 'user_access',
+    'access arguments' => array('wechat py mobile module permission'),
+    'file' => 'wechat_py_mobile_xxzs_home_page.inc',
+  );
+
+  $items[MENU_WECHAT_PY_MOBILE . '/xxzs-node-page/%'] = array(
+    'type' => MENU_CALLBACK,
+    'description' => t('wechat pingyao mobile xiu xian zhu su information'),
+    'page callback' => 'wechat_py_mobile_xxzs_node_page',
+    'page arguments' => array(2),
+    'delivery callback' => 'deliver_xxzs_page_node_callback',
+    'access callback' => 'user_access',
+    'access arguments' => array('wechat py mobile module permission'),
+    'file' => 'wechat_py_mobile_xxzs_home_page.inc',
+  );
+
+  $items[MENU_WECHAT_PY_MOBILE . '/wechat-py-forums'] = array(
+    'type' => MENU_CALLBACK,
+    'description' => t('wechat pingyao mobile inn forums'),
+    'page callback' => 'wechat_py_mobile_py_forums_page',
+    'delivery callback' => 'deliver_py_forums_page_callback',
+    'access callback' => 'user_access',
+    'access arguments' => array('wechat py mobile module permission'),
+    'file' => 'wechat_py_mobile_py_forums_page.inc',
+  );
+
+
+  $items[MENU_WECHAT_PY_MOBILE . '/py-shopping-api'] = array(
+    'type' => MENU_CALLBACK,
+    'description' => t('wechat pingyao mobile shopping json data callbck'),
+    'page callback' => 'wechat_py_mobile_py_shopping_callback',
+    //'delivery callback' => 'deliver_py_shopping_callback',
+    'access callback' => 'user_access',
+    'access arguments' => array('wechat py mobile module permission'),
+    'file' => 'wechat_py_mobile_py_shopping_callback.inc',
+  );
+
+/*
+  $items[MENU_WECHAT_PY_MOBILE . '/pay'] = array(
+    'type' => MENU_CALLBACK,
+    'description' => t('wechat pingyao shopping pay'),
+    'page callback' => 'wechat_py_mobile_pay',
+    //'delivery callback' => 'deliver_py_shopping_callback',
+    'access callback' => 'user_access',
+    'access arguments' => array('wechat py mobile module permission'),
+    'file' => 'wechat_py_mobile_pay.inc',
+  );
+*/
+
+  //mobile shopping home page
+  //$items[MENU_WECHAT_PY_MOBILE . '/pay-test/new-tpl'] = array(
+  $items[MENU_WECHAT_PY_MOBILE . '/new-tpl'] = array(
+    'type' => MENU_CALLBACK,
+    'description' => t('wechat pingyao shopping pay test new template'),
+    'page callback' => 'wechat_py_mobile_new_tpl',
+    'delivery callback' => 'deliver_new_tpl_html_page',
+    'access callback' => 'user_access',
+    'access arguments' => array('wechat py mobile module permission'),
+    'file' => 'wechat_py_mobile_new_tpl.inc',
+  );
+
+  $items[MENU_WECHAT_PY_MOBILE . '/new-tpl-search'] = array(
+    'type' => MENU_CALLBACK,
+    'description' => t('wechat pingyao shopping pay test search'),
+    'page callback' => 'wechat_py_mobile_new_tpl_search',
+    'delivery callback' => 'deliver_new_tpl_search_html_page',
+    'access callback' => 'user_access',
+    'access arguments' => array('wechat py mobile module permission'),
+    'file' => 'wechat_py_mobile_new_tpl_search.inc',
+  );
+  //mobile shopping payment page
+  //$items[MENU_WECHAT_PY_MOBILE . '/pay-test/payment/%/%'] = array(
+  //$items[MENU_WECHAT_PY_MOBILE . '/pay-test/payment'] = array(
+  $items[MENU_WECHAT_PY_MOBILE . '/pay/payment'] = array(
+    'type' => MENU_CALLBACK,
+    'description' => t('wechat pingyao shopping payment page'),
+    'page callback' => 'wechat_mobile_shopping_payment_page',
+    //'page arguments' => array(3,4),   use wechat redirect state=100nidxxx or state=100cart
+    'delivery callback' => 'deliver_shopping_payment_page',
+    'access callback' => 'user_access',
+    'access arguments' => array('wechat py mobile module permission'),
+    'file' => 'wechat_mobile_shopping_payment_page.inc',
+  );
+
+  //mobile city culture page
+  $items[MENU_WECHAT_PY_MOBILE . '/city-culture'] = array(
+    'type' => MENU_CALLBACK,
+    'description' => t('wechat pingyao mobile city culture page'),
+    'page callback' => 'wechat_mobile_city_culture_page',
+    'delivery callback' => 'deliver_city_culture_page_html_page',
+    'access callback' => 'user_access',
+    'access arguments' => array('wechat py mobile module permission'),
+    'file' => 'wechat_mobile_city_culture_page.inc',
+  );
+
+  //mobile city culture article detail
+  $items[MENU_WECHAT_PY_MOBILE . '/city-culture/%/show'] = array(
+    'type' => MENU_CALLBACK,
+    'description' => t('wechat pingyao mobile city culture show article'),
+    'page callback' => 'wechat_mobile_city_culture_article_page',
+    'page arguments' => array(2),
+    'delivery callback' => 'deliver_city_culture_article_page_html_page',
+    'access callback' => 'user_access',
+    'access arguments' => array('wechat py mobile module permission'),
+    'file' => 'wechat_mobile_city_culture_article_page.inc',
+  );
+
+  //mobile shopping advertising page
+  $items[MENU_WECHAT_PY_MOBILE . '/adv-page/%'] = array(
+    'type' => MENU_CALLBACK,
+    'description' => t('wechat pingyao mobile shopping adv page'),
+    'page callback' => 'wechat_mobile_shopping_adv_page',
+    'page arguments' => array(2),
+    'delivery callback' => 'deliver_adv_page_html_page',
+    'access callback' => 'user_access',
+    'access arguments' => array('wechat py mobile module permission'),
+    'file' => 'wechat_mobile_shopping_adv_page.inc',
+  );
+
+  //mobile shopping term filter search dialog page
+  $items[MENU_WECHAT_PY_MOBILE . '/search-dialog'] = array(
+    'type' => MENU_CALLBACK,
+    'description' => t('wechat pingyao mobile shopping search dialog'),
+    'page callback' => 'wechat_mobile_shopping_search_dialog',
+    //'page arguments' => array(2),
+    'delivery callback' => 'deliver_search_dialog_html_page',
+    'access callback' => 'user_access',
+    'access arguments' => array('wechat py mobile module permission'),
+    'file' => 'wechat_mobile_shopping_search_dialog.inc',
+  );
+
+  //mobile shopping cart page
+  $items[MENU_WECHAT_PY_MOBILE . '/shopping-cart'] = array(
+    'type' => MENU_CALLBACK,
+    'description' => t('wechat pingyao mobile shopping cart page'),
+    'page callback' => 'wechat_mobile_shopping_cart_page',
+    'delivery callback' => 'deliver_shopping_cart_html_page',
+    'access callback' => 'user_access',
+    'access arguments' => array('wechat py mobile module permission'),
+    'file' => 'wechat_mobile_shopping_cart_page.inc',
+  );
+
+  //mobile shopping my document page
+  $items[MENU_WECHAT_PY_MOBILE . '/my-order'] = array(
+    'type' => MENU_CALLBACK,
+    'description' => t('wechat pingyao mobile shopping user order'),
+    'page callback' => 'wechat_mobile_shopping_my_order_page',
+    'delivery callback' => 'deliver_shopping_my_order_html_page',
+    'access callback' => 'user_access',
+    'access arguments' => array('wechat py mobile module permission'),
+    'file' => 'wechat_mobile_shopping_my_order_page.inc',
+  );
+
+  //mobile shopping online helper page
+  $items[MENU_WECHAT_PY_MOBILE . '/shopping-help'] = array(
+    'type' => MENU_CALLBACK,
+    'description' => t('wechat pingyao mobile shopping online help video'),
+    'page callback' => 'wechat_mobile_shopping_help_page',
+    'delivery callback' => 'deliver_shopping_help_html_page',
+    'access callback' => 'user_access',
+    'access arguments' => array('wechat py mobile module permission'),
+    'file' => 'wechat_mobile_shopping_help_page.inc',
+  );
+  //mobile shopping pay order detail for custome service
+  $items[MENU_WECHAT_PY_MOBILE . '/order-detail'] = array(
+    'type' => MENU_CALLBACK,
+    'description' => t('wechat pingyao mobile shopping user order detail'),
+    'page callback' => 'wechat_mobile_shopping_service_order_detail_page',
+    'delivery callback' => 'deliver_shopping_service_order_detail_html_page',
+    'access callback' => 'user_access',
+    'access arguments' => array('wechat py mobile module permission'),
+    'file' => 'wechat_mobile_shopping_service_order_detail_page.inc',
+  );
+
+  //mobile shopping my document page
+  $items[MENU_WECHAT_PY_MOBILE . '/my-doc'] = array(
+    'type' => MENU_CALLBACK,
+    'description' => t('wechat pingyao mobile shopping my account'),
+    'page callback' => 'wechat_mobile_shopping_my_doc_page',
+    'delivery callback' => 'deliver_shopping_my_doc_html_page',
+    'access callback' => 'user_access',
+    'access arguments' => array('wechat py mobile module permission'),
+    'file' => 'wechat_mobile_shopping_my_doc_page.inc',
+  );
+
+  //mobile shopping merchandise show list page
+  $items[MENU_WECHAT_PY_MOBILE . '/merchandise/%/show'] = array(
+    'type' => MENU_CALLBACK,
+    'description' => t('wechat pingyao mobile shopping merchandise display'),
+    'page callback' => 'wechat_mobile_shopping_merchandise_show',
+    'page arguments' => array(2),
+    'delivery callback' => 'deliver_merchandise_show_html_page',
+    'access callback' => 'user_access',
+    'access arguments' => array('wechat py mobile module permission'),
+    'file' => 'wechat_mobile_shopping_merchandise_show.inc',
+  );
+
+  //mobile shopping ajax send/received interface
+  $items[MENU_WECHAT_PY_MOBILE . '/data-api'] = array(
+    'type' => MENU_CALLBACK,
+    'description' => t('wechat pingyao mobile shopping deliver json data'),
+    'page callback' => 'wechat_mobile_shopping_data_api',
+    'access callback' => 'user_access',
+    'access arguments' => array('wechat py mobile module permission'),
+    'file' => 'wechat_mobile_shopping_data_api.inc',
+  );
+
+  //$items[MENU_WECHAT_PY_MOBILE . '/pay/ui-test'] = array(
+  $items[MENU_WECHAT_PY_MOBILE . '/pay-test/ui-test1'] = array(
+    'description' => t('wechat pingyao mobile UI test page'),
+    'page callback' => 'wechat_py_mobile_ui_test_page',
+    'delivery callback' => 'deliver_ui_test_page_callback',
+    'access callback' => 'user_access',
+    'access arguments' => array('wechat py mobile module permission'),
+    'type' => MENU_CALLBACK,
+    'file' => 'wechat_py_mobile_ui_test_page.inc',
+  );
+
+  //py shopping wechat payment and order status notify url
+  $items[MENU_WECHAT_PY_MOBILE . '/pay-test/notify-url'] = array(
+    'type' => MENU_CALLBACK,
+    'page callback' => 'wechat_py_mobile_pay_notify_url',
+    'access callback' => TRUE,
+    'access arguments' => array('access content'),
+    'file' => 'wechat_py_mobile_pay_notify_url.inc',
+  );
+  //test page for any 
+  $items[MENU_WECHAT_PY_MOBILE . '/mobile-shopping/test-any'] = array(
+    'type' => MENU_CALLBACK,
+    'description' => t('wechat pingyao mobile UI develop any page'),
+    'page callback' => 'wechat_mobile_shopping_test_any_page',
+    'delivery callback' => 'deliver_test_any_page_callback',
+    'access callback' => 'user_access',
+    'access arguments' => array('wechat py mobile module permission'),
+    'file' => 'wechat_mobile_shopping_test_any_page.inc',
+  );
+
+  //form page for mobile shopping order detail edit
+  $items[MENU_WECHAT_PY_MOBILE . '/user-order-detail/%/%'] = array(
+    'type' => MENU_CALLBACK,
+    'title' => '微商城订单内容编辑',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('mobile_shopping_user_order_detail_form', 2, 3),
+    'description' => '微商城订单编辑页面',
+    'access callback' => 'user_access',
+    'access arguments' => array('wechat py mobile module permission'),
+    'weight' => 6,
+    'file' => 'mobile_shopping_user_order_detail_form.inc',
+  );
+  return $items;
+}
+
+
+/**
+ * Implement hook_theme for mobile page
+ */
+function wechat_py_mobile_theme(){
+  return array(
+    // define wechat-mobile-shopping-test-any-page.tpl.php inside module
+    'wechat_mobile_shopping_test_any_page' => array(
+      'template' => 'wechat-mobile-shopping-test-any-page',
+      'variables' => array(
+        'head_title' => null,
+        'styles' => null,
+        'scripts' => null,
+        'page' => null,
+      ),
+    ),
+
+    // define wechat-py-mobile-page.tpl.php inside module
+    'wechat_py_mobile_page' => array(
+      'template' => 'wechat-py-mobile-page',
+      'variables' => array(
+        'head_title' => null,
+        'styles' => null,
+        'scripts' => null,
+        'page' => null,
+      ),
+    ),
+
+    //define wechat-py-mobile-shopping-home-page.tpl.php inside module
+    'wechat_py_shopping_home_page' => array(
+      'template' => 'wechat-py-mobile-shopping-home-page',
+      'variables' => array(
+        'head_title' => null,
+        'styles' => null,
+        'scripts' => null,
+        'page' => null,
+      ),
+    ),
+
+    //define new template for mobile client, remove delivery callback form menu page callback
+    'wechat_py_mobile_new_tpl' => array(
+      'template' => 'wechat-py-mobile-new-tpl',
+      'variables' => array(
+        'styles' => null,
+        'scripts' => null,
+        'page' => null,
+      ),
+    ),
+
+    //define new template for mobile client, remove delivery callback form menu page callback
+    'wechat_py_mobile_new_tpl_search' => array(
+      'template' => 'wechat-py-mobile-new-tpl-search',
+      'variables' => array(
+        'styles' => null,
+        'scripts' => null,
+        'page' => null,
+      ),
+    ),
+
+    //define template for city culture page
+    'wechat_mobile_city_culture_page' => array(
+      'template' => 'wechat-mobile-city-culture-page',
+      'variables' => array(
+        'styles' => null,
+        'scripts' => null,
+        'page' => null,
+      ),
+    ),
+
+    //define template for city culture article
+    'wechat_mobile_city_culture_article_page' => array(
+      'template' => 'wechat-mobile-city-culture-article-page',
+      'variables' => array(
+        'styles' => null,
+        'scripts' => null,
+        'page' => null,
+      ),
+    ),
+    
+    //define template for shopping adv page
+    'wechat_mobile_shopping_adv_page' => array(
+      'template' => 'wechat-mobile-shopping-adv-page',
+      'variables' => array(
+        'styles' => null,
+        'scripts' => null,
+        'page' => null,
+      ),
+    ),
+
+    //define template for shopping search dialog
+    'wechat_mobile_shopping_search_dialog' => array(
+      'template' => 'wechat-mobile-shopping-search-dialog',
+      'variables' => array(
+        'styles' => null,
+        'scripts' => null,
+        'page' => null,
+      ),
+    ),
+
+    //define template for display merchandise detail
+    'wechat_mobile_shopping_merchandise_show' => array(
+      'template' => 'wechat-mobile-shopping-merchandise-show',
+      'variables' => array(
+        'styles' => null,
+        'scripts' => null,
+        'page' => null,
+      ),
+    ),
+
+    //define template for shopping cart records
+    'wechat_mobile_shopping_cart_page' => array(
+      'template' => 'wechat-mobile-shopping-cart-page',
+      'variables' => array(
+        'styles' => null,
+        'scripts' => null,
+        'page' => null,
+      ),
+    ),
+
+    //define template for user order
+    'wechat_mobile_shopping_my_order_page' => array(
+      'template' => 'wechat-mobile-shopping-my-order-page',
+      'variables' => array(
+        'styles' => null,
+        'scripts' => null,
+        'page' => null,
+      ),
+    ),
+
+    //define template for shopping online help video
+    'wechat_mobile_shopping_help_page' => array(
+      'template' => 'wechat-mobile-shopping-help-page',
+      'variables' => array(
+        'styles' => null,
+        'scripts' => null,
+        'page' => null,
+      ),
+    ),
+
+    //define template for custome service order detail
+    'wechat_mobile_shopping_service_order_detail_page' => array(
+      'template' => 'wechat-mobile-shopping-service-order-detail-page',
+      'variables' => array(
+        'styles' => null,
+        'scripts' => null,
+        'page' => null,
+      ),
+    ),
+    //define template for my account
+    'wechat_mobile_shopping_my_doc_page' => array(
+      'template' => 'wechat-mobile-shopping-my-doc-page',
+      'variables' => array(
+        'styles' => null,
+        'scripts' => null,
+        'page' => null,
+      ),
+    ),
+    
+    //define template for payment page
+
+    'wechat_mobile_shopping_payment_page' => array(
+      'template' => 'wechat-mobile-shopping-payment-page',
+      'variables' => array(
+        'styles' => null,
+        'scripts' => null,
+        'page' => null,
+      ),
+    ),
+  );
+}
+
+/**
+ * Implements hook_query_TAG_alter().  
+ * https://www.drupal.org/node/1095656#comment-7885467
+ * Alter comments query to order by DESC as well as the default ASC.
+ **/
+function wechat_py_mobile_query_comment_filter_alter(QueryAlterableInterface $query) {
+  $orderby = &$query->getOrderBy();  
+  $expressions = &$query->getExpressions();  
+  //dpm($expressions);
+  // Sorting for threaded comments. 
+  if (isset($orderby['torder'])) {   
+    // Get rid of the expressions that prepare the threads for ASC ordering.
+    // Simply order by the thread field.
+      
+    unset($expressions['torder']);
+    unset($orderby['torder']);
+    $orderby['c.thread'] = 'DESC';   
+         
+       
+  }else{  // Sorting for flat comments.   
+    $direction = 'DESC';
+    if (isset($orderby['c.cid'])) {
+      unset($orderby['c.cid']);    
+    }
+    $orderby['c.created'] = $direction;
+    $orderby['c.cid'] = $direction; 
+  }
+}
+
+
+/**
+ * Implement hook_comment_presave($comment)
+ **/
+function wechat_py_mobile_comment_presave($comment) {
+
+  //node type is merchandise_input_ct  微商城商品信息录入
+  if ($comment->node_type == 'comment_node_merchandise_input_ct') {
+    //dpm($comment);
+    $uid = $comment->uid;
+    $user_profile = entity_metadata_wrapper('user', $uid);
+    $headimgurl = $user_profile->field_wechat_headimgurl->value();
+    if ($headimgurl != '' || isset($headimgurl)) {
+
+      $comment->field_comment_user_head_url['und'][0]['value'] = $headimgurl; 
+    }
+  }
+
+}
+
+/**
+ * Implement hook_preprocess_HOOK(&$variables)
+ **/
+function wechat_py_mobile_preprocess_comment(&$variables) {
+  if ($variables['elements']['#node']->type == 'merchandise_input_ct') {
+    //dpm($variables);
+    //dpm($variables['comment']);
+
+    $comment = comment_load($variables['comment']->cid);
+    $comment_wrapper = entity_metadata_wrapper('comment', $comment);
+    $head_img_url = $comment_wrapper->field_comment_user_head_url->value();
+    
+    if ($head_img_url != '' || isset($head_img_url)) {
+      $head_image = array(
+        '#theme' => 'image',
+        '#path' => $head_img_url,
+        '#title' => 'ç¨æ·å¤´å',
+        '#width' => '80%',
+        '#attributes' => array('class' => array('head-img'), 
+                               'style' => array('display: block;')),
+      );
+
+      $variables['picture'] = drupal_render($head_image);
+    }
+  }
+}
+
+/**
+ * Implement hook_form_alter
+ **/
+function wechat_py_mobile_form_alter(&$form, &$form_state, $form_id) {
+
+  global $user;
+  global $conf;
+
+  $vocs = taxonomy_vocabulary_get_names();
+
+  $element = array();
+  $vocs_keys = array_keys($vocs);
+
+  foreach ($vocs_keys as $key) {
+
+    if (preg_match('/^mobile_city_culture_vocabulary_/', $key)) {
+      $voc = taxonomy_vocabulary_machine_name_load($key);
+
+      $split = preg_split('/_/', $voc->name); //remove prefix name
+      $element[$voc->vid]['area_name'] = $split[1];
+
+      $area_id = preg_split('/mobile_city_culture_vocabulary_/', $voc->machine_name);
+      $element[$voc->vid]['area_id'] = $area_id[1];
+
+      $terms = taxonomy_get_tree($voc->vid, 0, 1);
+      $t_array = array();
+      foreach ($terms as $id => $term) {
+        $t_array[$id]['tid'] = $term->tid;
+        $t_array[$id]['tname'] = $term->name;
+      }
+
+      if (count($t_array)) {
+        $element[$voc->vid]['terms'] = $t_array;
+      }
+
+    }
+  }
+
+//dpm($conf);
+//  $widget = field_info_widget_types();
+//  dpm($widget);
+//  $permissions = module_invoke_all('permission');
+//  dpm($permissions);
+
+    /**
+     * use #attached to include js file, will impacts all of other js file. it will overwirte previous js files lost?
+     * don not use $form['#attached']['js'] = array(blalalla); it will overwrite all js files that in attached js array
+     **/
+    $form['#attached']['js'][] = drupal_get_path('module', 'wechat_py_mobile') . '/js/merchandise_input_ct_node_form.js';
+
+    if ($form_id == 'merchandise_input_ct_node_form') {
+
+        //hide merchandise_input_ct_node_form field_product_discount_term field
+        $form['field_product_discount_term']['#access'] = false;
+
+        //set default merchandise category for field_product_category_term
+        global $user;
+
+        if (check_user_exist("微商城管理员", $user->roles)) {
+            $wrapper = entity_metadata_wrapper('user', $user);
+            $term = $wrapper->field_product_category_term->value();
+
+            //pass term to js
+            drupal_add_js(array(
+                'wechat_py_mobile' => array(
+                  'tid' => $term->tid,
+                  'tname' => $term->name,
+                  'formid' => '#' . str_replace('_', '-', $form_id)
+                )
+              ), 'setting');
+        }
+    }
+
+  //change comment form subject test length to 512
+  if ($form_id == 'comment_node_merchandise_input_ct_form') {
+    hide($form['field_comment_user_head_url']);
+    $form['subject']['#maxlength'] = 512;
+    //dpm($form);
+  }
+
+  //modify user profile form
+  if($form_id == 'user_profile_form'){
+    $is_admin = check_user_is_admin();
+    if ($is_admin == false) {
+
+      hide($form['field_product_category_term']);
+
+      hide($form['field_wechat_subscribe']);
+      hide($form['field_wechat_openid']);
+      hide($form['field_wechat_nickname']);
+      hide($form['field_wechat_sex']);
+      hide($form['field_wechat_city']);
+      hide($form['field_wechat_province']);
+      hide($form['field_wechat_language']);
+      hide($form['field_wechat_subscribe_time']);
+      hide($form['field_wechat_longitude']);
+      hide($form['field_wechat_precision']);
+      hide($form['field_wechat_latitude']);
+      hide($form['field_wechat_unionid']);
+      hide($form['field_wechat_headimgurl']);
+      hide($form['field_wechat_country']);
+    }
+  }
+
+  //hide category for city culture form by different users
+  if ($form_id == 'mobile_city_culture_input_ct_node_form') {
+
+    $is_admin = check_user_is_admin();
+    if ($is_admin == true) {
+      return;
+    }
+
+    if(check_user_role($user, 'page_admin')) {
+      return;
+    }
+
+    //change menu hidden to 1 if match own area vocabulary 
+    $user_profile = entity_metadata_wrapper('user', $user->uid);
+    $pp = $user_profile->getPropertyInfo(); 
+    if (!empty($pp['field_product_category_term'])) {
+      $area_term = $user_profile->field_product_category_term->value();
+
+      if ($area_term) {
+        $area_id = $area_term->tid;
+        $field_term = 'field_area_term_' . $area_id;
+        $form_keys = array_keys($form);
+        foreach ($form_keys as $key) {
+          if (preg_match('/field_area_term_/', $key)) {
+            if ($key != $field_term) {
+              hide($form[$key]);
+            }
+          }
+        }
+      }
+    
+    }
+
+  }
+  //remove some fields for page_admin, because allow page_admin to delete voc
+  if ($form_id == 'taxonomy_form_vocabulary') {
+    drupal_add_css('#taxonomy-form-vocabulary .form-item-taxonomy-breadcrumb-path {display:none;}', array('type' => 'inline'));
+    drupal_add_css('.tabs ul.primary > li:nth-child(3),  .tabs ul.primary > li:nth-child(4) {display:none;} ', array('type' => 'inline'));
+  }
+  if ($form_id == 'taxonomy_overview_terms') {
+    drupal_add_css('.tabs ul.primary > li:nth-child(3),  .tabs ul.primary > li:nth-child(4) {display:none;} ', array('type' => 'inline'));
+  }
+}
+
+/**
+ * Implement hook_user_login(&$edit, $account)
+ **/
+function wechat_py_mobile_user_login(&$edit, $account) {
+  global $base_url;
+  global $user;
+
+//  dpm($user);
+// //test get all permissions
+//  $permissions = module_invoke_all('permission');
+//  dpm($permissions);
+//  $vocs = taxonomy_get_vocabularies();
+//  dpm($vocs);
+
+
+  $is_admin = check_user_is_admin();
+
+  if ($is_admin == false) {
+
+    if (property_exists($account, 'field_product_category_term')) {
+      //find field_product_category_term
+
+      $area_id = $account->field_product_category_term['und'][0]['tid'];
+      $area_term = taxonomy_term_load($area_id);
+
+      if ($area_term) {
+        //find user area term
+        $area_name = $area_term->name;
+        create_new_voc_for_user($area_id, $area_name);
+
+        create_city_culture_input_ct($area_id, $area_name);
+      }
+
+    } //user is area admin
+
+  } //user is not admin
+
+
+}
+
+/**
+ * create new vocabulary for area user admin
+ **/
+function create_new_voc_for_user($area_id, $area_name) {
+  global $user;
+
+  $new_vocabulary_id = "mobile_city_culture_vocabulary_" . $area_id;
+
+  $all_vocabulary_names = taxonomy_vocabulary_get_names();
+
+  $findit = 0;
+  $find_vid = 0;
+  foreach ($all_vocabulary_names as $id => $voc) {
+    if ($new_vocabulary_id == $id) {
+      $findit = 1;
+      $find_vid = $voc->vid;
+      break;
+    }
+  }
+
+
+  if ($findit == 0) { //create new voc and submenu if don't find
+    $vocabulary = new stdClass();
+    $vocabulary->name = '城镇文化介绍分类_' . $area_name;
+    $vocabulary->machine_name = $new_vocabulary_id;
+    $vocabulary->description = $area_name . '城镇文化介绍分类';
+    
+    //create city culture vocabulary
+    taxonomy_vocabulary_save($vocabulary);
+    $vid = $vocabulary->vid;
+
+    //create submenu in menu-menu-city-culture-menu
+    $item = array(
+      'menu_name' => 'menu-menu-city-culture-menu',
+      'link_path' => 'admin/structure/taxonomy/' . $new_vocabulary_id,
+      'router_path' => 'admin/structure/taxonomy/' . $new_vocabulary_id,
+      //'router_path' => 'services',
+      'link_title' => $area_name . '城镇文化分类表',
+      'weight' => 0,
+    );
+    $item['options']['alter'] = TRUE; //for hook_translated_menu_link_alter, It is only invoked if $item['options']['alter'] has been set to a non-empty value (e.g., TRUE).
+    $mlid = menu_link_save($item);
+    menu_cache_clear_all();
+
+    $u_roles = $user->roles;
+    
+    $rid = array_search('page_admin', $u_roles, true);
+    if (!$rid) {
+      $rid = array_search('微商城管理员', $u_roles, true);
+      if (!$rid) {
+        return;
+      }
+    }
+
+    user_role_grant_permissions($rid,
+      array(
+        'edit terms in ' . $vid,
+        'delete terms in ' . $vid,
+        'add terms in ' . $vocabulary->machine_name, 
+       )
+    );
+
+  } else {
+    //find it and only set permission for the voc
+    $u_roles = $user->roles;
+    
+    $rid = array_search('page_admin', $u_roles, true);
+    if (!$rid) {
+      $rid = array_search('微商城管理员', $u_roles, true);
+      if (!$rid) {
+        return;
+      }
+    }
+
+    user_role_grant_permissions($rid,
+      array(
+        'edit terms in ' . $find_vid,
+        'delete terms in ' . $find_vid,
+        'add terms in ' . $new_vocabulary_id, 
+       )
+    );
+  }
+
+}
+
+/**
+ * create new node content type
+ **/
+function create_city_culture_input_ct($area_id, $area_name) {
+  global $user;
+
+  //field_delete_field('field_area_term_' . $area_id); //just for test
+  // Check if our field is not already created.
+  if (field_info_field('field_area_term_' . $area_id)) {
+    return;
+  }
+
+  $field = array(
+    'field_name' => 'field_area_term_' . $area_id, 
+    'type' => 'taxonomy_term_reference', 
+    'cardinality' => 1,
+    'settings' => array(
+      'allowed_values' => array(
+        array(
+          'vocabulary' => "mobile_city_culture_vocabulary_" . $area_id,
+          'parent' => 0,
+        ),
+      ),
+    ),
+
+  );
+  field_create_field($field);
+
+  // Create the instance on the bundle.
+  $instance = array(
+    'field_name' => 'field_area_term_' . $area_id, 
+    'entity_type' => 'node', 
+    'label' => t('选择城镇文化信息分类'), 
+    'bundle' => 'mobile_city_culture_input_ct', 
+    // If you don't set the "required" property then the field wont be required by default.
+    //'required' => TRUE,
+    'description' => '',
+    'widget' => array(
+      'type' => 'taxonomy_shs',
+      'weight' => 2,
+    ),
+
+    'display' => array(
+      'default' => array(
+        'label' => 'inline',
+        'type' => 'shs_default',
+        'settings' => array(
+          'field_wrapper' => 'div',
+          'label_wrapper' => 'strong',
+          'item_wrapper' => '0',
+          'linked' => FALSE,
+        ),
+        'weight' => -1,
+      ),
+    ),
+  );
+  field_create_instance($instance);
+  
+}
+
+/**
+ * Implement hook_translated_menu_link_alter(&$item, $map)
+ **/
+function wechat_py_mobile_translated_menu_link_alter(&$item, $map) {
+  global $user;
+
+
+  $is_admin = check_user_is_admin();
+  if ($is_admin == true) {
+    return;
+  }
+  if(check_user_role($user, 'page_admin')) {
+    return;
+  }
+  //change menu hidden to 1 if match own area vocabulary 
+  $user_profile = entity_metadata_wrapper('user', $user->uid);
+  $pp = $user_profile->getPropertyInfo(); 
+
+  $voc_id = '';
+  if (!empty($pp['field_product_category_term'])) {
+    $area_term = $user_profile->field_product_category_term->value();
+
+    if ($area_term) {
+      $area_id = $area_term->tid;
+      $voc_id = "mobile_city_culture_vocabulary_" . $area_id;
+    }
+    
+  }
+
+  $link_path = $item['link_path'];
+
+  if (preg_match('/mobile_city_culture_vocabulary_/', $link_path)) {
+    if (preg_match('/' . $voc_id . '/', $link_path)) {
+      $item['hidden'] = 0;
+    } else {
+      $item['hidden'] = 1;
+    }
+  }
+
+  //change menu hidden to 1 if match own area content types 
+
+}
+
+
+/**
+ * Implemnt hook_user_view_alter(&$build)
+ **/
+function wechat_py_mobile_user_view_alter(&$build) {
+  global $user;
+  $roles = user_roles(TRUE);
+
+  $is_admin = check_user_is_admin();
+
+  if ($is_admin == true) {
+    return ;
+  }
+
+  //dpm($build);
+
+  $user_profile = entity_metadata_wrapper('user', $user->uid);
+  $nickname = $user_profile->field_wechat_nickname->value();
+
+  if ($nickname != '' || isset($nickname)) {
+    $build['nickname'] = array (
+      '#markup' => '<div style="font-size: 1.2em;margin: 1em 0;">微信名: ' . base64_decode($nickname) . '</div>',
+      '#weight' => 0,
+      //'#attributes' => array('style' => array('font-size: 1em; margin: 1em 0;')),
+    );
+  }
+
+  $headimgurl = $user_profile->field_wechat_headimgurl->value();
+  if ($headimgurl != '' || isset($headimgurl)) {
+    $build['headimg'] = array(
+      '#theme' => 'image',
+      '#path' => $headimgurl,
+      '#title' => '微信头像',
+      'width' => '50%',
+      'height' => '50%',
+      '#attributes' => array('class' => array('head-img'), 
+                             'style' => array('display: block;width: 50%;'))
+    );
+  }
+
+  $build['scan_wechat_barcode'] = array(
+    '#type' => 'fieldset', 
+    '#title' => t('梦乡网商城管理员注册二维码'), 
+    '#weight' => 100, 
+    '#collapsed' => FALSE,
+    '#description' => '请扫描此二维码后，系统会将你的微信号，头像和名称纪录。一旦有订单发生，系统会自动将
+                       订单信息发送到你的微信号',
+  );
+
+  //create temproray QRscene for mobile shopping admin user to scan
+  module_load_include('inc', 'wechat_api', 'wechat_api_send_msg_tpl');
+  //temporary bar code
+  $ticket = wechat_api_creat_qrscene(FALSE, $user->uid, 600); /*10 minutes for scan and take user id*/
+
+  if(empty($ticket)){
+    drupal_set_message(t('创建临时二维码失败.'), 'error');
+    watchdog('mobile shopping creat admin qrscene', 'error code: at @line in @filename',
+      array('@line' => __LINE__, '@filename' => __FILE__,), $severity = WATCHDOG_ERROR);
+    return ;
+  }
+
+  //get bar code by ticket
+  $filename = wechat_api_get_qrscene_image('管理员注册二维码' . $user->uid, $ticket);
+  if(empty($filename)){
+    drupal_set_message(t('创建临时二维码图片失败.'), 'error');
+    watchdog('mobile shopping creat admin qrscene', 'error code: at @line in @filename',
+      array('@line' => __LINE__, '@filename' => __FILE__,), $severity = WATCHDOG_ERROR);
+    return ;
+  }
+
+  $build['scan_wechat_barcode']['img'] = array(
+    '#theme' => 'image',
+    '#path' => $filename,
+    '#title' => '梦乡网商城管理员扫描二维码',
+    '#attributes' => array('class' => 'some-img', 'id' => 'my-img'),
+  );
+  
+}
+
+/**
+ * Implements hook_node_presave($node)
+ **/
+
+function wechat_py_mobile_node_presave($node) {
+
+  if ($node->type == 'mobile_shopping_adv_node') {
+    //modify default adv node for mobile shopping
+    if ($node->field_default_adv_node['und'][0]['value'] == 1) {
+
+      $query = new EntityFieldQuery();
+      $query->entityCondition('entity_type', 'node')
+        ->entityCondition('bundle', 'mobile_shopping_adv_node')
+        ->propertyCondition('status', NODE_PUBLISHED);
+
+      $result = $query->execute();
+      if (!empty($result)) {
+        $nodes = node_load_multiple(array_keys($result['node']));
+        if(count($nodes)) {
+          foreach($nodes as $row){
+            if (empty($node->nid)) { //new node
+              $node_wrapper = entity_metadata_wrapper('node', $row);
+              $node_wrapper->field_default_adv_node->set('0');
+              $node_wrapper->save();
+            } else {
+              if ($node->nid != $row->nid) {
+                $node_wrapper = entity_metadata_wrapper('node', $row);
+                $node_wrapper->field_default_adv_node->set('0');
+                $node_wrapper->save();
+              }
+            }
+
+          }
+        }
+      }
+      //dpm($node);
+    }
+  }
+
+}
+
+function check_user_is_admin() {
+  global $user;
+  $roles = user_roles(TRUE);
+
+  $curr_user_roles = $user->roles;
+//  watchdog('check_user_is_admin', 'roles <pre>@data</pre>', array('@data' => print_r($curr_user_roles, TRUE)));
+
+  if (in_array('administrator', $curr_user_roles, true)) {
+    return true;
+  }
+
+//  foreach ($curr_user_roles as $id => $item) {
+//    if ($roles[$id] == 'administrator') {
+//      return true;
+//    }
+//  }
+
+  return false;
+}
+
+/**
+ * test background_process_order
+ **/
+function test_background_process_order($order) {
+  watchdog('test_background_process_order', 'order <pre>@data</pre>', array('@data' => print_r($order, TRUE)));
+  $exp_fee_array = $order['area_exp_fee'];
+
+  $split_order = array();
+  foreach ($exp_fee_array as $area_exp_fee) {
+    foreach ($area_exp_fee as $key => $exp_fee) {
+      $split_order[$key]['order_exp_fee'] = $exp_fee;
+      $split_order[$key]['order_total_fee'] = 0.00;
+      $split_order[$key]['detail'] = '';
+    }
+  }
+
+  $items = $order['items'];
+  $order_pay = 0.00;
+  foreach ($items as $item) {
+    if (array_key_exists($item['area_key'], $split_order)) {
+      $split_order[$item['area_key']]['detail'] .= "商品名称: " . $item['m_title'] . "\n";
+      $split_order[$item['area_key']]['detail'] .= "商品价格: ¥" . $item['s_price'] . "\n";
+      $split_order[$item['area_key']]['detail'] .= "购买数量: " . $item['volume'] . " 件\n";
+      if (!empty($item['point_p'])) {
+        $split_order[$item['area_key']]['detail'] .= "积分减扣: ¥-" . $item['point_p'] . "\n";
+      }
+      if (!empty($item['discount'])) {
+        $split_order[$item['area_key']]['detail'] .= "商品优惠: ¥-" . $item['discount'] . "\n";
+      }
+      $split_order[$item['area_key']]['detail'] .= "商品合计: ¥" . $item['item_total'] . "\n";
+      $split_order[$item['area_key']]['detail'] .= "\n";
+
+      $split_order[$item['area_key']]['order_total_fee'] += floatval($item['item_total']);
+    }
+  }
+
+  watchdog('test_background_process_order', 'split_order <pre>@data</pre>', array('@data' => print_r($split_order, TRUE)));
+
+
+  $order_addr = "收货人: " . $order['s_addr']['user_name'] . "\n";
+  $order_addr .= "电话: " . $order['s_addr']['user_tel'] . "\n";
+  $order_addr .= "地址: " . $order['s_addr']['city_1'] . " " 
+                          . $order['s_addr']['city_2'] . " "
+                          . $order['s_addr']['city_3'] . "\n"
+                          . "     " . $order['s_addr']['detail_address'] . "\n";
+
+
+  foreach ($split_order as $key => $data) {
+
+    //insert new order to order_table
+    $index = db_insert('test_mobile_shopping_user_order_table')
+      ->fields(array(
+        'openid' => $order['openid'],
+        'out_trade_no' => $order['out_trade_no'],
+        'area_id' => $key,
+        'prepay_package' => '',
+        'time_start' => intval($order['time_start']),
+        'time_expire' => intval($order['time_expire']),
+        'time_end' => date("YmdHis"), //temp time, if paid update it
+        'order_detail' => $data['detail'],
+        'order_addr' => $order_addr,
+        'total_fee' => floatval($data['order_total_fee']) * 100,
+        'area_exp_fee' => floatval($data['order_exp_fee']),
+      ))->execute();
+
+    //insert detail to order detail table
+    foreach ($items as $item) {
+
+      if($key == $item['area_key']) {
+        if (!empty($item['point_p'])) {
+          $point_p = floatval($item['point_p']);
+          $point = intval($item['point']);
+        } else {
+          $point_p = 0.00;
+          $point = 0;
+        }
+        if (!empty($item['discount'])) {
+          $discount = floatval($item['discount']);
+        } else {
+          $discount = 0.00;
+        }
+
+        db_insert('test_mobile_shopping_user_order_detail_table')
+          ->fields(array(
+            'order_index' => $index,
+            'merchandise_id' => $item['index'],
+            'area_term_id' => $item['area_key'],
+            'm_title' => $item['m_title'],
+            'm_purl' => $item['m_purl'],
+            'm_price' => floatval($item['s_price']),
+            'm_volume' => intval($item['volume']),
+            'exp_fee' => floatval($item['exp_fee']),
+            'point_p' => $point_p,
+            'point' => $point,
+            'discount' => $discount,
+            'item_total' => floatval($item['item_total']),
+          ))->execute();
+
+        //add volume to node merchandise_input_ct field  field_product_volume
+  //      $node = node_load($item['index']);
+  //      $wnode = entity_metadata_wrapper('node', $node);
+  //      $volume = $wnode->field_product_volume->value();
+  //      $wnode->field_product_volume->set($volume + intval($item['volume']));
+  //      $wnode->save();
+      }
+    }
+  }
+}
+
+/**
+ * background_process_order in wechat_mobile_shopping_data_api.inc. It's ok for me :)
+ **/
+function background_process_order($order) 
+{
+  //watchdog('background_process_order', 'order <pre>@data</pre>', array('@data' => print_r($order, TRUE)));
+  $exp_fee_array = $order['area_exp_fee'];
+
+  $split_order = array();
+  foreach ($exp_fee_array as $area_exp_fee) {
+    foreach ($area_exp_fee as $key => $exp_fee) {
+      $split_order[$key]['order_exp_fee'] = $exp_fee;
+      $split_order[$key]['order_total_fee'] = 0.00;
+      $split_order[$key]['detail'] = '';
+    }
+  }
+
+  $items = $order['items'];
+  $order_pay = 0.00;
+  foreach ($items as $item) {
+    if (array_key_exists($item['area_key'], $split_order)) {
+      $split_order[$item['area_key']]['detail'] .= "商品名称: " . $item['m_title'] . "\n";
+      $split_order[$item['area_key']]['detail'] .= "商品价格: ¥" . $item['s_price'] . "\n";
+      $split_order[$item['area_key']]['detail'] .= "购买数量: " . $item['volume'] . " 件\n";
+      if (!empty($item['point_p'])) {
+        $split_order[$item['area_key']]['detail'] .= "积分减扣: ¥-" . $item['point_p'] . "\n";
+      }
+      if (!empty($item['discount'])) {
+        $split_order[$item['area_key']]['detail'] .= "商品优惠: ¥-" . $item['discount'] . "\n";
+      }
+      $split_order[$item['area_key']]['detail'] .= "商品合计: ¥" . $item['item_total'] . "\n";
+      $split_order[$item['area_key']]['detail'] .= "\n";
+
+      $split_order[$item['area_key']]['order_total_fee'] += floatval($item['item_total']);
+    }
+  }
+
+  //watchdog('mobile shopping', 'detail = <pre>@data</pre>', array('@data' => print_r($items, TRUE)));
+
+  $order_addr = "收货人: " . $order['s_addr']['user_name'] . "\n";
+  $order_addr .= "电话: " . $order['s_addr']['user_tel'] . "\n";
+  $order_addr .= "地址: " . $order['s_addr']['city_1'] . " " 
+                          . $order['s_addr']['city_2'] . " "
+                          . $order['s_addr']['city_3'] . "\n"
+                          . "     " . $order['s_addr']['detail_address'] . "\n";
+  
+  foreach ($split_order as $key => $data) {
+
+    //insert new order to order_table
+    $index = db_insert('mobile_shopping_user_order_table')
+      ->fields(array(
+        'openid' => $order['openid'],
+        'out_trade_no' => $order['out_trade_no'],
+        'area_id' => $key,
+        'prepay_package' => $order['prepay_package'],
+        'time_start' => intval($order['time_start']),
+        'time_expire' => intval($order['time_expire']),
+        'time_end' => date("YmdHis"), //temp time, if paid update it
+        'order_detail' => $data['detail'],
+        'order_addr' => $order_addr,
+        'total_fee' => floatval($data['order_total_fee']) * 100,
+        'area_exp_fee' => floatval($data['order_exp_fee']),
+      ))->execute();
+
+    //insert detail to order detail table
+    foreach ($items as $item) {
+
+      if($key == $item['area_key']) {
+        if (!empty($item['point_p'])) {
+          $point_p = floatval($item['point_p']);
+          $point = intval($item['point']);
+        } else {
+          $point_p = 0.00;
+          $point = 0;
+        }
+        if (!empty($item['discount'])) {
+          $discount = floatval($item['discount']);
+        } else {
+          $discount = 0.00;
+        }
+
+        db_insert('mobile_shopping_user_order_detail_table')
+          ->fields(array(
+            'order_index' => $index,
+            'merchandise_id' => $item['index'],
+            'area_term_id' => $item['area_key'],
+            'm_title' => $item['m_title'],
+            'm_purl' => $item['m_purl'],
+            'm_price' => floatval($item['s_price']),
+            'm_volume' => intval($item['volume']),
+            'exp_fee' => floatval($item['exp_fee']),
+            'point_p' => $point_p,
+            'point' => $point,
+            'discount' => $discount,
+            'item_total' => floatval($item['item_total']),
+          ))->execute();
+
+        //add volume to node merchandise_input_ct field  field_product_volume
+        $node = node_load($item['index']);
+        $wnode = entity_metadata_wrapper('node', $node);
+        $volume = $wnode->field_product_volume->value();
+        $wnode->field_product_volume->set($volume + intval($item['volume']));
+        $wnode->save();
+      }
+    }
+  }
+
+  //update user points
+  db_update('mobile_shopping_user_points_table')
+    ->condition('openid', $order['openid'])
+    ->fields(array(
+      'curr_points' => $order['rest_points'],
+    ))
+    ->execute();
+}
+
+/**
+ * background_process_order_notify in wechat_py_mobile_pay_notify_url.inc.
+ **/
+function background_process_order_notify($out_trade_no) 
+{
+  //watchdog('background_process_order_notify', 'out_trade_no <pre>@data</pre>', array('@data' => print_r($out_trade_no, TRUE)));
+  send_template_msg_to_user($out_trade_no);
+  send_template_msg_to_service($out_trade_no);
+}
+
+function send_template_msg_to_user($out_trade_no) {
+
+  global $base_url;
+
+  $query = db_select('mobile_shopping_user_order_table', 't')
+         ->condition('out_trade_no', $out_trade_no)
+         ->fields('t');
+  $result = $query->execute();
+
+  $post_data['template_id'] = 'T2FjisMj-FZqc2RfzNZwfMdqgAuCP7JbpL9nTcSiyec';
+  $my_order_req_url = t(
+    variable_get('oauth2 redirect request'),
+    array(
+      '@APPID' => variable_get('wechat_py_AppID'),
+      '@URL' => $base_url . '/' . MENU_WECHAT_PY_MOBILE . '/my-order',
+      '@SNSAPI' => "snsapi_base",
+      '@STATE' => "100",
+    )
+  );
+  $post_data['url'] = $my_order_req_url; //goto my order page
+  //$post_data['url'] = ''; //goto null page
+
+  $element = array();
+  $order_price = 0;
+  $order_exp_fee1 = 0.00;
+
+  $order_detail = '';
+  foreach ($result as $row) {
+    $post_data['touser'] = $row->openid;
+
+    $total_fee = floatval($row->total_fee) / 100;
+    $order_price += $total_fee;
+
+    $order_exp_fee1 += floatval($row->area_exp_fee);
+
+    $order_detail .= $row->order_detail;
+
+    $element['orderAddress'] = array(
+      'value' => "\n" . $row->order_addr,
+    );
+
+    switch ($row->order_state) {
+      case 0:
+        $order_state = "未支付";
+        break;
+
+      case 1:
+        $order_state = "已支付";
+        break;
+      
+      case 2:
+        $order_state = "已发货";
+        break;
+      default:
+        $order_state = "未知状态";
+        break;
+    }
+
+    $element['remark'] = array(
+      'value' => "订单状态: " . $order_state,
+    );
+  }
+
+  $element['first'] = array(
+    'value' => "您的订单已完成付款，梦乡网客服审核后将即时为您发货。",
+    'color' => "#173177",
+  );
+
+  $element['orderProductPrice'] = array(
+    'value' => '¥' . number_format($order_price, 2) . ' 邮费 ' . number_format($order_exp_fee1, 2),
+  );
+  $element['orderProductName'] = array(
+    'value' => rtrim($order_detail),
+  );
+  $element['orderName'] = array(
+    'value' => $out_trade_no,
+  );
+
+  $post_data['data'] = $element;
+
+  $json_data = json_encode($post_data,
+                           JSON_HEX_TAG |
+                           JSON_HEX_APOS |
+                           JSON_HEX_AMP |
+                           JSON_HEX_QUOT |
+                           JSON_UNESCAPED_UNICODE);
+
+  module_load_include('inc', 'wechat_api', 'wechat_api_php5');
+
+  $token_url = t(
+    variable_get('send template message'),
+    array('@ACCESS_TOKEN' => variable_get('access_token'))
+  );
+
+  $result = wechat_php_curl_https_post($token_url, $json_data);
+  if (!$result)
+  {
+    watchdog('send_template_msg_to_user', 'return null in @line line:@filename',
+      array(
+      '@line' => __LINE__,
+      '@filename' => __FILE__,
+      ),
+      $severity = WATCHDOG_ERROR);
+    return '';
+  }
+
+  $json_value = json_decode($result);
+  if($json_value->errcode){
+    watchdog('send_template_msg_to_user', 'error code: @error and errmsg: @errmsg at @line in @filename',
+      array(
+      '@error' => $json_value->errcode,
+      '@errmsg' => $json_value->errmsg,
+      '@line' => __LINE__,
+      '@filename' => __FILE__,
+      ),
+      $severity = WATCHDOG_ERROR);
+    return '';
+  }
+  
+}
+
+function send_template_msg_to_service($out_trade_no) {
+
+  global $base_url;
+
+  $query = db_select('mobile_shopping_user_order_table', 't')
+         ->condition('out_trade_no', $out_trade_no)
+         ->fields('t');
+  $result = $query->execute();
+
+  $area = array();
+  foreach ($result as $row) {
+
+    $post_data['template_id'] = 'dEp8W2OCF228p_UvR8mh9PgbGCMWsT2NgOgBQgVfYzg';
+
+    $cs_order_detail_req_url = t(
+      variable_get('oauth2 redirect request'),
+      array(
+        '@APPID' => variable_get('wechat_py_AppID'),
+        '@URL' => $base_url . '/' . MENU_WECHAT_PY_MOBILE . '/order-detail',
+        '@SNSAPI' => "snsapi_base",
+        '@STATE' => $row->id,
+      )
+    );
+    $post_data['url'] = $cs_order_detail_req_url; //goto custome service order deatil page
+    //$post_data['url'] = ''; //blank for servie url, ios is blank page, android nothing
+
+    $element['first'] = array(
+      'value' => "您有新的订单,请到梦乡网站查看",
+      'color' => "#173177",
+    );
+    $element['orderProductPrice'] = array(
+      'value' => '¥' . number_format((floatval($row->total_fee) / 100), 2),
+    );
+    $element['orderProductName'] = array(
+      'value' => rtrim($row->order_detail),
+    );
+    $element['orderAddress'] = array(
+      'value' => $row->order_addr,
+    );
+    $element['orderName'] = array(
+      'value' => $out_trade_no,
+    );
+    $element['remark'] = array(
+      'value' =>  '邮费:' . number_format(floatval($row->area_exp_fee), 2) . "\n请及时发货",
+    );
+
+    //only send to 微商城管理员
+    $query = new EntityFieldQuery();
+
+    $users = $query->entityCondition('entity_type', 'user')
+      ->propertyCondition('status', 1)  //1 active user
+      ->fieldCondition('field_product_category_term', 'tid', $row->area_id, '=')
+      ->fieldCondition('field_wechat_openid', 'value', '', '<>')
+      ->execute();
+
+    foreach ($users['user'] as $key => $uid) {
+      $user = user_load($key);
+
+      if (check_user_role($user, '微商城管理员') && !check_user_role($user, 'page_admin')) {
+        if ($user->field_product_category_term['und'][0]['tid'] == $row->area_id) {
+          $post_data['touser'] = $user->field_wechat_openid['und'][0]['value'];
+          //watchdog('send_template_msg_to_service', 'send to 商城管理员 <pre>@data</pre>', array('@data' => print_r($post_data['touser'], TRUE)));
+
+          $post_data['data'] = $element;
+
+          $json_data = json_encode($post_data,
+                                   JSON_HEX_TAG |
+                                   JSON_HEX_APOS |
+                                   JSON_HEX_AMP |
+                                   JSON_HEX_QUOT |
+                                   JSON_UNESCAPED_UNICODE);
+
+          module_load_include('inc', 'wechat_api', 'wechat_api_php5');
+
+          $token_url = t(
+            variable_get('send template message'),
+            array('@ACCESS_TOKEN' => variable_get('access_token'))
+          );
+
+          $result = wechat_php_curl_https_post($token_url, $json_data);
+          if (!$result)
+          {
+            watchdog('send_template_msg_to_service', 'return null in @line line:@filename',
+              array(
+              '@line' => __LINE__,
+              '@filename' => __FILE__,
+              ),
+              $severity = WATCHDOG_ERROR);
+          }
+
+          $json_value = json_decode($result);
+          if($json_value->errcode){
+            watchdog('send_template_msg_to_service', 'error code: @error and errmsg: @errmsg at @line in @filename',
+              array(
+              '@error' => $json_value->errcode,
+              '@errmsg' => $json_value->errmsg,
+              '@line' => __LINE__,
+              '@filename' => __FILE__,
+              ),
+              $severity = WATCHDOG_ERROR);
+          }
+        }
+      }
+    }
+    
+
+    //only send to all page_admin roles
+    $query = new EntityFieldQuery();
+
+    $users = $query->entityCondition('entity_type', 'user')
+      ->propertyCondition('status', 1)  //1 active user
+      ->fieldCondition('field_wechat_openid', 'value', '', '<>')
+      ->execute();
+
+    foreach ($users['user'] as $key => $uid) {
+      $user = user_load($key);
+
+      if (check_user_role($user, 'page_admin')) {
+        $post_data['touser'] = $user->field_wechat_openid['und'][0]['value'];
+        //watchdog('send_template_msg_to_service', 'send to page_admin <pre>@data</pre>', array('@data' => print_r($post_data['touser'], TRUE)));
+        $post_data['data'] = $element;
+
+        $json_data = json_encode($post_data,
+                                 JSON_HEX_TAG |
+                                 JSON_HEX_APOS |
+                                 JSON_HEX_AMP |
+                                 JSON_HEX_QUOT |
+                                 JSON_UNESCAPED_UNICODE);
+
+        module_load_include('inc', 'wechat_api', 'wechat_api_php5');
+
+        $token_url = t(
+          variable_get('send template message'),
+          array('@ACCESS_TOKEN' => variable_get('access_token'))
+        );
+
+        $result = wechat_php_curl_https_post($token_url, $json_data);
+        if (!$result) {
+          watchdog('send_template_msg_to_service', 'return null in @line line:@filename',
+            array(
+            '@line' => __LINE__,
+            '@filename' => __FILE__,
+            ),
+            $severity = WATCHDOG_ERROR);
+        }
+
+        $json_value = json_decode($result);
+        if($json_value->errcode){
+          watchdog('send_template_msg_to_service', 'error code: @error and errmsg: @errmsg at @line in @filename',
+            array(
+            '@error' => $json_value->errcode,
+            '@errmsg' => $json_value->errmsg,
+            '@line' => __LINE__,
+            '@filename' => __FILE__,
+            ),
+            $severity = WATCHDOG_ERROR);
+        }
+      }
+    }
+  }
+
+//  foreach ($area as $termid => $row) {
+//
+//    $userids = entity_load('user');
+//    foreach ($userids as $each_user) {
+//      $user_profile = entity_metadata_wrapper('user', $each_user->uid);
+//      $user_term_id = $user_profile->field_product_category_term->value();
+//      $user_openid = $user_profile->field_wechat_openid->value();
+//
+//      $post_data = array();
+//      if ($user_term_id !== null) {
+//        if ($user_term_id->tid == $termid) {     //user has same area
+//          $element = array();
+//          $post_data['touser'] = $user_openid;
+//          $post_data['template_id'] = 'M9hKyZW9cO_xVGHHp6rAx4OS6WCCMynq1jOtCFguiLs';
+//          $post_data['url'] = ''; //blank for servie url, ios is blank page, android nothing
+//
+//          $element['first'] = array(
+//            'value' => "您有新的订单,请到梦乡网站查看",
+//            'color' => "#173177",
+//          );
+//          $element['keyword1'] = array(
+//            'value' => $row['order_no'],
+//          );
+//
+//          $time = strtotime($row['time_end']);
+//          $time_end = date('Y年m月d日 H:i',$time);
+//          $element['keyword2'] = array(
+//            'value' => $time_end,
+//          );
+//
+//          $element['remark'] = array(
+//            'value' => "请及时发货",
+//          );
+//          $post_data['data'] = $element;
+//
+//          $json_data = json_encode($post_data,
+//                                   JSON_HEX_TAG |
+//                                   JSON_HEX_APOS |
+//                                   JSON_HEX_AMP |
+//                                   JSON_HEX_QUOT |
+//                                   JSON_UNESCAPED_UNICODE);
+//
+//          module_load_include('inc', 'wechat_api', 'wechat_api_php5');
+//
+//          $token_url = t(
+//            variable_get('send template message'),
+//            array('@ACCESS_TOKEN' => variable_get('access_token'))
+//          );
+//
+//          $result = wechat_php_curl_https_post($token_url, $json_data);
+//          if (!$result)
+//          {
+//            watchdog('send_template_msg_to_service', 'return null in @line line:@filename',
+//              array(
+//              '@line' => __LINE__,
+//              '@filename' => __FILE__,
+//              ),
+//              $severity = WATCHDOG_ERROR);
+//          }
+//
+//          $json_value = json_decode($result);
+//          if($json_value->errcode){
+//            watchdog('send_template_msg_to_service', 'error code: @error and errmsg: @errmsg at @line in @filename',
+//              array(
+//              '@error' => $json_value->errcode,
+//              '@errmsg' => $json_value->errmsg,
+//              '@line' => __LINE__,
+//              '@filename' => __FILE__,
+//              ),
+//              $severity = WATCHDOG_ERROR);
+//          }
+//        }
+//      }
+//    }
+//  }
+  
+}
+
+function check_user_role($user, $role) {
+
+  if ($user != null) {
+    if (in_array($role, $user->roles, true)) {
+      return true;
+    }
+  }
+
+  return false;
+}
+/**
+ * background_process_compose_qr_scan_image for compose all image to one qr scan in wechat_mobile_shopping_my_doc_page.inc
+ **/
+function background_process_compose_qr_scan_image($bp_process_paramter) {
+
+  //watchdog('background_process_order', 'bp_process_paramter <pre>@data</pre>', array('@data' => print_r($bp_process_paramter, TRUE)));
+
+  global $base_url;
+
+  $openid = $bp_process_paramter['openid'];
+  $head_image_url = $bp_process_paramter['head_image_url'];
+  $nick_name = $bp_process_paramter['nick_name'];
+  $flag = $bp_process_paramter['flag'];
+
+  $md5id = md5($openid);
+  $scheme = variable_get('file_default_scheme', 'public') . '://';
+
+  //finally generate qr_scan_image_url
+  $file_name = $scheme . "point_qrscan_image/" . $md5id . ".png";
+
+  //create background png
+  header('Content-Type: image/png');
+  $qr_scan_width = 200;
+  $qr_scan_height = 500;
+
+  $im = imagecreatetruecolor($qr_scan_width, $qr_scan_height);
+  $bg_white = imagecolorallocate($im, 0xFF, 0xFF, 0xFF);
+  imagefilledrectangle($im, 0, 0, 199, 499, $bg_white);
+  $textColor = imagecolorallocate ($im, 0, 0,0);
+
+  //create qr scan my_doc req url
+  $state = "101next" . $md5id;
+  $qr_scan_my_doc_req_url = t(
+    variable_get('oauth2 redirect request'),
+    array(
+      '@APPID' => variable_get('wechat_py_AppID'),
+      '@URL' => $base_url . '/' . MENU_WECHAT_PY_MOBILE . '/my-doc',
+      '@SNSAPI' => "snsapi_userinfo",
+      '@STATE' => $state,
+    )
+  );
+
+  $library = libraries_load('wxpayapi');
+  $qr_scan_file_name = $scheme . "point_qrscan_image/" . $md5id . "qr_scan.png";
+  QRcode::png($qr_scan_my_doc_req_url, $qr_scan_file_name, QR_ECLEVEL_L, 3, 2);
+  $scan_image_im = imagecreatefrompng($qr_scan_file_name);
+  $scan_image_imw = imagesx($scan_image_im);
+  $scan_image_imh = imagesy($scan_image_im);
+
+  //head_image
+  $head_image_im;
+  $dest_imagew = 200;
+  $dest_imageh = 200;
+
+  if ($flag == "url") {
+    $ch = curl_init($head_image_url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_BINARYTRANSFER,1);
+    $picture = curl_exec($ch);
+    if (!$picture) { 
+      watchdog('mobile shopping', 'can not get head image url, replace locate png image');
+      $picture = file_create_url(drupal_get_path('module', 'wechat_py_mobile') . '/imgs/friends_for_anonymous.png');
+      $img_info = 'image/png';
+    } 
+    # get the content type
+    $img_info = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
+    curl_close($ch);
+
+    switch ($img_info) {
+      case "image/gif": 
+        $temp_head_image_file = $scheme . "point_qrscan_image/temp_head_image.gif";
+        $orig_head_image = file_unmanaged_save_data($picture, $temp_head_image_file);
+        $head_image_im = imagecreatefromgif($orig_head_image);
+        break;
+      case "image/jpeg": 
+        $temp_head_image_file = $scheme . "point_qrscan_image/temp_head_image.jpeg";
+        $orig_head_image = file_unmanaged_save_data($picture, $temp_head_image_file);
+        $head_image_im = imagecreatefromjpeg($orig_head_image);
+        break;
+      case "image/png": 
+        $temp_head_image_file = $scheme . "point_qrscan_image/temp_head_image.png";
+        $orig_head_image = file_unmanaged_save_data($picture, $temp_head_image_file);
+        $head_image_im = imagecreatefrompng($orig_head_image);
+        break;
+      case "image/bmp": 
+        $temp_head_image_file = $scheme . "point_qrscan_image/temp_head_image.bmp";
+        $orig_head_image = file_unmanaged_save_data($picture, $temp_head_image_file);
+        $head_image_im = imagecreatefromwbmp($orig_head_image);
+        break; 
+    }
+
+    //copy head image to background png
+    $head_image_imw = imagesx($head_image_im);
+    $head_image_imh = imagesy($head_image_im);
+    $dest_image_im = imagecreatetruecolor($dest_imagew, $dest_imageh);
+    imagecopyresampled($dest_image_im, $head_image_im, 0, 0, 0, 0, $dest_imagew, 
+        $dest_imageh, $head_image_imw, $head_image_imh);
+    imagecopy($im, $dest_image_im, 0, 0, 0, 0, $dest_imagew, $dest_imageh);
+    imagedestroy($dest_image_im);
+
+  } else {
+    $head_image_im = imagecreatefromjpeg($head_image_url);
+
+    $head_image_imw = imagesx($head_image_im);
+    $head_image_imh = imagesy($head_image_im);
+
+    imagecopy($im, $head_image_im, 0, 0, 0, 0, $head_image_imw, $head_image_imh);
+  }
+
+  //write text to background png
+  $font_file = drupal_get_path('module', 'wechat_py_mobile') . '/imgs/华文细黑.ttf';
+  //$font_file = $scheme . "point_qrscan_image/华文细黑.ttf";
+  //dpm($font_file);
+
+  //Make the background white
+  $text1 = $nick_name;
+  $text2 = "帮我攒点积分吧！长按";
+  $text3 = "图片或扫描二维码，关注";
+  $text4 = "梦乡网。";
+  imagefttext($im, 16, 0, 15, $dest_imageh + 22, $textColor, $font_file, $text1);
+  imagefttext($im, 12, 0, 15, $dest_imageh + 48, $textColor, $font_file, $text2);
+  imagefttext($im, 12, 0, 15, $dest_imageh + 68, $textColor, $font_file, $text3);
+  imagefttext($im, 12, 0, 15, $dest_imageh + 88, $textColor, $font_file, $text4);
+
+  imagecopy($im, $scan_image_im, 8, 300, 0, 0, $scan_image_imw, $scan_image_imh);
+
+  imagepng($im, $file_name, 0);
+  imagedestroy($im);
+  imagedestroy($scan_image_im);
+
+}
+
+function check_user_exist($name, $role) {
+    if (in_array($name, $role)) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+/**
+ * End of wechat py mobile module
+ */

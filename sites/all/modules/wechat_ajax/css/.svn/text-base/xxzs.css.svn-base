@@ -1,0 +1,87 @@
+@font-face {
+  font-family: 'Droid Serif', serif;
+  font-weight: normal;
+  font-style: normal;
+}
+
+body { 
+  width: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  height: 100%;
+  overflow: hidden;
+  margin : 0 auto;
+  padding : 0;
+  font : 100%/1.4 'Droid Serif', serif;
+  text-align: center;
+  background-color: #fffbf0;
+}
+
+.maincontent {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  position: relative;
+  padding: 0px;
+  overflow: hidden;
+}
+
+a {
+  text-decoration: none;
+}
+
+.imgs-list {
+  margin-top: 1em;
+}
+.img-1-area {
+  margin: 0;
+  padding: 0;
+  width: 40%;
+  float: left;
+  display: block;
+  margin-left: 1.6%;
+}
+.img-1-area img{
+  max-width: 100%;
+  display: block;
+}
+
+.img-2-area{
+  position: relative;
+}
+
+.row {
+  white-space: nowrap;
+  width: 18.7%;
+
+}
+
+.row img {
+  display: inline-block;
+  max-width: 100%;
+  margin-left: 1px;
+  margin-right: 1px;
+}
+
+.item-title {
+  max-width: 96%;
+  margin: auto;
+  margin-top: -1em;
+  clear: both;
+  text-align: right;
+  width: 100%;
+  color: #ffffff;
+  font-size: 1.2em;
+  background-color: rgba(51,68,78,0.5);
+}
+.item-title p{
+  margin-right: 1em;
+}
+
+@media only screen and (max-width : 320px) {
+}
+
+@media only screen and (min-width : 321px) {
+}
+
